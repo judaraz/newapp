@@ -1467,18 +1467,15 @@
         </div>
     </div>
 
-    // Firebase Configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyBEvTvWy-hH1HHgjoOhUKkj-Dglm11Oc8U",
-    authDomain: "cash-rewards-01-624ae.firebaseapp.com",
-    databaseURL: "https://cash-rewards-01-624ae-default-rtdb.firebaseio.com",
-    projectId: "cash-rewards-01-624ae",
-    storageBucket: "cash-rewards-01-624ae.firebasestorage.app",
-    messagingSenderId: "29119912449",
-    appId: "1:29119912449:web:4a7efb6d34ac4e4b603e00",
-    
-};
-
+    <script type="module">
+        const firebaseConfig = {
+            apiKey: "AIzaSyA3palpYZDFdNpBDIF564YsiOAN2dtbxzA",
+            authDomain: "tic-tac-toe-87d49.firebaseapp.com",
+            projectId: "tic-tac-toe-87d49",
+            storageBucket: "tic-tac-toe-87d49.firebasestorage.app",
+            messagingSenderId: "1051665363188",
+            appId: "1:1051665363188:web:c6389dddb74491a14ceea1"
+        };
         
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
@@ -1570,41 +1567,6 @@ const firebaseConfig = {
         const noticeTimerSecondsEl = document.getElementById('notice-timer-seconds');
         const adProviderNameEl = document.getElementById('ad-provider-name');
 
-        // ===== FIXED: START APP FUNCTION =====
-        function startApp() {
-            showMainPage('app-container');
-            navigateTo('home-page');
-            fetchAppConfig();
-            fetchUserData();
-            loadGameConfigurations();
-            setupGameConfigListener();
-            setupAppConfigListener();
-            initSlider();
-            initLudoGame();
-            checkWatchEarnStatus();
-            
-            checkForGameResets();
-            checkWebsiteVisitReset();
-            checkForAppNotice();
-            
-            setInterval(() => {
-                const now = new Date();
-                if (now.getHours() === 0 && now.getMinutes() === 0) {
-                    resetGamePlayCounts();
-                }
-            }, 60000);
-            
-            resetGamePlayCounts();
-            setInterval(checkForGameResets, 300000);
-            setInterval(checkWebsiteVisitReset, 600000);
-            
-            updateStatsUI();
-            
-            if (!walletValidated) {
-                showWalletValidationWarning("Please add valid payment details to withdraw your earnings");
-            }
-        }
-        
         window.onload = async () => {
             lucide.createIcons();
             setupEventListeners();
@@ -1619,10 +1581,13 @@ const firebaseConfig = {
                 userCountry = country;
                 console.log(`🌍 User detected country: ${userCountry}`);
                 
+                // Check country restrictions
                 checkCountryRestrictions().then(isAllowed => {
                     if (isAllowed) {
+                        // Country is allowed, start the app
                         startApp();
                     } else {
+                        // Country is blocked, show block message
                         showCountryBlockMessage();
                     }
                 });
@@ -1632,48 +1597,8 @@ const firebaseConfig = {
             });
         };
         
-        // ===== FIXED: INITIALIZE USER (UNIFIED FOR ALL USER TYPES) =====
+        // ===== FIXED: TELEGRAM USER INITIALIZATION =====
         async function initializeTelegramUser() {
-            // Clear existing user data
-            currentUser = null;
-            userData = null;
-            
-            // Check if user already exists in localStorage
-            const savedUserId = localStorage.getItem('currentUserId');
-            const savedUserData = localStorage.getItem('currentUserData');
-            
-            if (savedUserId && savedUserData) {
-                try {
-                    const userRef = doc(db, "users", savedUserId);
-                    const userSnap = await getDoc(userRef);
-                    
-                    if (userSnap.exists()) {
-                        userData = userSnap.data();
-                        currentUser = { 
-                            uid: savedUserId, 
-                            email: userData.email, 
-                            displayName: userData.name 
-                        };
-                        
-                        console.log("✅ Existing user loaded from Firebase:", currentUser.uid);
-                        
-                        // Update profile UI
-                        document.getElementById('header-profile-name').textContent = `Hi, ${userData.name}`;
-                        document.getElementById('profile-picture').src = userData.profilePicture || 
-                            `https://placehold.co/100x100/1e1e1e/facc15?text=${userData.name.charAt(0).toUpperCase()}`;
-                        
-                        updateAllUI();
-                        updateStatsUI();
-                        loadSavedPaymentDetails();
-                        
-                        return;
-                    }
-                } catch (error) {
-                    console.error("Error loading saved user:", error);
-                }
-            }
-            
-            // Check Telegram WebApp
             if (typeof window.Telegram !== 'undefined' && window.Telegram.WebApp) {
                 isTelegramWebApp = true;
                 const tg = window.Telegram.WebApp;
@@ -1681,20 +1606,127 @@ const firebaseConfig = {
                 
                 if (telegramUser) {
                     console.log("✅ Telegram user detected:", telegramUser);
-                    await createOrLoadTelegramUser(telegramUser);
+                    
+                    const userName = telegramUser.first_name || telegramUser.username || 'Telegram User';
+                    const profilePic = telegramUser.photo_url || `https://placehold.co/100x100/1e1e1e/facc15?text=${userName.charAt(0).toUpperCase()}`;
+                    
+                    document.getElementById('header-profile-name').textContent = `Hi, ${userName}`;
+                    document.getElementById('profile-picture').src = profilePic;
+                    
+                    await initializeFirebaseUser(telegramUser);
                 } else {
                     console.log("⚠️ Telegram user data not available");
-                    await createAnonymousUser('telegram_session');
+                    // Even without full user data, create a Telegram session user
+                    await createTelegramSessionUser();
                 }
             } else {
                 console.log("⚠️ Not running in Telegram WebApp");
-                await createAnonymousUser('browser');
+                // Browser users will be treated as anonymous but won't be added to admin list
+                await createBrowserUser();
             }
         }
         
-        // ===== FIXED: CREATE OR LOAD TELEGRAM USER =====
-        async function createOrLoadTelegramUser(tgUser) {
+        // ===== FIXED: CREATE TELEGRAM SESSION USER =====
+        async function createTelegramSessionUser() {
             try {
+                // Generate session ID for Telegram users
+                const sessionId = `tg_session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                const userId = sessionId;
+                const userName = "Telegram User";
+                const userEmail = `${sessionId}@telegram.session`;
+                
+                const ownReferralCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+                const defaultUserData = { 
+                    uid: userId, 
+                    name: userName, 
+                    email: userEmail, 
+                    profilePicture: `https://placehold.co/100x100/1e1e1e/facc15?text=T`,
+                    balance: 100,
+                    referralCode: ownReferralCode, 
+                    referredBy: null, 
+                    createdAt: serverTimestamp(), 
+                    isBlocked: false, 
+                    dailyAdCount: 0, 
+                    lastAdWatchDate: '1970-01-01', 
+                    visitedSitesToday: [],
+                    lastSiteVisitDate: '1970-01-01',
+                    completedSocialTasks: [],
+                    country: userCountry || 'unknown',
+                    level: 1,
+                    totalEarned: 0,
+                    tasksCompleted: 0,
+                    ludoGamesPlayed: 0,
+                    ludoTotalWon: 0,
+                    userType: 'telegram_session', // Mark as Telegram session user
+                    telegramSession: true
+                };
+                
+                await setDoc(doc(db, "users", userId), defaultUserData);
+                userData = defaultUserData;
+                currentUser = { uid: userId, email: userEmail, displayName: userName };
+                
+                console.log("✅ Telegram session user created");
+                
+                updateAllUI();
+                
+            } catch (error) {
+                console.error("Error creating Telegram session user:", error);
+            }
+        }
+        
+        // ===== FIXED: CREATE BROWSER USER =====
+        async function createBrowserUser() {
+            try {
+                // Browser users get anonymous treatment
+                const userId = `browser_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                const userName = "Browser User";
+                const userEmail = `${userId}@browser.anon`;
+                
+                // Browser users don't get added to real database - they use localStorage only
+                // This prevents them from appearing in admin panel
+                const defaultUserData = { 
+                    uid: userId, 
+                    name: userName, 
+                    email: userEmail, 
+                    profilePicture: `https://placehold.co/100x100/1e1e1e/facc15?text=B`,
+                    balance: 50,
+                    referralCode: 'BROWSER', 
+                    referredBy: null, 
+                    createdAt: new Date().toISOString(), 
+                    isBlocked: false, 
+                    dailyAdCount: 0, 
+                    lastAdWatchDate: '1970-01-01', 
+                    visitedSitesToday: [],
+                    lastSiteVisitDate: '1970-01-01',
+                    completedSocialTasks: [],
+                    country: userCountry || 'unknown',
+                    level: 1,
+                    totalEarned: 0,
+                    tasksCompleted: 0,
+                    ludoGamesPlayed: 0,
+                    ludoTotalWon: 0,
+                    userType: 'browser_anonymous', // Mark as browser anonymous
+                    isBrowserUser: true
+                };
+                
+                // Store in localStorage only for browser users
+                localStorage.setItem('browserUserData', JSON.stringify(defaultUserData));
+                userData = defaultUserData;
+                currentUser = { uid: userId, email: userEmail, displayName: userName };
+                
+                console.log("✅ Browser anonymous user created (local only)");
+                
+                updateAllUI();
+                
+            } catch (error) {
+                console.error("Error creating browser user:", error);
+            }
+        }
+        
+        // ===== FIXED: INITIALIZE FIREBASE USER WITH TELEGRAM DATA =====
+        async function initializeFirebaseUser(tgUser) {
+            try {
+                // Use Telegram ID as main identifier
                 const userId = `tg_${tgUser.id}`;
                 const userName = tgUser.first_name || tgUser.username || 'Telegram User';
                 const userEmail = tgUser.id ? `${tgUser.id}@telegram.miniapp` : 'telegram@miniapp';
@@ -1708,11 +1740,18 @@ const firebaseConfig = {
                     currentUser = { uid: userId, email: userEmail, displayName: userName };
                     console.log("✅ Existing Telegram user loaded from Firebase");
                     
-                    // Update last login
-                    await updateDoc(userRef, { 
-                        lastLogin: serverTimestamp() 
-                    });
-                    
+                    // Update user info if needed
+                    if (!userData.telegramId || !userData.telegramUsername) {
+                        await updateDoc(userRef, {
+                            telegramId: tgUser.id,
+                            telegramUsername: tgUser.username,
+                            telegramFirstName: tgUser.first_name,
+                            telegramLastName: tgUser.last_name,
+                            profilePicture: profilePic,
+                            userType: 'telegram',
+                            lastLogin: serverTimestamp()
+                        }, { merge: true });
+                    }
                 } else {
                     const ownReferralCode = Math.random().toString(36).substring(2, 8).toUpperCase();
                     const defaultUserData = { 
@@ -1740,194 +1779,90 @@ const firebaseConfig = {
                         tasksCompleted: 0,
                         ludoGamesPlayed: 0,
                         ludoTotalWon: 0,
-                        userType: 'telegram',
+                        userType: 'telegram', // Mark as Telegram user
                         lastLogin: serverTimestamp()
                     };
                     
-                    await setDoc(userRef, defaultUserData);
+                    await setDoc(doc(db, "users", userId), defaultUserData);
                     userData = defaultUserData;
                     currentUser = { uid: userId, email: userEmail, displayName: userName };
                     console.log("✅ New Telegram user created in Firebase");
                 }
                 
-                // Save to localStorage for quick access
-                localStorage.setItem('currentUserId', userId);
-                localStorage.setItem('currentUserData', JSON.stringify(userData));
-                
-                // Update profile UI
-                document.getElementById('header-profile-name').textContent = `Hi, ${userName}`;
-                document.getElementById('profile-picture').src = profilePic;
-                
-                updateAllUI();
+                // Load saved payment details
                 loadSavedPaymentDetails();
                 
-            } catch (error) {
-                console.error("Error creating Telegram user:", error);
-                await createAnonymousUser('telegram_session');
-            }
-        }
-        
-        // ===== FIXED: CREATE ANONYMOUS USER (BROWSER/TELEGRAM SESSION) =====
-        async function createAnonymousUser(userType) {
-            try {
-                const userId = `${userType}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-                const userName = userType === 'browser' ? "Browser User" : "Telegram User";
-                const userEmail = `${userId}@${userType}.miniapp`;
-                const profilePic = `https://placehold.co/100x100/1e1e1e/facc15?text=${userName.charAt(0).toUpperCase()}`;
-                
-                const userRef = doc(db, "users", userId);
-                const userSnap = await getDoc(userRef);
-                
-                if (userSnap.exists()) {
-                    userData = userSnap.data();
-                    currentUser = { uid: userId, email: userEmail, displayName: userName };
-                    console.log(`✅ Existing ${userType} user loaded from Firebase`);
-                } else {
-                    const ownReferralCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-                    const startingBalance = userType === 'browser' ? 50 : 100;
-                    
-                    const defaultUserData = { 
-                        uid: userId, 
-                        name: userName, 
-                        email: userEmail, 
-                        profilePicture: profilePic,
-                        balance: startingBalance,
-                        referralCode: ownReferralCode, 
-                        referredBy: null, 
-                        createdAt: serverTimestamp(), 
-                        isBlocked: false, 
-                        dailyAdCount: 0, 
-                        lastAdWatchDate: '1970-01-01', 
-                        visitedSitesToday: [],
-                        lastSiteVisitDate: '1970-01-01',
-                        completedSocialTasks: [],
-                        country: userCountry || 'unknown',
-                        level: 1,
-                        totalEarned: 0,
-                        tasksCompleted: 0,
-                        ludoGamesPlayed: 0,
-                        ludoTotalWon: 0,
-                        userType: userType,
-                        lastLogin: serverTimestamp()
-                    };
-                    
-                    await setDoc(userRef, defaultUserData);
-                    userData = defaultUserData;
-                    currentUser = { uid: userId, email: userEmail, displayName: userName };
-                    console.log(`✅ New ${userType} user created in Firebase`);
-                }
-                
-                // Save to localStorage for quick access
-                localStorage.setItem('currentUserId', userId);
-                localStorage.setItem('currentUserData', JSON.stringify(userData));
-                
-                // Update profile UI
-                document.getElementById('header-profile-name').textContent = `Hi, ${userName}`;
-                document.getElementById('profile-picture').src = profilePic;
-                
                 updateAllUI();
-                loadSavedPaymentDetails();
                 
             } catch (error) {
-                console.error(`Error creating ${userType} user:`, error);
-                showAlert("⚠️ Unable to connect to server. Please refresh the page.");
+                console.error("Error initializing Firebase user:", error);
+                // Fallback to session user
+                await createTelegramSessionUser();
             }
         }
         
-        // ===== FIXED: FETCH USER DATA =====
-        async function fetchUserData() {
-            if (!currentUser) return;
-            
-            try {
-                const userRef = doc(db, "users", currentUser.uid);
-                const userSnap = await getDoc(userRef);
-                
-                if (userSnap.exists()) {
-                    const freshData = userSnap.data();
-                    
-                    // Update local userData with fresh data
-                    userData = { ...userData, ...freshData };
-                    
-                    // Ensure balance is a number
-                    if (typeof userData.balance !== 'number') {
-                        userData.balance = Number(userData.balance) || 0;
-                    }
-                    
-                    console.log("✅ User data refreshed from Firebase. Balance:", userData.balance);
-                    
-                    // Update localStorage
-                    localStorage.setItem('currentUserData', JSON.stringify(userData));
-                    
-                    updateAllUI();
-                    updateStatsUI();
-                } else {
-                    console.warn("User not found in Firebase, recreating...");
-                    // User was deleted from admin panel, recreate them
-                    await recreateUserInFirebase();
-                }
-            } catch (error) {
-                console.error("Error fetching user data:", error);
-            }
+        // ===== FIXED: CHECK IF USER IS TELEGRAM USER =====
+        function isTelegramUser() {
+            return userData && (userData.userType === 'telegram' || userData.userType === 'telegram_session' || userData.telegramId);
         }
         
-        // ===== FIXED: UPDATE BALANCE (UNIFIED FOR ALL USERS) =====
+        // ===== FIXED: CHECK IF USER IS BROWSER USER =====
+        function isBrowserUser() {
+            return userData && (userData.userType === 'browser_anonymous' || userData.isBrowserUser);
+        }
+        
+        // ===== FIXED: UPDATE BALANCE WITH USER TYPE CHECK =====
         async function updateBalance(amount, taskType = 'unknown', details = '') {
-            if (!currentUser || !userData || amount === 0) return;
+            if (!currentUser || amount === 0) return;
             
-            try {
-                const userRef = doc(db, "users", currentUser.uid);
-                const userSnap = await getDoc(userRef);
+            // For browser users, update localStorage only
+            if (isBrowserUser()) {
+                const newBalance = (userData.balance || 0) + amount;
+                userData.balance = newBalance;
                 
-                if (userSnap.exists()) {
-                    const currentData = userSnap.data();
-                    const currentBalance = Number(currentData.balance) || 0;
-                    const newBalance = currentBalance + amount;
+                if (amount > 0) {
+                    const totalEarned = (userData.totalEarned || 0) + amount;
+                    const tasksCompleted = (userData.tasksCompleted || 0) + 1;
                     
-                    // Always update Firebase first
-                    const updateData = { 
-                        balance: newBalance,
-                        lastLogin: serverTimestamp()
-                    };
-                    
-                    if (amount > 0) {
-                        const totalEarned = (Number(currentData.totalEarned) || 0) + amount;
-                        const tasksCompleted = (Number(currentData.tasksCompleted) || 0) + 1;
-                        
-                        updateData.totalEarned = totalEarned;
-                        updateData.tasksCompleted = tasksCompleted;
-                        
-                        userData.totalEarned = totalEarned;
-                        userData.tasksCompleted = tasksCompleted;
-                    }
-                    
-                    await updateDoc(userRef, updateData);
-                    
-                    // Update local userData
-                    userData.balance = newBalance;
-                    
-                    // Update localStorage
-                    localStorage.setItem('currentUserData', JSON.stringify(userData));
-                    
-                    // Update UI
-                    updateAllUI();
-                    updateStatsUI();
-                    
-                    // Record point history for all users (admin panel will see everyone)
-                    if (amount !== 0) {
-                        await recordPointHistory(currentUser.uid, taskType, amount, details);
-                    }
-                    
-                    console.log(`✅ Balance updated: ${amount} points. New total: ${newBalance}`);
-                    
-                } else {
-                    console.error("User document not found in Firebase");
-                    await recreateUserInFirebase();
+                    userData.totalEarned = totalEarned;
+                    userData.tasksCompleted = tasksCompleted;
                 }
                 
-            } catch (error) {
-                console.error("Error updating balance:", error);
-                showAlert("⚠️ Error updating balance. Please try again.");
+                // Save to localStorage
+                localStorage.setItem('browserUserData', JSON.stringify(userData));
+                
+                updateAllUI();
+                updateStatsUI();
+                return;
             }
+            
+            // For Telegram users, update Firebase
+            const newBalance = (userData.balance || 0) + amount;
+            
+            if (amount > 0) {
+                const totalEarned = (userData.totalEarned || 0) + amount;
+                const tasksCompleted = (userData.tasksCompleted || 0) + 1;
+                
+                await updateDoc(doc(db, "users", currentUser.uid), { 
+                    balance: newBalance,
+                    totalEarned: totalEarned,
+                    tasksCompleted: tasksCompleted
+                });
+                
+                userData.totalEarned = totalEarned;
+                userData.tasksCompleted = tasksCompleted;
+            } else {
+                await updateDoc(doc(db, "users", currentUser.uid), { balance: newBalance });
+            }
+            
+            userData.balance = newBalance;
+            
+            if (amount !== 0) {
+                await recordPointHistory(currentUser.uid, taskType, amount, details);
+            }
+            
+            updateAllUI();
+            updateStatsUI();
         }
         
         // ===== FIXED: RECORD POINT HISTORY =====
@@ -1935,10 +1870,10 @@ const firebaseConfig = {
             try {
                 const userRef = doc(db, "users", userId);
                 const userSnap = await getDoc(userRef);
+                const userData = userSnap.data();
                 
-                if (userSnap.exists()) {
-                    const userData = userSnap.data();
-                    
+                // Only record for Telegram users
+                if (userData.userType === 'telegram' || userData.userType === 'telegram_session') {
                     await addDoc(collection(db, "pointHistory"), {
                         userId: userId,
                         userName: userData.name || 'Unknown',
@@ -1949,7 +1884,7 @@ const firebaseConfig = {
                         points: points,
                         details: details,
                         timestamp: serverTimestamp(),
-                        country: userData.country || 'unknown',
+                        country: userCountry || 'unknown',
                         userType: userData.userType || 'unknown'
                     });
                     
@@ -1959,87 +1894,122 @@ const firebaseConfig = {
                 console.error('Error recording point history:', error);
             }
         }
-        
-        // ===== FIXED: UPDATE ALL UI =====
-        function updateAllUI() {
-            if (!userData) return;
-            
-            const name = userData.name || 'User';
-            const currentBalance = Number(userData.balance) || 0;
-            
-            // Update header
-            document.getElementById('header-profile-name').textContent = `Hi, ${name}`;
-            document.getElementById('header-coin-balance').textContent = currentBalance;
-            
-            // Update wallet page if open
-            const walletBalanceEl = document.getElementById('wallet-coin-balance');
-            if (walletBalanceEl) {
-                walletBalanceEl.textContent = currentBalance;
-            }
-            
-            // Update profile picture
-            if (telegramUser && telegramUser.photo_url) {
-                document.getElementById('profile-picture').src = telegramUser.photo_url;
-            } else if (userData.profilePicture) {
-                document.getElementById('profile-picture').src = userData.profilePicture;
-            } else {
-                document.getElementById('profile-picture').src = `https://placehold.co/100x100/1e1e1e/facc15?text=${name.charAt(0).toUpperCase()}`;
-            }
-        }
-        
-        // ===== FIXED: RECREATE USER IF MISSING =====
-        async function recreateUserInFirebase() {
+
+        // ===== NOTICE SYSTEM FUNCTIONS =====
+        async function checkForAppNotice() {
             try {
-                if (!currentUser) return;
-                
-                const userId = currentUser.uid;
-                const userName = currentUser.displayName || 'User';
-                const userEmail = currentUser.email || `${userId}@miniapp`;
-                const profilePic = `https://placehold.co/100x100/1e1e1e/facc15?text=${userName.charAt(0).toUpperCase()}`;
-                const userType = userId.includes('tg_') ? 'telegram' : 
-                                userId.includes('browser_') ? 'browser' : 'telegram_session';
-                
-                const ownReferralCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-                const startingBalance = userType === 'browser' ? 50 : 100;
-                
-                const defaultUserData = {
-                    uid: userId,
-                    name: userName,
-                    email: userEmail,
-                    profilePicture: profilePic,
-                    balance: startingBalance,
-                    referralCode: ownReferralCode,
-                    referredBy: null,
-                    createdAt: serverTimestamp(),
-                    isBlocked: false,
-                    dailyAdCount: 0,
-                    lastAdWatchDate: '1970-01-01',
-                    visitedSitesToday: [],
-                    lastSiteVisitDate: '1970-01-01',
-                    completedSocialTasks: [],
-                    country: userCountry || 'unknown',
-                    level: 1,
-                    totalEarned: 0,
-                    tasksCompleted: 0,
-                    ludoGamesPlayed: 0,
-                    ludoTotalWon: 0,
-                    userType: userType,
-                    lastLogin: serverTimestamp()
-                };
-                
-                await setDoc(doc(db, "users", userId), defaultUserData);
-                userData = defaultUserData;
-                localStorage.setItem('currentUserData', JSON.stringify(userData));
-                
-                console.log("✅ User recreated in Firebase with balance:", startingBalance);
-                updateAllUI();
-                
+                const noticeSnap = await getDoc(doc(db, "config", "appNotice"));
+                if (noticeSnap.exists()) {
+                    const notice = noticeSnap.data();
+                    if (notice.enabled && notice.title && notice.message) {
+                        const noticeDismissed = localStorage.getItem(`notice_dismissed_${notice.title}`);
+                        if (!noticeDismissed) {
+                            setTimeout(() => {
+                                showAppNotice(notice.title, notice.message, notice.type, notice.cancelable);
+                            }, 1000);
+                        }
+                    }
+                }
             } catch (error) {
-                console.error("Error recreating user:", error);
+                console.error("Error checking for app notice:", error);
             }
         }
-        
-        // ===== FIXED: ADMIN PANEL INTEGRATION FUNCTIONS =====
+
+        function showAppNotice(title, message, type = 'info', cancelable = true) {
+            // Clear any existing timer
+            if (noticeAutoCancelTimer) {
+                clearTimeout(noticeAutoCancelTimer);
+                noticeAutoCancelTimer = null;
+            }
+            
+            // Update modal content
+            appNoticeTitle.textContent = title;
+            appNoticeMessage.textContent = message;
+            currentNoticeCancelable = cancelable !== false;
+            
+            // Set icon based on type
+            let iconClass = 'fas fa-info-circle';
+            if (type === 'warning') iconClass = 'fas fa-exclamation-triangle';
+            else if (type === 'success') iconClass = 'fas fa-check-circle';
+            else if (type === 'error') iconClass = 'fas fa-times-circle';
+            else if (type === 'premium') iconClass = 'fas fa-crown';
+            
+            appNoticeIcon.innerHTML = `<i class="${iconClass}"></i>`;
+            
+            // Set modal type class
+            appNoticeModal.className = `app-notice-modal app-notice-type-${type}`;
+            appNoticeModal.style.display = 'flex';
+            
+            // Show/hide dismiss button based on cancelable setting
+            const dismissButton = appNoticeModal.querySelector('button[onclick="dismissNoticePermanently()"]');
+            const okButton = appNoticeModal.querySelector('button[onclick="closeAppNotice()"]');
+            
+            if (dismissButton && okButton) {
+                if (!currentNoticeCancelable) {
+                    dismissButton.style.display = 'none';
+                    okButton.style.display = 'none';
+                    
+                    // Show auto-cancel timer
+                    noticeAutoCancelTimerEl.classList.remove('hidden');
+                    noticeAutoCancelSeconds = 10;
+                    noticeTimerSecondsEl.textContent = noticeAutoCancelSeconds;
+                    
+                    // Start auto-cancel countdown
+                    startNoticeAutoCancelTimer();
+                } else {
+                    dismissButton.style.display = 'inline-block';
+                    okButton.style.display = 'inline-block';
+                    noticeAutoCancelTimerEl.classList.add('hidden');
+                }
+            }
+        }
+
+        function startNoticeAutoCancelTimer() {
+            if (noticeAutoCancelTimer) {
+                clearInterval(noticeAutoCancelTimer);
+            }
+            
+            noticeAutoCancelSeconds = 10;
+            noticeTimerSecondsEl.textContent = noticeAutoCancelSeconds;
+            
+            noticeAutoCancelTimer = setInterval(() => {
+                noticeAutoCancelSeconds--;
+                noticeTimerSecondsEl.textContent = noticeAutoCancelSeconds;
+                
+                if (noticeAutoCancelSeconds <= 0) {
+                    clearInterval(noticeAutoCancelTimer);
+                    closeAppNotice();
+                }
+            }, 1000);
+        }
+
+        function closeAppNotice() {
+            // Clear auto-cancel timer
+            if (noticeAutoCancelTimer) {
+                clearInterval(noticeAutoCancelTimer);
+                noticeAutoCancelTimer = null;
+            }
+            
+            appNoticeModal.style.display = 'none';
+            noticeAutoCancelTimerEl.classList.add('hidden');
+            
+            // Reset button visibility
+            const dismissButton = appNoticeModal.querySelector('button[onclick="dismissNoticePermanently()"]');
+            const okButton = appNoticeModal.querySelector('button[onclick="closeAppNotice()"]');
+            
+            if (dismissButton && okButton) {
+                dismissButton.style.display = 'inline-block';
+                okButton.style.display = 'inline-block';
+            }
+        }
+
+        function dismissNoticePermanently() {
+            const title = appNoticeTitle.textContent;
+            localStorage.setItem(`notice_dismissed_${title}`, 'true');
+            closeAppNotice();
+        }
+
+        // ===== ADMIN PANEL INTEGRATION FUNCTIONS =====
         async function loadGameConfigurations() {
             try {
                 const gamesRef = doc(db, "config", "games");
@@ -2076,6 +2046,7 @@ const firebaseConfig = {
                     updateGamesDisplay();
                     updateAdminConnectionStatus(true);
                     
+                    // Update game limits display
                     updateGameLimitsDisplay();
                     updatePlayCountDisplay();
                 }
@@ -2120,129 +2091,6 @@ const firebaseConfig = {
             });
         }
         
-        function updateAdminConnectionStatus(connected) {
-            const statusEl = document.getElementById('admin-connection-status');
-            const textEl = document.getElementById('admin-connection-text');
-            
-            if (!statusEl || !textEl) return;
-            
-            if (connected) {
-                statusEl.className = 'admin-connection-status connected';
-                textEl.textContent = 'Admin Connected';
-                statusEl.style.display = 'flex';
-            } else {
-                statusEl.className = 'admin-connection-status disconnected';
-                textEl.textContent = 'Admin Disconnected';
-                statusEl.style.display = 'flex';
-            }
-        }
-        
-        // ===== FIXED: NOTICE SYSTEM FUNCTIONS =====
-        async function checkForAppNotice() {
-            try {
-                const noticeSnap = await getDoc(doc(db, "config", "appNotice"));
-                if (noticeSnap.exists()) {
-                    const notice = noticeSnap.data();
-                    if (notice.enabled && notice.title && notice.message) {
-                        const noticeDismissed = localStorage.getItem(`notice_dismissed_${notice.title}`);
-                        if (!noticeDismissed) {
-                            setTimeout(() => {
-                                showAppNotice(notice.title, notice.message, notice.type, notice.cancelable);
-                            }, 1000);
-                        }
-                    }
-                }
-            } catch (error) {
-                console.error("Error checking for app notice:", error);
-            }
-        }
-
-        function showAppNotice(title, message, type = 'info', cancelable = true) {
-            if (noticeAutoCancelTimer) {
-                clearTimeout(noticeAutoCancelTimer);
-                noticeAutoCancelTimer = null;
-            }
-            
-            appNoticeTitle.textContent = title;
-            appNoticeMessage.textContent = message;
-            currentNoticeCancelable = cancelable !== false;
-            
-            let iconClass = 'fas fa-info-circle';
-            if (type === 'warning') iconClass = 'fas fa-exclamation-triangle';
-            else if (type === 'success') iconClass = 'fas fa-check-circle';
-            else if (type === 'error') iconClass = 'fas fa-times-circle';
-            else if (type === 'premium') iconClass = 'fas fa-crown';
-            
-            appNoticeIcon.innerHTML = `<i class="${iconClass}"></i>`;
-            
-            appNoticeModal.className = `app-notice-modal app-notice-type-${type}`;
-            appNoticeModal.style.display = 'flex';
-            
-            const dismissButton = appNoticeModal.querySelector('button[onclick="dismissNoticePermanently()"]');
-            const okButton = appNoticeModal.querySelector('button[onclick="closeAppNotice()"]');
-            
-            if (dismissButton && okButton) {
-                if (!currentNoticeCancelable) {
-                    dismissButton.style.display = 'none';
-                    okButton.style.display = 'none';
-                    
-                    noticeAutoCancelTimerEl.classList.remove('hidden');
-                    noticeAutoCancelSeconds = 10;
-                    noticeTimerSecondsEl.textContent = noticeAutoCancelSeconds;
-                    
-                    startNoticeAutoCancelTimer();
-                } else {
-                    dismissButton.style.display = 'inline-block';
-                    okButton.style.display = 'inline-block';
-                    noticeAutoCancelTimerEl.classList.add('hidden');
-                }
-            }
-        }
-
-        function startNoticeAutoCancelTimer() {
-            if (noticeAutoCancelTimer) {
-                clearInterval(noticeAutoCancelTimer);
-            }
-            
-            noticeAutoCancelSeconds = 10;
-            noticeTimerSecondsEl.textContent = noticeAutoCancelSeconds;
-            
-            noticeAutoCancelTimer = setInterval(() => {
-                noticeAutoCancelSeconds--;
-                noticeTimerSecondsEl.textContent = noticeAutoCancelSeconds;
-                
-                if (noticeAutoCancelSeconds <= 0) {
-                    clearInterval(noticeAutoCancelTimer);
-                    closeAppNotice();
-                }
-            }, 1000);
-        }
-
-        function closeAppNotice() {
-            if (noticeAutoCancelTimer) {
-                clearInterval(noticeAutoCancelTimer);
-                noticeAutoCancelTimer = null;
-            }
-            
-            appNoticeModal.style.display = 'none';
-            noticeAutoCancelTimerEl.classList.add('hidden');
-            
-            const dismissButton = appNoticeModal.querySelector('button[onclick="dismissNoticePermanently()"]');
-            const okButton = appNoticeModal.querySelector('button[onclick="closeAppNotice()"]');
-            
-            if (dismissButton && okButton) {
-                dismissButton.style.display = 'inline-block';
-                okButton.style.display = 'inline-block';
-            }
-        }
-
-        function dismissNoticePermanently() {
-            const title = appNoticeTitle.textContent;
-            localStorage.setItem(`notice_dismissed_${title}`, 'true');
-            closeAppNotice();
-        }
-        
-        // ===== FIXED: GAME FUNCTIONS =====
         function updateGamesDisplay() {
             const featuresGrid = document.getElementById('features-grid');
             if (!featuresGrid) return;
@@ -2338,7 +2186,7 @@ const firebaseConfig = {
                         html = `
                             <div onclick="navigateTo('wallet-page')" class="feature-btn" style="order: ${order}">
                                 <div class="mb-3">
-                                    <div class="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-content-center">
+                                    <div class="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center">
                                         <i class="fas ${game.icon} text-2xl text-black"></i>
                                     </div>
                                 </div>
@@ -2365,56 +2213,778 @@ const firebaseConfig = {
             }, 100);
         }
         
-        // ===== FIXED: WATCH & EARN =====
-        window.claimReward = async function() {
-            if (watchEarnDisabled) return;
+        function updateGameLimitsDisplay() {
+            // Update Ludo Game Limits
+            const ludoConfig = gamesConfig.ludoDice || {};
+            const ludoDailyLimit = ludoConfig.dailyPlayLimit || 0;
+            const ludoTimeLimit = ludoConfig.dailyTimeLimit || 0;
             
-            console.log("🎮 Watch & Earn clicked");
+            let ludoLimitsText = '';
+            if (ludoDailyLimit > 0) ludoLimitsText += `Daily plays: ${ludoDailyLimit}`;
+            if (ludoTimeLimit > 0) ludoLimitsText += ` | Time: ${ludoTimeLimit} min`;
             
+            const ludoLimitsEl = document.getElementById('ludo-game-limits');
+            if (ludoLimitsEl) {
+                ludoLimitsEl.textContent = ludoLimitsText;
+                ludoLimitsEl.style.display = ludoLimitsText ? 'block' : 'none';
+            }
+            
+            // Update Color Game Limits
+            const colorConfig = gamesConfig.colorGame || {};
+            const colorDailyLimit = colorConfig.dailyPlayLimit || 0;
+            const colorTimeLimit = colorConfig.dailyTimeLimit || 0;
+            
+            let colorLimitsText = '';
+            if (colorDailyLimit > 0) colorLimitsText += `Daily plays: ${colorDailyLimit}`;
+            if (colorTimeLimit > 0) colorLimitsText += ` | Time: ${colorTimeLimit} min`;
+            
+            const colorLimitsEl = document.getElementById('color-game-limits');
+            if (colorLimitsEl) {
+                colorLimitsEl.textContent = colorLimitsText;
+                colorLimitsEl.style.display = colorLimitsText ? 'block' : 'none';
+            }
+            
+            // Update Watch & Earn Limits
             const videoConfig = gamesConfig.watchVideo || {};
-            if (videoConfig.visible === false) {
-                showAlert("❌ This feature is currently unavailable. Please try another game.");
-                return;
-            }
+            const videoDailyLimit = videoConfig.dailyPlayLimit || 0;
             
-            const limitCheck = checkGamePlayLimits('watchVideo');
-            if (!limitCheck.allowed) {
-                showAlert(`❌ ${limitCheck.reason}`);
-                return;
-            }
-            
-            const newCount = (userData.dailyAdCount || 0) + 1;
-            incrementGamePlayCount('watchVideo');
-            
-            await updateDoc(doc(db, "users", currentUser.uid), { 
-                dailyAdCount: newCount 
-            });
-            userData.dailyAdCount = newCount;
-            
-            const specialTaskCount = appConfig.watchAdSpecialTaskCount || 10;
-            if (newCount > 0 && newCount % specialTaskCount === 0) {
-                showSpecialTask();
-            } else {
-                try {
-                    showAdLoadingPopup("Loading ad for Watch & Earn...");
-                    
-                    await showAds();
-                    
-                    const reward = videoConfig.rewardPerPlay || appConfig.adWatchReward || 50;
-                    await updateBalance(reward, 'ad_watch', 'Watched ad for coins');
-                    hideAdLoadingPopup();
-                    showAlert(`🎉 Congratulations! You earned ${reward} coins.`);
-                    
-                    await recordGamePlay('watchVideo', currentUser.uid, reward);
-                    
-                    disableWatchEarnCardRandomly();
-                    
-                } catch (error) {
-                    hideAdLoadingPopup();
-                    console.log("❌ Watch & Earn ad failed:", error);
-                    showAlert("⚠️ Ad service not available. Please try again.");
+            if (videoDailyLimit > 0) {
+                const watchEarnCard = document.getElementById('watch-earn-card');
+                if (watchEarnCard) {
+                    const existingText = watchEarnCard.querySelector('.text-sm').textContent;
+                    watchEarnCard.querySelector('.text-sm').textContent = 
+                        `Instant ${videoConfig.rewardPerPlay || 50} coins | ${videoDailyLimit} plays/day`;
                 }
             }
+        }
+        
+        function updatePlayCountDisplay() {
+            if (!currentUser) return;
+            
+            const today = new Date().toISOString().split('T')[0];
+            
+            // Ludo play count
+            const ludoPlayCountKey = `ludoDice_playCount_${currentUser.uid}_${today}`;
+            const ludoPlayCount = parseInt(localStorage.getItem(ludoPlayCountKey) || '0');
+            const ludoConfig = gamesConfig.ludoDice || {};
+            const ludoLimit = ludoConfig.dailyPlayLimit || 0;
+            
+            const ludoDisplayEl = document.getElementById('ludo-play-count-display');
+            if (ludoDisplayEl && ludoLimit > 0) {
+                ludoDisplayEl.textContent = `Today: ${ludoPlayCount}/${ludoLimit} plays`;
+                ludoDisplayEl.style.display = 'block';
+            }
+            
+            // Color game play count
+            const colorPlayCountKey = `colorGame_playCount_${currentUser.uid}_${today}`;
+            const colorPlayCount = parseInt(localStorage.getItem(colorPlayCountKey) || '0');
+            const colorConfig = gamesConfig.colorGame || {};
+            const colorLimit = colorConfig.dailyPlayLimit || 0;
+            
+            const colorDisplayEl = document.getElementById('color-play-count-display');
+            if (colorDisplayEl && colorLimit > 0) {
+                colorDisplayEl.textContent = `Today: ${colorPlayCount}/${colorLimit} plays`;
+                colorDisplayEl.style.display = 'block';
+            }
+        }
+        
+        function updateGamePageDisplays() {
+            // Update Ludo Game Page
+            const ludoConfig = gamesConfig.ludoDice || {};
+            if (ludoConfig.visible === false) {
+                document.getElementById('ludo-game-page').style.display = 'none';
+            } else {
+                document.getElementById('ludo-game-page').style.display = 'block';
+                const gameCost = ludoConfig.gameCost || 10;
+                const winMultiplier = ludoConfig.winMultiplier || 10;
+                const rewardPerPlay = ludoConfig.rewardPerPlay || 10;
+                
+                document.getElementById('ludo-game-cost').textContent = `${gameCost} Points`;
+                document.getElementById('roll-btn-text').textContent = `ROLL DICE - ${gameCost} POINTS`;
+                document.getElementById('ludo-win-multiplier').textContent = `Win multiplier: Dice result × ${winMultiplier}`;
+                
+                const statusEl = document.getElementById('ludo-game-status');
+                if (statusEl) {
+                    statusEl.className = `game-status ${ludoConfig.visible === false ? 'game-status-hidden' : 'game-status-visible'}`;
+                    statusEl.textContent = ludoConfig.visible === false ? 'HIDDEN' : 'VISIBLE';
+                }
+                
+                if (!document.getElementById('ludo-game-page').classList.contains('active')) {
+                    document.getElementById('ludo-game-page').style.display = 'none';
+                }
+            }
+            
+            // Update Color Game Page
+            const colorConfig = gamesConfig.colorGame || {};
+            if (colorConfig.visible === false) {
+                document.getElementById('color-game-page').style.display = 'none';
+            } else {
+                document.getElementById('color-game-page').style.display = 'block';
+                const rewardPerPlay = colorConfig.rewardPerPlay || 100;
+                
+                document.getElementById('color-game-reward-display').textContent = `Win up to ${rewardPerPlay} coins`;
+                
+                const statusEl = document.getElementById('color-game-status');
+                if (statusEl) {
+                    statusEl.className = `game-status ${colorConfig.visible === false ? 'game-status-hidden' : 'game-status-visible'}`;
+                    statusEl.textContent = colorConfig.visible === false ? 'HIDDEN' : 'VISIBLE';
+                }
+                
+                if (!document.getElementById('color-game-page').classList.contains('active')) {
+                    document.getElementById('color-game-page').style.display = 'none';
+                }
+            }
+            
+            // Update Watch & Earn card
+            const videoConfig = gamesConfig.watchVideo || {};
+            if (videoConfig.visible === false) {
+                const watchEarnCard = document.getElementById('watch-earn-card');
+                if (watchEarnCard) watchEarnCard.style.display = 'none';
+            } else {
+                const watchEarnCard = document.getElementById('watch-earn-card');
+                if (watchEarnCard) {
+                    watchEarnCard.style.display = 'block';
+                    const rewardPerPlay = videoConfig.rewardPerPlay || 50;
+                    const rewardTextEl = watchEarnCard.querySelector('.text-sm');
+                    if (rewardTextEl) {
+                        rewardTextEl.textContent = `Instant ${rewardPerPlay} coins`;
+                    }
+                }
+            }
+        }
+        
+        function updateAdminConnectionStatus(connected) {
+            const statusEl = document.getElementById('admin-connection-status');
+            const textEl = document.getElementById('admin-connection-text');
+            
+            if (!statusEl || !textEl) return;
+            
+            if (connected) {
+                statusEl.className = 'admin-connection-status connected';
+                textEl.textContent = 'Admin Connected';
+                statusEl.style.display = 'flex';
+            } else {
+                statusEl.className = 'admin-connection-status disconnected';
+                textEl.textContent = 'Admin Disconnected';
+                statusEl.style.display = 'flex';
+            }
+        }
+        
+        // ===== GAME RESET SYSTEM =====
+        async function checkForGameResets() {
+            try {
+                const resetFlagsRef = doc(db, "config", "resetFlags");
+                const resetSnap = await getDoc(resetFlagsRef);
+                
+                if (resetSnap.exists()) {
+                    const resetData = resetSnap.data();
+                    const today = new Date().toISOString().split('T')[0];
+                    
+                    // Check each game
+                    const games = ['ludoDice', 'colorGame', 'watchVideo'];
+                    
+                    games.forEach(gameId => {
+                        const resetDate = resetData[`${gameId}_reset_date`];
+                        const lastReset = localStorage.getItem(`${gameId}_last_reset`);
+                        
+                        // If admin reset this game today and we haven't processed it yet
+                        if (resetDate === today && lastReset !== today) {
+                            // Clear local play count for ALL dates
+                            for (let i = 0; i < localStorage.length; i++) {
+                                const key = localStorage.key(i);
+                                if (key.includes(`${gameId}_playCount_${currentUser.uid}_`)) {
+                                    localStorage.removeItem(key);
+                                }
+                            }
+                            
+                            // Mark as processed
+                            localStorage.setItem(`${gameId}_last_reset`, today);
+                            
+                            console.log(`🔄 ${gameId} limit reset by admin`);
+                            
+                            // Show notification to user
+                            const gameNames = {
+                                'ludoDice': 'Ludo Dice',
+                                'colorGame': 'Color Game',
+                                'watchVideo': 'Watch & Earn'
+                            };
+                            showAlert(`🎮 ${gameNames[gameId]} limit has been reset by admin! You can play again.`);
+                        }
+                    });
+                    
+                    // Check for full reset
+                    const fullResetDate = resetData[`full_reset_date`];
+                    const lastFullReset = localStorage.getItem(`full_last_reset`);
+                    
+                    if (fullResetDate === today && lastFullReset !== today) {
+                        // Clear ALL local game data
+                        games.forEach(gameId => {
+                            for (let i = 0; i < localStorage.length; i++) {
+                                const key = localStorage.key(i);
+                                if (key.includes(`${gameId}_playCount_`)) {
+                                    localStorage.removeItem(key);
+                                }
+                            }
+                        });
+                        
+                        localStorage.setItem(`full_last_reset`, today);
+                        showAlert("♻️ All game limits have been reset by admin!");
+                    }
+                }
+                
+                updatePlayCountDisplay();
+                
+            } catch (error) {
+                console.error("Error checking resets:", error);
+            }
+        }
+        
+        // ===== FIXED: WEBSITE VISIT RESET SYSTEM =====
+        async function checkWebsiteVisitReset() {
+            try {
+                const configRef = doc(db, "config", "main");
+                const configSnap = await getDoc(configRef);
+                
+                if (configSnap.exists()) {
+                    const config = configSnap.data();
+                    const lastWebsiteResetDate = config.lastWebsiteResetDate || '1970-01-01';
+                    const lastResetProcessed = localStorage.getItem('lastWebsiteResetProcessed') || '1970-01-01';
+                    
+                    if (lastWebsiteResetDate > lastResetProcessed) {
+                        // Reset local website visits
+                        for (let i = 0; i < localStorage.length; i++) {
+                            const key = localStorage.key(i);
+                            if (key.includes('website_visit_') || key.includes('visitedSitesToday')) {
+                                localStorage.removeItem(key);
+                            }
+                        }
+                        
+                        // Mark as processed
+                        localStorage.setItem('lastWebsiteResetProcessed', lastWebsiteResetDate);
+                        console.log("✅ Website visits reset by admin");
+                        
+                        // Refresh website list
+                        if (userData) {
+                            userData.visitedSitesToday = [];
+                            userData.lastSiteVisitDate = new Date().toISOString().split('T')[0];
+                            if (document.getElementById('visit-earn-page').classList.contains('active')) {
+                                populateWebsiteList();
+                            }
+                        }
+                    }
+                    
+                    // Check if websitesToVisit exists and is a valid array
+                    if (!Array.isArray(config.websitesToVisit)) {
+                        console.log("⚠️ websitesToVisit is not an array, initializing...");
+                        
+                        // Check if this is a fresh install by looking for other config fields
+                        const isFreshInstall = !config.socialTasks && !config.sliderBanners && !config.referralRules;
+                        
+                        const defaultWebsites = [
+                            { name: "Google", link: "https://www.google.com", reward: 10, timer: 30 },
+                            { name: "YouTube", link: "https://www.youtube.com", reward: 15, timer: 45 },
+                            { name: "Facebook", link: "https://www.facebook.com", reward: 20, timer: 60 }
+                        ];
+                        
+                        // Only set defaults if it's a fresh install
+                        if (isFreshInstall) {
+                            await updateDoc(configRef, {
+                                websitesToVisit: defaultWebsites,
+                                updatedAt: serverTimestamp()
+                            }, { merge: true });
+                            
+                            console.log("✅ Default websites set for fresh install");
+                            
+                            // Update local config
+                            appConfig.websitesToVisit = defaultWebsites;
+                        } else {
+                            // If not fresh install but array is corrupted, set empty array
+                            await updateDoc(configRef, {
+                                websitesToVisit: [],
+                                updatedAt: serverTimestamp()
+                            }, { merge: true });
+                            
+                            console.log("✅ Reset corrupted websites array");
+                            appConfig.websitesToVisit = [];
+                        }
+                    } else if (config.websitesToVisit.length === 0) {
+                        console.log("⚠️ Empty websites array - admin can add websites");
+                        // Don't auto-fill empty array - let admin manage it
+                        appConfig.websitesToVisit = [];
+                    }
+                }
+            } catch (error) {
+                console.error("Error checking website reset:", error);
+            }
+        }
+        
+        // ===== FIXED: SPECIAL TASK SYSTEM =====
+        function showSpecialTask() {
+            const newCount = (userData.dailyAdCount || 0) + 1;
+            const specialTaskCount = appConfig.watchAdSpecialTaskCount || 10;
+            
+            if (newCount > 0 && newCount % specialTaskCount === 0) {
+                specialAdPopup.innerHTML = `
+                    <div class="special-task-content">
+                        <div class="special-task-icon">
+                            <i class="fas fa-gem"></i>
+                        </div>
+                        <div class="special-task-title">Special Bonus!</div>
+                        <div class="special-task-info">
+                            <p><i class="fas fa-info-circle mr-2"></i>Complete this special task to get extra bonus!</p>
+                        </div>
+                        <div class="special-task-message">
+                            1. Click 'Watch Ad'.<br>
+                            2. **Click** on the ad that appears.<br>
+                            3. Wait for <span id="special-ad-timer-total">${appConfig.watchAdSpecialTaskTimer || 60}</span> seconds on the website.<br>
+                            4. Come back to claim your coins.
+                        </div>
+                        <div id="special-ad-status" class="text-center font-semibold my-2 text-yellow-400"></div>
+                        <button id="show-special-ad-btn" class="btn-accent w-full p-4 text-lg font-bold mt-4">
+                            <i class="fas fa-play-circle mr-2"></i> Watch Ad
+                        </button>
+                        <div id="special-ad-timer-container" class="hidden mt-4">
+                            <div class="special-task-timer">
+                                <i class="fas fa-clock"></i>
+                                <span id="special-ad-timer">${appConfig.watchAdSpecialTaskTimer || 60}</span>s
+                            </div>
+                            <div class="special-task-progress">
+                                <div class="special-task-progress-bar" id="special-ad-progress-bar"></div>
+                            </div>
+                        </div>
+                        <button id="claim-special-ad-final-btn" class="hidden btn-accent w-full p-4 text-lg font-bold mt-4">
+                            <i class="fas fa-gift mr-2"></i> Claim Bonus
+                        </button>
+                    </div>`;
+                specialAdPopup.style.display = 'flex';
+                
+                // Add event listeners for the new buttons
+                setTimeout(() => {
+                    const showAdBtn = document.getElementById('show-special-ad-btn');
+                    const claimBtn = document.getElementById('claim-special-ad-final-btn');
+                    
+                    if (showAdBtn) {
+                        showAdBtn.addEventListener('click', startSpecialTaskAd);
+                    }
+                    if (claimBtn) {
+                        claimBtn.addEventListener('click', () => {
+                            finalizeSpecialAd('watchVideo', appConfig.watchAdSpecialTaskReward || 100, 'watch_video_special_task');
+                        });
+                    }
+                }, 100);
+            }
+        }
+        
+        // ===== FIXED: COLOR GAME SPECIAL TASK =====
+        function showColorGameSpecialTask() {
+            specialAdPopup.innerHTML = `
+                <div class="special-task-content">
+                    <div class="special-task-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <div class="special-task-title">Color Game Special Bonus!</div>
+                    <div class="special-task-info">
+                        <p><i class="fas fa-info-circle mr-2"></i>Complete this special task to get extra bonus!</p>
+                    </div>
+                    <div class="special-task-message">
+                        1. Click 'Watch Ad'.<br>
+                        2. **Click** on the ad that appears.<br>
+                        3. Wait for <span id="special-ad-timer-total">${appConfig.colorGameSpecialTaskTimer || 45}</span> seconds on the website.<br>
+                        4. Come back to claim your coins.
+                    </div>
+                    <div id="special-ad-status" class="text-center font-semibold my-2 text-yellow-400"></div>
+                    <button id="show-special-ad-btn" class="btn-accent w-full p-4 text-lg font-bold mt-4">
+                        <i class="fas fa-play-circle mr-2"></i> Watch Ad
+                    </button>
+                    <div id="special-ad-timer-container" class="hidden mt-4">
+                        <div class="special-task-timer">
+                            <i class="fas fa-clock"></i>
+                            <span id="special-ad-timer">${appConfig.colorGameSpecialTaskTimer || 45}</span>s
+                        </div>
+                        <div class="special-task-progress">
+                            <div class="special-task-progress-bar" id="special-ad-progress-bar"></div>
+                        </div>
+                    </div>
+                    <button id="claim-special-ad-final-btn" class="hidden btn-accent w-full p-4 text-lg font-bold mt-4">
+                        <i class="fas fa-gift mr-2"></i> Claim ${appConfig.colorGameSpecialTaskReward || 200} Coins
+                    </button>
+                </div>`;
+            
+            specialAdPopup.style.display = 'flex';
+            specialTaskAdCompleted = false;
+            
+            // Add event listeners
+            setTimeout(() => {
+                const showAdBtn = document.getElementById('show-special-ad-btn');
+                const claimBtn = document.getElementById('claim-special-ad-final-btn');
+                
+                if (showAdBtn) {
+                    showAdBtn.addEventListener('click', startColorGameSpecialTaskAd);
+                }
+                if (claimBtn) {
+                    claimBtn.addEventListener('click', () => {
+                        finalizeSpecialAd('colorGame', appConfig.colorGameSpecialTaskReward || 200, 'color_game_special_task');
+                    });
+                }
+            }, 100);
+        }
+        
+        // ===== FIXED: COLOR GAME SPECIAL TASK AD =====
+        async function startColorGameSpecialTaskAd() {
+            const adStatus = document.getElementById('special-ad-status');
+            const showAdBtn = document.getElementById('show-special-ad-btn');
+            showAdBtn.classList.add('hidden');
+            adStatus.textContent = "Waiting for you to click on the ad...";
+
+            // Show loading popup for special ad with provider name
+            showAdLoadingPopup("Loading special ad for Color Game...");
+            
+            // Use Taddy.pro ONLY for Color Game Special Task (NO FALLBACK)
+            try {
+                const taddyReady = await ensureTaddyLoaded();
+                
+                if (taddyReady && taddyAdsService && typeof taddyAdsService.interstitial === 'function') {
+                    currentAdProvider = 'TempMail44.com';
+                    updateAdProviderDisplay();
+                    await showTaddyAds();
+                    hideAdLoadingPopup();
+                    
+                    let clickCheckTimeout;
+
+                    const onBlur = () => {
+                        window.removeEventListener('blur', onBlur);
+                        clearTimeout(clickCheckTimeout);
+                        adStatus.textContent = "Click successful! Now waiting...";
+                        document.getElementById('special-ad-timer-container').classList.remove('hidden');
+                        startSpecialTaskCountdown();
+                    };
+
+                    window.addEventListener('blur', onBlur);
+
+                    clickCheckTimeout = setTimeout(() => {
+                        window.removeEventListener('blur', onBlur);
+                        adStatus.textContent = "You didn't click the ad. Try again.";
+                        showAdBtn.classList.remove('hidden');
+                    }, 15000);
+                } else {
+                    hideAdLoadingPopup();
+                    throw new Error("Taddy.pro ads not available for Color Game");
+                }
+            } catch (error) {
+                hideAdLoadingPopup();
+                showAlert("Taddy.pro ad not available for Color Game Special Task. Please try again later.");
+                showAdBtn.classList.remove('hidden');
+                adStatus.textContent = "";
+            }
+        }
+        
+        // ===== FIXED: LUDO DICE SPECIAL TASK =====
+        function showLudoDiceSpecialTask() {
+            specialAdPopup.innerHTML = `
+                <div class="special-task-content">
+                    <div class="special-task-icon">
+                        <i class="fas fa-dice"></i>
+                    </div>
+                    <div class="special-task-title">Ludo Dice Special Bonus!</div>
+                    <div class="special-task-info">
+                        <p><i class="fas fa-info-circle mr-2"></i>Complete this special task to get extra bonus!</p>
+                    </div>
+                    <div class="special-task-message">
+                        1. Click 'Watch Ad'.<br>
+                        2. **Click** on the ad that appears.<br>
+                        3. Wait for <span id="special-ad-timer-total">${appConfig.ludoDiceSpecialTaskTimer || 30}</span> seconds on the website.<br>
+                        4. Come back to claim your coins.
+                    </div>
+                    <div id="special-ad-status" class="text-center font-semibold my-2 text-yellow-400"></div>
+                    <button id="show-special-ad-btn" class="btn-accent w-full p-4 text-lg font-bold mt-4">
+                        <i class="fas fa-play-circle mr-2"></i> Watch Ad
+                    </button>
+                    <div id="special-ad-timer-container" class="hidden mt-4">
+                        <div class="special-task-timer">
+                            <i class="fas fa-clock"></i>
+                            <span id="special-ad-timer">${appConfig.ludoDiceSpecialTaskTimer || 30}</span>s
+                        </div>
+                        <div class="special-task-progress">
+                            <div class="special-task-progress-bar" id="special-ad-progress-bar"></div>
+                        </div>
+                    </div>
+                    <button id="claim-special-ad-final-btn" class="hidden btn-accent w-full p-4 text-lg font-bold mt-4">
+                        <i class="fas fa-gift mr-2"></i> Claim ${appConfig.ludoDiceSpecialTaskReward || 150} Coins
+                    </button>
+                </div>`;
+            
+            specialAdPopup.style.display = 'flex';
+            specialTaskAdCompleted = false;
+            
+            // Add event listeners
+            setTimeout(() => {
+                const showAdBtn = document.getElementById('show-special-ad-btn');
+                const claimBtn = document.getElementById('claim-special-ad-final-btn');
+                
+                if (showAdBtn) {
+                    showAdBtn.addEventListener('click', startSpecialTaskAd);
+                }
+                if (claimBtn) {
+                    claimBtn.addEventListener('click', () => {
+                        finalizeSpecialAd('ludoDice', appConfig.ludoDiceSpecialTaskReward || 150, 'ludo_dice_special_task');
+                    });
+                }
+            }, 100);
+        }
+        
+        // ===== FIXED: START SPECIAL TASK AD =====
+        function startSpecialTaskAd() {
+            const adStatus = document.getElementById('special-ad-status');
+            const showAdBtn = document.getElementById('show-special-ad-btn');
+            showAdBtn.classList.add('hidden');
+            adStatus.textContent = "Waiting for you to click on the ad...";
+
+            // Show loading popup for special ad
+            showAdLoadingPopup("Loading special ad...");
+            
+            // Use regular ads for special ads (except Color Game)
+            showAds().then(() => {
+                hideAdLoadingPopup();
+            }).catch(err => {
+                hideAdLoadingPopup();
+                showAlert(err);
+                showAdBtn.classList.remove('hidden');
+                adStatus.textContent = "";
+            });
+
+            let clickCheckTimeout;
+
+            const onBlur = () => {
+                window.removeEventListener('blur', onBlur);
+                clearTimeout(clickCheckTimeout);
+                adStatus.textContent = "Click successful! Now waiting...";
+                document.getElementById('special-ad-timer-container').classList.remove('hidden');
+                startSpecialTaskCountdown();
+            };
+
+            window.addEventListener('blur', onBlur);
+
+            clickCheckTimeout = setTimeout(() => {
+                window.removeEventListener('blur', onBlur);
+                adStatus.textContent = "You didn't click the ad. Try again.";
+                showAdBtn.classList.remove('hidden');
+            }, 15000);
+        }
+        
+        // ===== FIXED: START SPECIAL TASK COUNTDOWN =====
+        function startSpecialTaskCountdown() {
+            const timerEl = document.getElementById('special-ad-timer');
+            const totalEl = document.getElementById('special-ad-timer-total');
+            
+            if (!timerEl || !totalEl) return;
+            
+            specialTaskCountdownSeconds = parseInt(totalEl.textContent) || 60;
+            timerEl.textContent = specialTaskCountdownSeconds;
+            
+            // Reset progress bar
+            const progressBar = document.getElementById('special-ad-progress-bar');
+            if (progressBar) {
+                progressBar.style.width = '0%';
+            }
+            
+            let progress = 0;
+            const totalSeconds = specialTaskCountdownSeconds;
+            const progressStep = 100 / totalSeconds;
+            
+            if (specialTaskProgressInterval) {
+                clearInterval(specialTaskProgressInterval);
+            }
+            
+            specialTaskProgressInterval = setInterval(() => {
+                progress += progressStep;
+                if (progressBar) {
+                    progressBar.style.width = `${progress}%`;
+                }
+                
+                if (progress >= 100) {
+                    clearInterval(specialTaskProgressInterval);
+                    completeSpecialTaskCountdown();
+                }
+            }, 1000);
+            
+            // Start timer countdown
+            if (specialTaskTimer) {
+                clearInterval(specialTaskTimer);
+            }
+            
+            specialTaskTimer = setInterval(() => {
+                specialTaskCountdownSeconds--;
+                timerEl.textContent = specialTaskCountdownSeconds;
+                
+                if (specialTaskCountdownSeconds <= 0) {
+                    clearInterval(specialTaskTimer);
+                    completeSpecialTaskCountdown();
+                }
+            }, 1000);
+        }
+        
+        function completeSpecialTaskCountdown() {
+            document.getElementById('special-ad-timer-container').classList.add('hidden');
+            document.getElementById('claim-special-ad-final-btn').classList.remove('hidden');
+            document.getElementById('special-ad-status').textContent = "You can now claim your bonus!";
+            specialTaskAdCompleted = true;
+        }
+        
+        // ===== FIXED: FINALIZE SPECIAL AD FUNCTION =====
+        async function finalizeSpecialAd(gameId, reward, taskType) {
+            if (!specialTaskAdCompleted) {
+                showAlert("Please complete the timer first!");
+                return;
+            }
+            
+            await updateBalance(reward, taskType, `Completed special ${gameId} task`);
+            showAlert(`🎉 Congratulations! You earned a special bonus of ${reward} coins.`);
+            specialAdPopup.style.display = 'none';
+            
+            // Reset variables
+            specialTaskAdCompleted = false;
+            if (specialTaskTimer) clearInterval(specialTaskTimer);
+            if (specialTaskProgressInterval) clearInterval(specialTaskProgressInterval);
+            
+            // Continue with regular game flow
+            if (gameId === 'colorGame') {
+                startGame();
+            } else if (gameId === 'ludoDice') {
+                if (currentLudoWin > 0) {
+                    await updateBalance(currentLudoWin, 'ludo_game', `Won ${currentLudoWin} points from Ludo dice`);
+                }
+                diceResultPopup.style.display = 'none';
+                diceClaimBtn.disabled = false;
+                
+                adsgramContainer.classList.add('hidden');
+                adsgramLoading.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading ad...';
+                adsgramLoading.classList.add('hidden');
+                adsgramRewardInfo.classList.add('hidden');
+            }
+        }
+        
+        // ===== FIXED: AD LOADING POPUP FUNCTIONS =====
+        function showAdLoadingPopup(message) {
+            const adLoadingPopup = document.getElementById('ad-loading-popup');
+            const adLoadingMessage = document.getElementById('ad-loading-message');
+            
+            if (adLoadingMessage) {
+                adLoadingMessage.textContent = message || 'Please wait while we load the advertisement...';
+            }
+            
+            // Update provider name display
+            if (adProviderNameEl && currentAdProvider) {
+                adProviderNameEl.textContent = `Provider: ${currentAdProvider}`;
+            } else if (adProviderNameEl) {
+                adProviderNameEl.textContent = 'Provider: Loading...';
+            }
+            
+            if (adLoadingPopup) {
+                adLoadingPopup.style.display = 'flex';
+                
+                // Fix close button event listener
+                const closeBtn = adLoadingPopup.querySelector('.ad-loading-close');
+                if (closeBtn) {
+                    // Remove existing listeners and add new one
+                    closeBtn.onclick = hideAdLoadingPopup;
+                }
+            }
+        }
+        
+        function hideAdLoadingPopup() {
+            const adLoadingPopup = document.getElementById('ad-loading-popup');
+            if (adLoadingPopup) {
+                adLoadingPopup.style.display = 'none';
+            }
+        }
+        
+        // ===== FIXED: UPDATE AD PROVIDER DISPLAY =====
+        function updateAdProviderDisplay() {
+            if (adProviderNameEl && currentAdProvider) {
+                adProviderNameEl.textContent = `Provider: ${currentAdProvider}`;
+            }
+        }
+        
+        // ===== FIXED: ADSGRAM SDK INITIALIZATION =====
+        function initializeAdsGram() {
+            console.log("🎯 Initializing AdsGram...");
+            
+            if (typeof window.Adsgram !== 'undefined') {
+                try {
+                    adsGramInterstitialController = window.Adsgram.init({ blockId: adsGramInterstitialBlockId });
+                    adsGramRewardController = window.Adsgram.init({ blockId: adsGramRewardBlockId });
+                    
+                    adsGramLoaded = true;
+                    console.log("✅ AdsGram SDK initialized successfully");
+                    
+                    updateAdStatus('adsgram');
+                    return true;
+                } catch (error) {
+                    console.log("❌ AdsGram initialization error:", error);
+                    return false;
+                }
+            } else {
+                console.log("⚠️ AdsGram SDK not available");
+                return false;
+            }
+        }
+        
+        async function showAdsGramInterstitial() {
+            if (!adsGramLoaded || !adsGramInterstitialController) {
+                console.log("❌ AdsGram interstitial not loaded");
+                throw new Error("AdsGram not loaded");
+            }
+            
+            console.log("🎯 Showing AdsGram interstitial ad...");
+            currentAdProvider = 'TempMail44.com';
+            updateAdProviderDisplay();
+            
+            return new Promise((resolve, reject) => {
+                try {
+                    adsGramInterstitialController.show()
+                        .then(() => {
+                            console.log("✅ AdsGram interstitial ad completed");
+                            resolve(true);
+                        })
+                        .catch((error) => {
+                            console.log("❌ AdsGram interstitial failed:", error);
+                            reject(error);
+                        });
+                    
+                } catch (error) {
+                    console.log("❌ AdsGram interstitial error:", error);
+                    reject(error);
+                }
+            });
+        }
+        
+        async function showAdsGramReward() {
+            if (!adsGramLoaded || !adsGramRewardController) {
+                console.log("❌ AdsGram reward not loaded");
+                throw new Error("AdsGram reward not loaded");
+            }
+            
+            console.log("🎯 Showing AdsGram reward ad...");
+            currentAdProvider = 'TempMail44.com';
+            updateAdProviderDisplay();
+            
+            return new Promise((resolve, reject) => {
+                try {
+                    adsGramRewardController.show()
+                        .then(() => {
+                            console.log("✅ AdsGram reward ad completed");
+                            resolve(true);
+                        })
+                        .catch((error) => {
+                            console.log("❌ AdsGram reward failed:", error);
+                            reject(error);
+                        });
+                    
+                } catch (error) {
+                    console.log("❌ AdsGram reward error:", error);
+                    reject(error);
+                }
+            });
         }
         
         // ===== FIXED: LUDO GAME FUNCTIONS =====
@@ -2430,11 +3000,93 @@ const firebaseConfig = {
             console.log("🎮 Ludo game initialized");
         }
         
+        function checkLudoButtonStatus() {
+            const ludoDisabledUntil = localStorage.getItem('ludoDisabledUntil');
+            if (ludoDisabledUntil) {
+                const now = Date.now();
+                const disabledUntil = parseInt(ludoDisabledUntil);
+                
+                if (now < disabledUntil) {
+                    startLudoCountdown(disabledUntil - now);
+                } else {
+                    localStorage.removeItem('ludoDisabledUntil');
+                    enableLudoButton();
+                }
+            } else {
+                enableLudoButton();
+            }
+        }
+        
+        function startLudoCountdown(milliseconds) {
+            ludoButtonDisabled = true;
+            ludoRollBtn.disabled = true;
+            const countdownElement = document.getElementById('ludo-countdown');
+            const rollBtnText = document.getElementById('roll-btn-text');
+            
+            rollBtnText.textContent = 'ROLL DICE';
+            countdownElement.classList.remove('hidden');
+            
+            ludoCountdownSeconds = Math.ceil(milliseconds / 1000);
+            
+            function updateCountdown() {
+                if (ludoCountdownSeconds > 0) {
+                    countdownElement.textContent = `Wait ${ludoCountdownSeconds}s`;
+                    ludoCountdownSeconds--;
+                    ludoButtonTimer = setTimeout(updateCountdown, 1000);
+                } else {
+                    enableLudoButton();
+                    localStorage.removeItem('ludoDisabledUntil');
+                }
+            }
+            
+            updateCountdown();
+        }
+        
+        function enableLudoButton() {
+            ludoButtonDisabled = false;
+            ludoRollBtn.disabled = false;
+            const countdownElement = document.getElementById('ludo-countdown');
+            const rollBtnText = document.getElementById('roll-btn-text');
+            
+            const ludoConfig = gamesConfig.ludoDice || {};
+            const gameCost = ludoConfig.gameCost || 10;
+            rollBtnText.textContent = `ROLL DICE - ${gameCost} POINTS`;
+            countdownElement.classList.add('hidden');
+            
+            if (ludoButtonTimer) {
+                clearTimeout(ludoButtonTimer);
+                ludoButtonTimer = null;
+            }
+        }
+        
+        function disableLudoButtonRandomly() {
+            const randomSeconds = Math.floor(Math.random() * 11) + 10;
+            const disabledUntil = Date.now() + (randomSeconds * 1000);
+            
+            localStorage.setItem('ludoDisabledUntil', disabledUntil.toString());
+            startLudoCountdown(randomSeconds * 1000);
+            
+            console.log(`⏱️ Ludo button disabled for ${randomSeconds} seconds`);
+        }
+        
+        function generateDiceResult() {
+            const random = Math.random() * 100;
+            
+            if (random < 80) {
+                return Math.floor(Math.random() * 3) + 1;
+            } else if (random < 97) {
+                return Math.floor(Math.random() * 2) + 4;
+            } else {
+                return 6;
+            }
+        }
+        
         async function rollLudoDice() {
             if (isLudoRolling || ludoButtonDisabled) return;
             
             const ludoConfig = gamesConfig.ludoDice || {};
             
+            // Check game play limits FIRST
             const limitCheck = checkGamePlayLimits('ludoDice');
             if (!limitCheck.allowed) {
                 showAlert(`❌ ${limitCheck.reason}`);
@@ -2449,13 +3101,20 @@ const firebaseConfig = {
                 return;
             }
             
-            incrementGamePlayCount('ludoDice');
+            // Increment play count
+            const newPlayCount = incrementGamePlayCount('ludoDice');
             
             isLudoRolling = true;
             ludoRollBtn.disabled = true;
             
-            await updateBalance(-gameCost, 'ludo_game', `Paid ${gameCost} points for Ludo game`);
+            const newBalance = (userData.balance || 0) - gameCost;
+            await updateDoc(doc(db, "users", currentUser.uid), { 
+                balance: newBalance 
+            });
+            userData.balance = newBalance;
+            updateAllUI();
             
+            // Animation
             let rolls = 0;
             const totalRolls = 15;
             
@@ -2479,13 +3138,15 @@ const firebaseConfig = {
             animateRoll();
         }
         
-        // ===== FIXED: SHOW LUDO RESULT =====
+        // ===== FIXED: SHOW LUDO RESULT WITH ADSGRAM ONLY =====
         async function showLudoResult() {
+            // Update result popup
             document.getElementById('dice-result-icon').textContent = '🎲';
             document.getElementById('dice-result-title').textContent = 'DICE RESULT';
             document.getElementById('dice-result-face').textContent = diceFaces[currentLudoDice - 1];
             document.getElementById('dice-win-amount').textContent = `${currentLudoWin} POINTS`;
             
+            // Show AdsGram container
             adsgramContainer.classList.remove('hidden');
             adsgramLoading.classList.remove('hidden');
             adsgramRewardInfo.classList.remove('hidden');
@@ -2502,11 +3163,12 @@ const firebaseConfig = {
             await recordGamePlay('ludoDice', currentUser.uid, currentLudoWin);
         }
         
-        // ===== FIXED: CLOSE DICE RESULT =====
+        // ===== FIXED: CLOSE DICE RESULT WITH ADSGRAM ONLY LOGIC =====
         async function closeDiceResult() {
             diceClaimBtn.disabled = true;
             diceClaimBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i> LOADING AD...';
             
+            // Check for special task
             const ludoPlayCountKey = `ludoDice_playCount_${currentUser.uid}_${new Date().toISOString().split('T')[0]}`;
             const ludoPlayCount = parseInt(localStorage.getItem(ludoPlayCountKey) || '0');
             const specialTaskCount = appConfig.ludoDiceSpecialTaskCount || 30;
@@ -2523,10 +3185,12 @@ const firebaseConfig = {
                 console.log("🎯 Attempting AdsGram reward ad for Ludo bonus...");
                 showAdLoadingPopup("Loading AdsGram reward ad...");
                 
+                // Try AdsGram reward ad first
                 await showAdsGramReward();
                 
                 hideAdLoadingPopup();
                 
+                // Reward successful - add bonus
                 const adBonus = 5;
                 const totalWin = currentLudoWin + adBonus;
                 
@@ -2539,10 +3203,12 @@ const firebaseConfig = {
                 console.log("❌ AdsGram reward failed, trying AdsGram interstitial...:", rewardError);
                 
                 try {
+                    // If reward fails, try AdsGram interstitial
                     await showAdsGramInterstitial();
                     
                     hideAdLoadingPopup();
                     
+                    // Interstitial successful - add bonus
                     const adBonus = 5;
                     const totalWin = currentLudoWin + adBonus;
                     
@@ -2555,6 +3221,7 @@ const firebaseConfig = {
                     console.log("❌ AdsGram interstitial also failed:", interstitialError);
                     hideAdLoadingPopup();
                     
+                    // Both AdsGram ads failed - refund points
                     const ludoConfig = gamesConfig.ludoDice || {};
                     const gameCost = ludoConfig.gameCost || 10;
                     await updateBalance(gameCost, 'refund', 'Ludo dice game refund - AdsGram ads not available');
@@ -2564,6 +3231,7 @@ const firebaseConfig = {
                 }
             }
             
+            // Reset UI
             diceClaimBtn.disabled = false;
             diceClaimBtn.innerHTML = '<i class="fas fa-check mr-3"></i> RECEIVE BONUS';
             
@@ -2573,56 +3241,122 @@ const firebaseConfig = {
             adsgramRewardInfo.classList.add('hidden');
         }
         
-        // ===== FIXED: COLOR GAME =====
-        async function claimColorGameReward() {
-            document.getElementById('color-game-popup').classList.add('hidden');
-            
-            const limitCheck = checkGamePlayLimits('colorGame');
-            if (!limitCheck.allowed) {
-                showAlert(`❌ ${limitCheck.reason}`);
-                startGame();
-                return;
-            }
-            
-            const newPlayCount = incrementGamePlayCount('colorGame');
-            
-            const specialTaskCount = appConfig.colorGameSpecialTaskCount || 20;
-            if (newPlayCount > 0 && newPlayCount % specialTaskCount === 0) {
-                showColorGameSpecialTask();
-                return;
-            }
-            
-            try {
-                showAdLoadingPopup("Loading Taddy.pro ad for color game...");
+        // ===== FIXED: WATCH & EARN FUNCTIONS =====
+        function checkWatchEarnStatus() {
+            const watchEarnDisabledUntil = localStorage.getItem('watchEarnDisabledUntil');
+            if (watchEarnDisabledUntil) {
+                const now = Date.now();
+                const disabledUntil = parseInt(watchEarnDisabledUntil);
                 
-                const taddyReady = await ensureTaddyLoaded();
-                
-                if (taddyReady && taddyAdsService && typeof taddyAdsService.interstitial === 'function') {
-                    await showTaddyAds();
-                    
-                    const colorConfig = gamesConfig.colorGame || {};
-                    const reward = colorConfig.rewardPerPlay || appConfig.colorGameReward || 100;
-                    
-                    await updateBalance(reward, 'color_game', 'Won color game');
-                    
-                    await recordGamePlay('colorGame', currentUser.uid, reward);
-                    
-                    hideAdLoadingPopup();
-                    showAlert(`🏆 Congratulations! You earned ${reward} coins.`);
-                    
-                    startGame();
+                if (now < disabledUntil) {
+                    startWatchEarnCountdown(disabledUntil - now);
                 } else {
-                    hideAdLoadingPopup();
-                    throw new Error("Taddy.pro ads not available for Color Game");
+                    localStorage.removeItem('watchEarnDisabledUntil');
+                    enableWatchEarnCard();
                 }
-            } catch(error) { 
-                hideAdLoadingPopup();
-                console.log("Color game Taddy.pro ad error:", error);
-                showAlert("⚠️ Taddy.pro ad service not available for Color Game. Please try again later."); 
+            } else {
+                enableWatchEarnCard();
             }
         }
         
-        // ===== FIXED: COUNTRY DETECTION =====
+        function startWatchEarnCountdown(milliseconds) {
+            watchEarnDisabled = true;
+            const watchEarnCardEl = document.getElementById('watch-earn-card');
+            const watchEarnCountdownEl = document.getElementById('watch-earn-countdown');
+            
+            if (watchEarnCardEl) watchEarnCardEl.classList.add('disabled');
+            if (watchEarnCountdownEl) watchEarnCountdownEl.classList.remove('hidden');
+            
+            watchEarnCountdownSeconds = Math.ceil(milliseconds / 1000);
+            
+            function updateCountdown() {
+                if (watchEarnCountdownSeconds > 0) {
+                    if (watchEarnCountdownEl) watchEarnCountdownEl.textContent = `Wait ${watchEarnCountdownSeconds}s`;
+                    watchEarnCountdownSeconds--;
+                    watchEarnTimer = setTimeout(updateCountdown, 1000);
+                } else {
+                    enableWatchEarnCard();
+                    localStorage.removeItem('watchEarnDisabledUntil');
+                }
+            }
+            
+            updateCountdown();
+        }
+        
+        function enableWatchEarnCard() {
+            watchEarnDisabled = false;
+            const watchEarnCardEl = document.getElementById('watch-earn-card');
+            const watchEarnCountdownEl = document.getElementById('watch-earn-countdown');
+            
+            if (watchEarnCardEl) watchEarnCardEl.classList.remove('disabled');
+            if (watchEarnCountdownEl) {
+                watchEarnCountdownEl.classList.add('hidden');
+                watchEarnCountdownEl.textContent = '';
+            }
+            
+            if (watchEarnTimer) {
+                clearTimeout(watchEarnTimer);
+                watchEarnTimer = null;
+            }
+        }
+        
+        function disableWatchEarnCardRandomly() {
+            const randomSeconds = Math.floor(Math.random() * 11) + 10;
+            const disabledUntil = Date.now() + (randomSeconds * 1000);
+            
+            localStorage.setItem('watchEarnDisabledUntil', disabledUntil.toString());
+            startWatchEarnCountdown(randomSeconds * 1000);
+            
+            console.log(`⏱️ Watch & Earn card disabled for ${randomSeconds} seconds`);
+        }
+        
+        function startApp() {
+            showMainPage('app-container');
+            navigateTo('home-page');
+            fetchAppConfig();
+            fetchUserData();
+            loadGameConfigurations();
+            setupGameConfigListener();
+            setupAppConfigListener();
+            initSlider();
+            initLudoGame();
+            checkWatchEarnStatus();
+            
+            // Check for game resets when app starts
+            checkForGameResets();
+            
+            // Check for website visit reset
+            checkWebsiteVisitReset();
+            
+            // Check for app notice
+            checkForAppNotice();
+            
+            // Reset game play counts at midnight
+            setInterval(() => {
+                const now = new Date();
+                if (now.getHours() === 0 && now.getMinutes() === 0) {
+                    resetGamePlayCounts();
+                }
+            }, 60000);
+            
+            // Also reset on app start (in case it's a new day)
+            resetGamePlayCounts();
+            
+            // Check for game resets every 5 minutes
+            setInterval(checkForGameResets, 300000);
+            
+            // Check for website reset every 10 minutes
+            setInterval(checkWebsiteVisitReset, 600000);
+            
+            updateStatsUI();
+            
+            // Show wallet validation warning if needed
+            if (!walletValidated) {
+                showWalletValidationWarning("Please add valid payment details to withdraw your earnings");
+            }
+        }
+        
+        // ===== COUNTRY DETECTION =====
         async function detectUserCountry() {
             try {
                 const configSnap = await getDoc(doc(db, "config", "main"));
@@ -2710,7 +3444,7 @@ const firebaseConfig = {
             document.getElementById('country-block-modal').classList.remove('hidden');
         }
         
-        // ===== REST OF THE FUNCTIONS (Mostly unchanged) =====
+        // ===== TELEGRAM MINI APP INITIALIZATION =====
         function initializeTelegramWebApp() {
             if (typeof window.Telegram !== 'undefined' && window.Telegram.WebApp) {
                 isTelegramWebApp = true;
@@ -2728,6 +3462,7 @@ const firebaseConfig = {
             }
         }
         
+        // ===== RICHADS INITIALIZATION =====
         function initializeRichAds() {
             console.log("🎯 Initializing Richads (Primary)...");
             
@@ -2754,6 +3489,7 @@ const firebaseConfig = {
             }
         }
         
+        // ===== PRE-LOAD TADDY.PRO SDK =====
         function preloadTaddySDK() {
             if (taddyPreloadStarted || taddyLoaded) return;
             
@@ -2876,6 +3612,7 @@ const firebaseConfig = {
             adStatusElement.style.display = 'flex';
         }
         
+        // ===== AD FUNCTIONS =====
         async function showRichAds() {
             if (richAdsLoaded && telegramAdsController) {
                 console.log("🎯 Showing RichAds...");
@@ -2964,19 +3701,46 @@ const firebaseConfig = {
             }
         }
         
+        // ===== USER DATA FUNCTIONS =====
+        async function fetchUserData() {
+            if (!currentUser) return;
+            
+            // For browser users, load from localStorage
+            if (isBrowserUser()) {
+                const savedData = localStorage.getItem('browserUserData');
+                if (savedData) {
+                    userData = JSON.parse(savedData);
+                }
+                return;
+            }
+            
+            // For Telegram users, load from Firebase
+            const userRef = doc(db, "users", currentUser.uid);
+            const userSnap = await getDoc(userRef);
+            if (userSnap.exists()) { 
+                userData = userSnap.data(); 
+                if (!userCountry && userData.country) {
+                    userCountry = userData.country;
+                }
+            }
+        }
+
         async function fetchAppConfig() {
             const configRef = doc(db, "config", "main");
             const configSnap = await getDoc(configRef);
             
+            // Load existing config or create minimal defaults
             if (configSnap.exists()) {
                 appConfig = configSnap.data();
             } else {
+                // Only set basic defaults for fresh install
                 appConfig = {
                     referralRules: ["Your friend must sign up.", "Bonus is credited after they apply the code."],
                     referralShareText: "Join CashReward and earn money! Use my code {CODE} to get a bonus. App link: {APP_LINK}"
                 };
             }
             
+            // Ensure arrays exist but don't overwrite custom data
             if (!Array.isArray(appConfig.websitesToVisit)) {
                 appConfig.websitesToVisit = [];
             }
@@ -2991,6 +3755,7 @@ const firebaseConfig = {
                 ];
             }
             
+            // Set defaults only for missing special task configs
             if (!appConfig.watchAdSpecialTaskCount) appConfig.watchAdSpecialTaskCount = 10;
             if (!appConfig.watchAdSpecialTaskReward) appConfig.watchAdSpecialTaskReward = 100;
             if (!appConfig.watchAdSpecialTaskTimer) appConfig.watchAdSpecialTaskTimer = 60;
@@ -3010,6 +3775,21 @@ const firebaseConfig = {
             if (!appConfig.referralBonus) appConfig.referralBonus = 100;
             
             return appConfig;
+        }
+        
+        function updateAllUI() {
+            if (!userData) return;
+            const name = userData.name || 'Anonymous User';
+            document.getElementById('header-profile-name').textContent = `Hi, ${name}`;
+            document.getElementById('header-coin-balance').textContent = userData.balance || 0;
+            
+            if (telegramUser && telegramUser.photo_url) {
+                document.getElementById('profile-picture').src = telegramUser.photo_url;
+            } else if (userData.profilePicture) {
+                document.getElementById('profile-picture').src = userData.profilePicture;
+            } else {
+                document.getElementById('profile-picture').src = `https://placehold.co/100x100/1e1e1e/facc15?text=${name.charAt(0).toUpperCase()}`;
+            }
         }
         
         function updateStatsUI() {
@@ -3134,13 +3914,16 @@ const firebaseConfig = {
             });
         }
         
+        // ===== FIXED: GAME PLAY LIMITS FUNCTIONS =====
         function checkGamePlayLimits(gameId) {
             const gameConfig = gamesConfig[gameId] || {};
             
+            // If game is hidden, deny access
             if (gameConfig.visible === false) {
                 return { allowed: false, reason: "Game is currently unavailable." };
             }
             
+            // Check daily play limit (from admin panel)
             const dailyPlayLimit = gameConfig.dailyPlayLimit || 0;
             
             if (dailyPlayLimit > 0) {
@@ -3168,6 +3951,7 @@ const firebaseConfig = {
             
             console.log(`📊 ${gameId} play count: ${newCount}`);
             
+            // Update display
             updatePlayCountDisplay();
             
             return newCount;
@@ -3176,6 +3960,7 @@ const firebaseConfig = {
         function resetGamePlayCounts() {
             const today = new Date().toISOString().split('T')[0];
             
+            // Check if we need to reset (after midnight)
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
                 if (key.includes('_playCount_') && !key.includes(today)) {
@@ -3208,6 +3993,7 @@ const firebaseConfig = {
                     allTimeStats[gameId] = { playCount: 0, userCount: 0 };
                 }
                 
+                // Increment play count
                 dailyStats[today][gameId].playCount = (dailyStats[today][gameId].playCount || 0) + 1;
                 allTimeStats[gameId].playCount = (allTimeStats[gameId].playCount || 0) + 1;
                 
@@ -3231,153 +4017,117 @@ const firebaseConfig = {
             }
         }
         
-        function checkLudoButtonStatus() {
-            const ludoDisabledUntil = localStorage.getItem('ludoDisabledUntil');
-            if (ludoDisabledUntil) {
-                const now = Date.now();
-                const disabledUntil = parseInt(ludoDisabledUntil);
+        // ===== FIXED: WATCH & EARN =====
+        window.claimReward = async function() {
+            if (watchEarnDisabled) return;
+            
+            console.log("🎮 Watch & Earn clicked");
+            
+            const videoConfig = gamesConfig.watchVideo || {};
+            if (videoConfig.visible === false) {
+                showAlert("❌ This feature is currently unavailable. Please try another game.");
+                return;
+            }
+            
+            // Check game play limits FIRST
+            const limitCheck = checkGamePlayLimits('watchVideo');
+            if (!limitCheck.allowed) {
+                showAlert(`❌ ${limitCheck.reason}`);
+                return;
+            }
+            
+            // Increment play count
+            const newCount = (userData.dailyAdCount || 0) + 1;
+            
+            // Update user data based on user type
+            if (isBrowserUser()) {
+                userData.dailyAdCount = newCount;
+                localStorage.setItem('browserUserData', JSON.stringify(userData));
+            } else {
+                await updateDoc(doc(db, "users", currentUser.uid), { 
+                    dailyAdCount: newCount 
+                });
+                userData.dailyAdCount = newCount;
+            }
+            
+            // Check for special task
+            const specialTaskCount = appConfig.watchAdSpecialTaskCount || 10;
+            if (newCount > 0 && newCount % specialTaskCount === 0) {
+                showSpecialTask();
+            } else {
+                try {
+                    showAdLoadingPopup("Loading ad for Watch & Earn...");
+                    
+                    await showAds();
+                    
+                    const reward = videoConfig.rewardPerPlay || appConfig.adWatchReward || 50;
+                    await updateBalance(reward, 'ad_watch', 'Watched ad for coins');
+                    hideAdLoadingPopup();
+                    showAlert(`🎉 Congratulations! You earned ${reward} coins.`);
+                    
+                    await recordGamePlay('watchVideo', currentUser.uid, reward);
+                    
+                    disableWatchEarnCardRandomly();
+                    
+                } catch (error) {
+                    hideAdLoadingPopup();
+                    console.log("❌ Watch & Earn ad failed:", error);
+                    showAlert("⚠️ Ad service not available. Please try again.");
+                }
+            }
+        }
+        
+        // ===== FIXED: COLOR GAME =====
+        async function claimColorGameReward() {
+            document.getElementById('color-game-popup').classList.add('hidden');
+            
+            // Check game play limits FIRST
+            const limitCheck = checkGamePlayLimits('colorGame');
+            if (!limitCheck.allowed) {
+                showAlert(`❌ ${limitCheck.reason}`);
+                startGame();
+                return;
+            }
+            
+            // Increment play count
+            const newPlayCount = incrementGamePlayCount('colorGame');
+            
+            // Check for special task
+            const specialTaskCount = appConfig.colorGameSpecialTaskCount || 20;
+            if (newPlayCount > 0 && newPlayCount % specialTaskCount === 0) {
+                showColorGameSpecialTask();
+                return;
+            }
+            
+            try {
+                showAdLoadingPopup("Loading Taddy.pro ad for color game...");
                 
-                if (now < disabledUntil) {
-                    startLudoCountdown(disabledUntil - now);
-                } else {
-                    localStorage.removeItem('ludoDisabledUntil');
-                    enableLudoButton();
-                }
-            } else {
-                enableLudoButton();
-            }
-        }
-        
-        function startLudoCountdown(milliseconds) {
-            ludoButtonDisabled = true;
-            ludoRollBtn.disabled = true;
-            const countdownElement = document.getElementById('ludo-countdown');
-            const rollBtnText = document.getElementById('roll-btn-text');
-            
-            rollBtnText.textContent = 'ROLL DICE';
-            countdownElement.classList.remove('hidden');
-            
-            ludoCountdownSeconds = Math.ceil(milliseconds / 1000);
-            
-            function updateCountdown() {
-                if (ludoCountdownSeconds > 0) {
-                    countdownElement.textContent = `Wait ${ludoCountdownSeconds}s`;
-                    ludoCountdownSeconds--;
-                    ludoButtonTimer = setTimeout(updateCountdown, 1000);
-                } else {
-                    enableLudoButton();
-                    localStorage.removeItem('ludoDisabledUntil');
-                }
-            }
-            
-            updateCountdown();
-        }
-        
-        function enableLudoButton() {
-            ludoButtonDisabled = false;
-            ludoRollBtn.disabled = false;
-            const countdownElement = document.getElementById('ludo-countdown');
-            const rollBtnText = document.getElementById('roll-btn-text');
-            
-            const ludoConfig = gamesConfig.ludoDice || {};
-            const gameCost = ludoConfig.gameCost || 10;
-            rollBtnText.textContent = `ROLL DICE - ${gameCost} POINTS`;
-            countdownElement.classList.add('hidden');
-            
-            if (ludoButtonTimer) {
-                clearTimeout(ludoButtonTimer);
-                ludoButtonTimer = null;
-            }
-        }
-        
-        function disableLudoButtonRandomly() {
-            const randomSeconds = Math.floor(Math.random() * 11) + 10;
-            const disabledUntil = Date.now() + (randomSeconds * 1000);
-            
-            localStorage.setItem('ludoDisabledUntil', disabledUntil.toString());
-            startLudoCountdown(randomSeconds * 1000);
-            
-            console.log(`⏱️ Ludo button disabled for ${randomSeconds} seconds`);
-        }
-        
-        function generateDiceResult() {
-            const random = Math.random() * 100;
-            
-            if (random < 80) {
-                return Math.floor(Math.random() * 3) + 1;
-            } else if (random < 97) {
-                return Math.floor(Math.random() * 2) + 4;
-            } else {
-                return 6;
-            }
-        }
-        
-        function checkWatchEarnStatus() {
-            const watchEarnDisabledUntil = localStorage.getItem('watchEarnDisabledUntil');
-            if (watchEarnDisabledUntil) {
-                const now = Date.now();
-                const disabledUntil = parseInt(watchEarnDisabledUntil);
+                // Use Taddy.pro ONLY for Color Game (NO FALLBACK)
+                const taddyReady = await ensureTaddyLoaded();
                 
-                if (now < disabledUntil) {
-                    startWatchEarnCountdown(disabledUntil - now);
+                if (taddyReady && taddyAdsService && typeof taddyAdsService.interstitial === 'function') {
+                    await showTaddyAds();
+                    
+                    const colorConfig = gamesConfig.colorGame || {};
+                    const reward = colorConfig.rewardPerPlay || appConfig.colorGameReward || 100;
+                    
+                    await updateBalance(reward, 'color_game', 'Won color game');
+                    
+                    await recordGamePlay('colorGame', currentUser.uid, reward);
+                    
+                    hideAdLoadingPopup();
+                    showAlert(`🏆 Congratulations! You earned ${reward} coins.`);
+                    
+                    startGame();
                 } else {
-                    localStorage.removeItem('watchEarnDisabledUntil');
-                    enableWatchEarnCard();
+                    hideAdLoadingPopup();
+                    throw new Error("Taddy.pro ads not available for Color Game");
                 }
-            } else {
-                enableWatchEarnCard();
+            } catch(error) { 
+                hideAdLoadingPopup();
+                console.log("Color game Taddy.pro ad error:", error);
+                showAlert("⚠️ Taddy.pro ad service not available for Color Game. Please try again later."); 
             }
-        }
-        
-        function startWatchEarnCountdown(milliseconds) {
-            watchEarnDisabled = true;
-            const watchEarnCardEl = document.getElementById('watch-earn-card');
-            const watchEarnCountdownEl = document.getElementById('watch-earn-countdown');
-            
-            if (watchEarnCardEl) watchEarnCardEl.classList.add('disabled');
-            if (watchEarnCountdownEl) watchEarnCountdownEl.classList.remove('hidden');
-            
-            watchEarnCountdownSeconds = Math.ceil(milliseconds / 1000);
-            
-            function updateCountdown() {
-                if (watchEarnCountdownSeconds > 0) {
-                    if (watchEarnCountdownEl) watchEarnCountdownEl.textContent = `Wait ${watchEarnCountdownSeconds}s`;
-                    watchEarnCountdownSeconds--;
-                    watchEarnTimer = setTimeout(updateCountdown, 1000);
-                } else {
-                    enableWatchEarnCard();
-                    localStorage.removeItem('watchEarnDisabledUntil');
-                }
-            }
-            
-            updateCountdown();
-        }
-        
-        function enableWatchEarnCard() {
-            watchEarnDisabled = false;
-            const watchEarnCardEl = document.getElementById('watch-earn-card');
-            const watchEarnCountdownEl = document.getElementById('watch-earn-countdown');
-            
-            if (watchEarnCardEl) watchEarnCardEl.classList.remove('disabled');
-            if (watchEarnCountdownEl) {
-                watchEarnCountdownEl.classList.add('hidden');
-                watchEarnCountdownEl.textContent = '';
-            }
-            
-            if (watchEarnTimer) {
-                clearTimeout(watchEarnTimer);
-                watchEarnTimer = null;
-            }
-        }
-        
-        function disableWatchEarnCardRandomly() {
-            const randomSeconds = Math.floor(Math.random() * 11) + 10;
-            const disabledUntil = Date.now() + (randomSeconds * 1000);
-            
-            localStorage.setItem('watchEarnDisabledUntil', disabledUntil.toString());
-            startWatchEarnCountdown(randomSeconds * 1000);
-            
-            console.log(`⏱️ Watch & Earn card disabled for ${randomSeconds} seconds`);
         }
         
         function startGame() {
@@ -3426,6 +4176,7 @@ const firebaseConfig = {
             const reward = colorConfig.rewardPerPlay || appConfig.colorGameReward || 100;
             document.getElementById('color-game-reward-message').textContent = `Bravo! Watch an ad to claim ${reward} coins.`;
             
+            // Update play count display
             updatePlayCountDisplay();
         }
 
@@ -3441,6 +4192,7 @@ const firebaseConfig = {
             }
         }
         
+        // ===== FIXED: WEBSITE VISIT FUNCTIONS =====
         async function handleWebsiteVisit(e) {
             const button = e.target;
             const { link, reward, timer } = button.dataset;
@@ -3449,6 +4201,7 @@ const firebaseConfig = {
             button.disabled = true;
             
             try {
+                // Use visitedSitesToday (consistent field name)
                 const visitedToday = userData.visitedSitesToday || [];
                 if (visitedToday.includes(link)) {
                     showAlert("⚠️ You've already visited this website today!");
@@ -3476,17 +4229,23 @@ const firebaseConfig = {
                         clearInterval(interval);
                         
                         try {
+                            // Use visitedSitesToday and lastSiteVisitDate (consistent field names)
                             const visited = [...visitedToday, link];
                             
-                            await updateDoc(doc(db, "users", currentUser.uid), { 
-                                visitedSitesToday: visited,
-                                lastSiteVisitDate: new Date().toISOString().split('T')[0]
-                            });
-                            
-                            userData.visitedSitesToday = visited;
-                            userData.lastSiteVisitDate = new Date().toISOString().split('T')[0];
-                            
-                            localStorage.setItem('currentUserData', JSON.stringify(userData));
+                            // Update based on user type
+                            if (isBrowserUser()) {
+                                userData.visitedSitesToday = visited;
+                                userData.lastSiteVisitDate = new Date().toISOString().split('T')[0];
+                                localStorage.setItem('browserUserData', JSON.stringify(userData));
+                            } else {
+                                await updateDoc(doc(db, "users", currentUser.uid), { 
+                                    visitedSitesToday: visited,
+                                    lastSiteVisitDate: new Date().toISOString().split('T')[0]
+                                });
+                                
+                                userData.visitedSitesToday = visited;
+                                userData.lastSiteVisitDate = new Date().toISOString().split('T')[0];
+                            }
                             
                             const rewardAmount = parseInt(reward);
                             await updateBalance(rewardAmount, 'website_visit', `Visited website: ${siteName}`);
@@ -3520,12 +4279,14 @@ const firebaseConfig = {
             }
         }
 
+        // ===== FIXED: WEBSITE LIST POPULATION =====
         function populateWebsiteList() {
             const listEl = document.getElementById('website-list');
             if (!listEl) return;
             
             listEl.innerHTML = '';
             
+            // Ensure websitesToVisit exists and is an array
             const websites = Array.isArray(appConfig.websitesToVisit) ? appConfig.websitesToVisit : [];
             
             if (websites.length === 0) { 
@@ -3581,6 +4342,7 @@ const firebaseConfig = {
             });
         }
 
+        // ===== FIXED: SOCIAL TASKS FUNCTIONS =====
         async function handleSocialFollow(e) {
             const button = e.target;
             const { link, reward } = button.dataset;
@@ -3599,10 +4361,14 @@ const firebaseConfig = {
                 
                 const completed = [...(userData.completedSocialTasks || []), link];
                 
-                await updateDoc(doc(db, "users", currentUser.uid), { completedSocialTasks: completed });
-                userData.completedSocialTasks = completed;
-                
-                localStorage.setItem('currentUserData', JSON.stringify(userData));
+                // Update based on user type
+                if (isBrowserUser()) {
+                    userData.completedSocialTasks = completed;
+                    localStorage.setItem('browserUserData', JSON.stringify(userData));
+                } else {
+                    await updateDoc(doc(db, "users", currentUser.uid), { completedSocialTasks: completed });
+                    userData.completedSocialTasks = completed;
+                }
                 
                 await recordGamePlay('socialTasks', currentUser.uid, rewardAmount);
                 
@@ -3656,6 +4422,7 @@ const firebaseConfig = {
             document.querySelectorAll('.follow-btn:not([disabled])').forEach(btn => btn.addEventListener('click', handleSocialFollow));
         }
         
+        // ===== FIXED: WALLET FUNCTIONS =====
         function loadWalletPage() {
             if (!userData) return;
             
@@ -3694,6 +4461,7 @@ const firebaseConfig = {
                            id="payment-details-input">
                 `;
                 
+                // Load saved payment details if available
                 const savedDetails = paymentDetails[selectedMethod];
                 if (savedDetails) {
                     setTimeout(() => {
@@ -3712,12 +4480,20 @@ const firebaseConfig = {
         async function handleWithdrawal() {
             if (!currentUser || !userData) return;
             
+            // Browser users cannot withdraw
+            if (isBrowserUser()) {
+                showAlert("❌ Browser users cannot withdraw. Please use Telegram app for withdrawals.");
+                return;
+            }
+            
             const amount = parseInt(document.getElementById('withdraw-amount').value);
             const method = document.getElementById('withdraw-method').value;
             const paymentDetail = document.getElementById('payment-details-input')?.value.trim();
             
+            // Hide previous validation messages
             hidePaymentValidationMessage();
             
+            // Validation checks
             if (isNaN(amount) || amount < (appConfig.minWithdrawal || 1000)) {
                 showPaymentValidationMessage(`❌ Minimum withdrawal is ${appConfig.minWithdrawal || 1000} coins.`, true);
                 return;
@@ -3733,6 +4509,7 @@ const firebaseConfig = {
                 return;
             }
             
+            // Validate payment details
             const validation = validatePaymentDetails(method, paymentDetail);
             if (!validation.valid) {
                 showPaymentValidationMessage(`❌ ${validation.message}`, true);
@@ -3754,11 +4531,12 @@ const firebaseConfig = {
                     status: "pending", 
                     requestedAt: serverTimestamp(),
                     country: userCountry || 'unknown',
-                    userType: userData.userType || 'unknown'
+                    userType: userData.userType || 'telegram'
                 });
                 
                 showPaymentValidationMessage("✅ Withdrawal request submitted successfully!", false);
                 
+                // Update wallet validation status
                 walletValidated = true;
                 hideWalletValidationWarning();
                 
@@ -3775,6 +4553,16 @@ const firebaseConfig = {
         
         async function loadWithdrawalHistory() {
             if (!currentUser) return;
+            
+            // Browser users have no withdrawal history
+            if (isBrowserUser()) {
+                document.getElementById('withdrawal-history-list').innerHTML = `
+                    <div class="premium-card p-6 rounded-2xl text-center">
+                        <i class="fas fa-info-circle text-2xl accent-yellow mb-2"></i>
+                        <p class="text-gray-400">Withdrawals available only for Telegram users</p>
+                    </div>`;
+                return;
+            }
             
             const listEl = document.getElementById('withdrawal-history-list');
             listEl.innerHTML = `<div class="premium-card p-6 rounded-2xl text-center">
@@ -3834,6 +4622,7 @@ const firebaseConfig = {
             }
         }
 
+        // ===== FIXED: REFERRAL PAGE FUNCTIONS =====
         function loadReferPage() {
             if (!userData) return;
             
@@ -3876,7 +4665,6 @@ const firebaseConfig = {
                     
                     await updateDoc(doc(db, "users", currentUser.uid), { referredBy: code });
                     userData.referredBy = code;
-                    localStorage.setItem('currentUserData', JSON.stringify(userData));
                     
                     updateAllUI();
                     showAlert(`🎉 Code applied successfully! You received ${bonus} coins.`);
@@ -3918,6 +4706,7 @@ const firebaseConfig = {
             }
         }
 
+        // ===== FIXED: ALERT FUNCTION =====
         function showAlert(message) {
             const alertBox = document.getElementById('custom-alert');
             const msgEl = document.getElementById('alert-message');
@@ -3927,6 +4716,7 @@ const firebaseConfig = {
             }
         }
 
+        // ===== FIXED: PROFILE PAGE FUNCTIONS =====
         function loadProfilePage() {
             if (!userData) return;
             
@@ -3949,21 +4739,28 @@ const firebaseConfig = {
             document.getElementById('total-earned').textContent = userData.totalEarned || 0;
         }
         
+        // ===== FIXED: DAILY WEBSITE VISIT RESET =====
         async function resetDailyWebsiteVisits() {
             try {
                 const today = new Date().toISOString().split('T')[0];
+                // Use consistent field name: lastSiteVisitDate
                 const lastVisitDate = userData.lastSiteVisitDate || '1970-01-01';
                 
                 if (lastVisitDate !== today) {
-                    await updateDoc(doc(db, "users", currentUser.uid), { 
-                        visitedSitesToday: [],
-                        lastSiteVisitDate: today
-                    });
-                    
-                    userData.visitedSitesToday = [];
-                    userData.lastSiteVisitDate = today;
-                    
-                    localStorage.setItem('currentUserData', JSON.stringify(userData));
+                    // Update based on user type
+                    if (isBrowserUser()) {
+                        userData.visitedSitesToday = [];
+                        userData.lastSiteVisitDate = today;
+                        localStorage.setItem('browserUserData', JSON.stringify(userData));
+                    } else {
+                        await updateDoc(doc(db, "users", currentUser.uid), { 
+                            visitedSitesToday: [],  // Consistent field name
+                            lastSiteVisitDate: today  // Consistent field name
+                        });
+                        
+                        userData.visitedSitesToday = [];
+                        userData.lastSiteVisitDate = today;
+                    }
                     
                     console.log("✅ Daily website visits reset");
                 }
@@ -3972,6 +4769,7 @@ const firebaseConfig = {
             }
         }
         
+        // ===== FIXED: WALLET VALIDATION FUNCTIONS =====
         function validatePaymentDetails(method, details) {
             if (!details || details.trim() === '') {
                 return { valid: false, message: 'Please enter payment details' };
@@ -3981,6 +4779,7 @@ const firebaseConfig = {
             
             switch(method.toLowerCase()) {
                 case 'upi':
+                    // UPI ID validation (username@bankname)
                     const upiRegex = /^[a-zA-Z0-9.\-_]{2,49}@[a-zA-Z]{2,}$/;
                     if (!upiRegex.test(trimmedDetails)) {
                         return { valid: false, message: 'Invalid UPI ID format (e.g., username@bankname)' };
@@ -3989,6 +4788,7 @@ const firebaseConfig = {
                     break;
                     
                 case 'paytm':
+                    // Paytm number validation (Indian phone number)
                     const phoneRegex = /^[6-9]\d{9}$/;
                     if (!phoneRegex.test(trimmedDetails)) {
                         return { valid: false, message: 'Invalid Paytm number (10 digit Indian number)' };
@@ -3997,6 +4797,7 @@ const firebaseConfig = {
                     break;
                     
                 case 'paypal':
+                    // PayPal email validation
                     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                     if (!emailRegex.test(trimmedDetails)) {
                         return { valid: false, message: 'Invalid PayPal email address' };
@@ -4005,6 +4806,7 @@ const firebaseConfig = {
                     break;
                     
                 case 'phonepe':
+                    // PhonePe validation (phone number or UPI)
                     if (trimmedDetails.includes('@')) {
                         if (!/^[a-zA-Z0-9.\-_]{2,49}@[a-zA-Z]{2,}$/.test(trimmedDetails)) {
                             return { valid: false, message: 'Invalid PhonePe UPI ID' };
@@ -4021,6 +4823,7 @@ const firebaseConfig = {
                     return { valid: false, message: 'Invalid payment method' };
             }
             
+            // Save to localStorage
             localStorage.setItem('paymentDetails', JSON.stringify(paymentDetails));
             walletValidated = true;
             
@@ -4063,717 +4866,6 @@ const firebaseConfig = {
         function hidePaymentValidationMessage() {
             if (paymentValidationMessage) {
                 paymentValidationMessage.classList.add('hidden');
-            }
-        }
-        
-        // ===== ADSGRAM FUNCTIONS =====
-        function initializeAdsGram() {
-            console.log("🎯 Initializing AdsGram...");
-            
-            if (typeof window.Adsgram !== 'undefined') {
-                try {
-                    adsGramInterstitialController = window.Adsgram.init({ blockId: adsGramInterstitialBlockId });
-                    adsGramRewardController = window.Adsgram.init({ blockId: adsGramRewardBlockId });
-                    
-                    adsGramLoaded = true;
-                    console.log("✅ AdsGram SDK initialized successfully");
-                    
-                    updateAdStatus('adsgram');
-                    return true;
-                } catch (error) {
-                    console.log("❌ AdsGram initialization error:", error);
-                    return false;
-                }
-            } else {
-                console.log("⚠️ AdsGram SDK not available");
-                return false;
-            }
-        }
-        
-        async function showAdsGramInterstitial() {
-            if (!adsGramLoaded || !adsGramInterstitialController) {
-                console.log("❌ AdsGram interstitial not loaded");
-                throw new Error("AdsGram not loaded");
-            }
-            
-            console.log("🎯 Showing AdsGram interstitial ad...");
-            currentAdProvider = 'TempMail44.com';
-            updateAdProviderDisplay();
-            
-            return new Promise((resolve, reject) => {
-                try {
-                    adsGramInterstitialController.show()
-                        .then(() => {
-                            console.log("✅ AdsGram interstitial ad completed");
-                            resolve(true);
-                        })
-                        .catch((error) => {
-                            console.log("❌ AdsGram interstitial failed:", error);
-                            reject(error);
-                        });
-                    
-                } catch (error) {
-                    console.log("❌ AdsGram interstitial error:", error);
-                    reject(error);
-                }
-            });
-        }
-        
-        async function showAdsGramReward() {
-            if (!adsGramLoaded || !adsGramRewardController) {
-                console.log("❌ AdsGram reward not loaded");
-                throw new Error("AdsGram reward not loaded");
-            }
-            
-            console.log("🎯 Showing AdsGram reward ad...");
-            currentAdProvider = 'TempMail44.com';
-            updateAdProviderDisplay();
-            
-            return new Promise((resolve, reject) => {
-                try {
-                    adsGramRewardController.show()
-                        .then(() => {
-                            console.log("✅ AdsGram reward ad completed");
-                            resolve(true);
-                        })
-                        .catch((error) => {
-                            console.log("❌ AdsGram reward failed:", error);
-                            reject(error);
-                        });
-                    
-                } catch (error) {
-                    console.log("❌ AdsGram reward error:", error);
-                    reject(error);
-                }
-            });
-        }
-        
-        // ===== SPECIAL TASK FUNCTIONS =====
-        function showSpecialTask() {
-            const newCount = (userData.dailyAdCount || 0) + 1;
-            const specialTaskCount = appConfig.watchAdSpecialTaskCount || 10;
-            
-            if (newCount > 0 && newCount % specialTaskCount === 0) {
-                specialAdPopup.innerHTML = `
-                    <div class="special-task-content">
-                        <div class="special-task-icon">
-                            <i class="fas fa-gem"></i>
-                        </div>
-                        <div class="special-task-title">Special Bonus!</div>
-                        <div class="special-task-info">
-                            <p><i class="fas fa-info-circle mr-2"></i>Complete this special task to get extra bonus!</p>
-                        </div>
-                        <div class="special-task-message">
-                            1. Click 'Watch Ad'.<br>
-                            2. **Click** on the ad that appears.<br>
-                            3. Wait for <span id="special-ad-timer-total">${appConfig.watchAdSpecialTaskTimer || 60}</span> seconds on the website.<br>
-                            4. Come back to claim your coins.
-                        </div>
-                        <div id="special-ad-status" class="text-center font-semibold my-2 text-yellow-400"></div>
-                        <button id="show-special-ad-btn" class="btn-accent w-full p-4 text-lg font-bold mt-4">
-                            <i class="fas fa-play-circle mr-2"></i> Watch Ad
-                        </button>
-                        <div id="special-ad-timer-container" class="hidden mt-4">
-                            <div class="special-task-timer">
-                                <i class="fas fa-clock"></i>
-                                <span id="special-ad-timer">${appConfig.watchAdSpecialTaskTimer || 60}</span>s
-                            </div>
-                            <div class="special-task-progress">
-                                <div class="special-task-progress-bar" id="special-ad-progress-bar"></div>
-                            </div>
-                        </div>
-                        <button id="claim-special-ad-final-btn" class="hidden btn-accent w-full p-4 text-lg font-bold mt-4">
-                            <i class="fas fa-gift mr-2"></i> Claim Bonus
-                        </button>
-                    </div>`;
-                specialAdPopup.style.display = 'flex';
-                
-                setTimeout(() => {
-                    const showAdBtn = document.getElementById('show-special-ad-btn');
-                    const claimBtn = document.getElementById('claim-special-ad-final-btn');
-                    
-                    if (showAdBtn) {
-                        showAdBtn.addEventListener('click', startSpecialTaskAd);
-                    }
-                    if (claimBtn) {
-                        claimBtn.addEventListener('click', () => {
-                            finalizeSpecialAd('watchVideo', appConfig.watchAdSpecialTaskReward || 100, 'watch_video_special_task');
-                        });
-                    }
-                }, 100);
-            }
-        }
-        
-        function showColorGameSpecialTask() {
-            specialAdPopup.innerHTML = `
-                <div class="special-task-content">
-                    <div class="special-task-icon">
-                        <i class="fas fa-palette"></i>
-                    </div>
-                    <div class="special-task-title">Color Game Special Bonus!</div>
-                    <div class="special-task-info">
-                        <p><i class="fas fa-info-circle mr-2"></i>Complete this special task to get extra bonus!</p>
-                    </div>
-                    <div class="special-task-message">
-                        1. Click 'Watch Ad'.<br>
-                        2. **Click** on the ad that appears.<br>
-                        3. Wait for <span id="special-ad-timer-total">${appConfig.colorGameSpecialTaskTimer || 45}</span> seconds on the website.<br>
-                        4. Come back to claim your coins.
-                    </div>
-                    <div id="special-ad-status" class="text-center font-semibold my-2 text-yellow-400"></div>
-                    <button id="show-special-ad-btn" class="btn-accent w-full p-4 text-lg font-bold mt-4">
-                        <i class="fas fa-play-circle mr-2"></i> Watch Ad
-                    </button>
-                    <div id="special-ad-timer-container" class="hidden mt-4">
-                        <div class="special-task-timer">
-                            <i class="fas fa-clock"></i>
-                            <span id="special-ad-timer">${appConfig.colorGameSpecialTaskTimer || 45}</span>s
-                        </div>
-                        <div class="special-task-progress">
-                            <div class="special-task-progress-bar" id="special-ad-progress-bar"></div>
-                        </div>
-                    </div>
-                    <button id="claim-special-ad-final-btn" class="hidden btn-accent w-full p-4 text-lg font-bold mt-4">
-                        <i class="fas fa-gift mr-2"></i> Claim ${appConfig.colorGameSpecialTaskReward || 200} Coins
-                    </button>
-                </div>`;
-            
-            specialAdPopup.style.display = 'flex';
-            specialTaskAdCompleted = false;
-            
-            setTimeout(() => {
-                const showAdBtn = document.getElementById('show-special-ad-btn');
-                const claimBtn = document.getElementById('claim-special-ad-final-btn');
-                
-                if (showAdBtn) {
-                    showAdBtn.addEventListener('click', startColorGameSpecialTaskAd);
-                }
-                if (claimBtn) {
-                    claimBtn.addEventListener('click', () => {
-                        finalizeSpecialAd('colorGame', appConfig.colorGameSpecialTaskReward || 200, 'color_game_special_task');
-                    });
-                }
-            }, 100);
-        }
-        
-        async function startColorGameSpecialTaskAd() {
-            const adStatus = document.getElementById('special-ad-status');
-            const showAdBtn = document.getElementById('show-special-ad-btn');
-            showAdBtn.classList.add('hidden');
-            adStatus.textContent = "Waiting for you to click on the ad...";
-
-            showAdLoadingPopup("Loading special ad for Color Game...");
-            
-            try {
-                const taddyReady = await ensureTaddyLoaded();
-                
-                if (taddyReady && taddyAdsService && typeof taddyAdsService.interstitial === 'function') {
-                    currentAdProvider = 'TempMail44.com';
-                    updateAdProviderDisplay();
-                    await showTaddyAds();
-                    hideAdLoadingPopup();
-                    
-                    let clickCheckTimeout;
-
-                    const onBlur = () => {
-                        window.removeEventListener('blur', onBlur);
-                        clearTimeout(clickCheckTimeout);
-                        adStatus.textContent = "Click successful! Now waiting...";
-                        document.getElementById('special-ad-timer-container').classList.remove('hidden');
-                        startSpecialTaskCountdown();
-                    };
-
-                    window.addEventListener('blur', onBlur);
-
-                    clickCheckTimeout = setTimeout(() => {
-                        window.removeEventListener('blur', onBlur);
-                        adStatus.textContent = "You didn't click the ad. Try again.";
-                        showAdBtn.classList.remove('hidden');
-                    }, 15000);
-                } else {
-                    hideAdLoadingPopup();
-                    throw new Error("Taddy.pro ads not available for Color Game");
-                }
-            } catch (error) {
-                hideAdLoadingPopup();
-                showAlert("Taddy.pro ad not available for Color Game Special Task. Please try again later.");
-                showAdBtn.classList.remove('hidden');
-                adStatus.textContent = "";
-            }
-        }
-        
-        function showLudoDiceSpecialTask() {
-            specialAdPopup.innerHTML = `
-                <div class="special-task-content">
-                    <div class="special-task-icon">
-                        <i class="fas fa-dice"></i>
-                    </div>
-                    <div class="special-task-title">Ludo Dice Special Bonus!</div>
-                    <div class="special-task-info">
-                        <p><i class="fas fa-info-circle mr-2"></i>Complete this special task to get extra bonus!</p>
-                    </div>
-                    <div class="special-task-message">
-                        1. Click 'Watch Ad'.<br>
-                        2. **Click** on the ad that appears.<br>
-                        3. Wait for <span id="special-ad-timer-total">${appConfig.ludoDiceSpecialTaskTimer || 30}</span> seconds on the website.<br>
-                        4. Come back to claim your coins.
-                    </div>
-                    <div id="special-ad-status" class="text-center font-semibold my-2 text-yellow-400"></div>
-                    <button id="show-special-ad-btn" class="btn-accent w-full p-4 text-lg font-bold mt-4">
-                        <i class="fas fa-play-circle mr-2"></i> Watch Ad
-                    </button>
-                    <div id="special-ad-timer-container" class="hidden mt-4">
-                        <div class="special-task-timer">
-                            <i class="fas fa-clock"></i>
-                            <span id="special-ad-timer">${appConfig.ludoDiceSpecialTaskTimer || 30}</span>s
-                        </div>
-                        <div class="special-task-progress">
-                            <div class="special-task-progress-bar" id="special-ad-progress-bar"></div>
-                        </div>
-                    </div>
-                    <button id="claim-special-ad-final-btn" class="hidden btn-accent w-full p-4 text-lg font-bold mt-4">
-                        <i class="fas fa-gift mr-2"></i> Claim ${appConfig.ludoDiceSpecialTaskReward || 150} Coins
-                    </button>
-                </div>`;
-            
-            specialAdPopup.style.display = 'flex';
-            specialTaskAdCompleted = false;
-            
-            setTimeout(() => {
-                const showAdBtn = document.getElementById('show-special-ad-btn');
-                const claimBtn = document.getElementById('claim-special-ad-final-btn');
-                
-                if (showAdBtn) {
-                    showAdBtn.addEventListener('click', startSpecialTaskAd);
-                }
-                if (claimBtn) {
-                    claimBtn.addEventListener('click', () => {
-                        finalizeSpecialAd('ludoDice', appConfig.ludoDiceSpecialTaskReward || 150, 'ludo_dice_special_task');
-                    });
-                }
-            }, 100);
-        }
-        
-        function startSpecialTaskAd() {
-            const adStatus = document.getElementById('special-ad-status');
-            const showAdBtn = document.getElementById('show-special-ad-btn');
-            showAdBtn.classList.add('hidden');
-            adStatus.textContent = "Waiting for you to click on the ad...";
-
-            showAdLoadingPopup("Loading special ad...");
-            
-            showAds().then(() => {
-                hideAdLoadingPopup();
-            }).catch(err => {
-                hideAdLoadingPopup();
-                showAlert(err);
-                showAdBtn.classList.remove('hidden');
-                adStatus.textContent = "";
-            });
-
-            let clickCheckTimeout;
-
-            const onBlur = () => {
-                window.removeEventListener('blur', onBlur);
-                clearTimeout(clickCheckTimeout);
-                adStatus.textContent = "Click successful! Now waiting...";
-                document.getElementById('special-ad-timer-container').classList.remove('hidden');
-                startSpecialTaskCountdown();
-            };
-
-            window.addEventListener('blur', onBlur);
-
-            clickCheckTimeout = setTimeout(() => {
-                window.removeEventListener('blur', onBlur);
-                adStatus.textContent = "You didn't click the ad. Try again.";
-                showAdBtn.classList.remove('hidden');
-            }, 15000);
-        }
-        
-        function startSpecialTaskCountdown() {
-            const timerEl = document.getElementById('special-ad-timer');
-            const totalEl = document.getElementById('special-ad-timer-total');
-            
-            if (!timerEl || !totalEl) return;
-            
-            specialTaskCountdownSeconds = parseInt(totalEl.textContent) || 60;
-            timerEl.textContent = specialTaskCountdownSeconds;
-            
-            const progressBar = document.getElementById('special-ad-progress-bar');
-            if (progressBar) {
-                progressBar.style.width = '0%';
-            }
-            
-            let progress = 0;
-            const totalSeconds = specialTaskCountdownSeconds;
-            const progressStep = 100 / totalSeconds;
-            
-            if (specialTaskProgressInterval) {
-                clearInterval(specialTaskProgressInterval);
-            }
-            
-            specialTaskProgressInterval = setInterval(() => {
-                progress += progressStep;
-                if (progressBar) {
-                    progressBar.style.width = `${progress}%`;
-                }
-                
-                if (progress >= 100) {
-                    clearInterval(specialTaskProgressInterval);
-                    completeSpecialTaskCountdown();
-                }
-            }, 1000);
-            
-            if (specialTaskTimer) {
-                clearInterval(specialTaskTimer);
-            }
-            
-            specialTaskTimer = setInterval(() => {
-                specialTaskCountdownSeconds--;
-                timerEl.textContent = specialTaskCountdownSeconds;
-                
-                if (specialTaskCountdownSeconds <= 0) {
-                    clearInterval(specialTaskTimer);
-                    completeSpecialTaskCountdown();
-                }
-            }, 1000);
-        }
-        
-        function completeSpecialTaskCountdown() {
-            document.getElementById('special-ad-timer-container').classList.add('hidden');
-            document.getElementById('claim-special-ad-final-btn').classList.remove('hidden');
-            document.getElementById('special-ad-status').textContent = "You can now claim your bonus!";
-            specialTaskAdCompleted = true;
-        }
-        
-        async function finalizeSpecialAd(gameId, reward, taskType) {
-            if (!specialTaskAdCompleted) {
-                showAlert("Please complete the timer first!");
-                return;
-            }
-            
-            await updateBalance(reward, taskType, `Completed special ${gameId} task`);
-            showAlert(`🎉 Congratulations! You earned a special bonus of ${reward} coins.`);
-            specialAdPopup.style.display = 'none';
-            
-            specialTaskAdCompleted = false;
-            if (specialTaskTimer) clearInterval(specialTaskTimer);
-            if (specialTaskProgressInterval) clearInterval(specialTaskProgressInterval);
-            
-            if (gameId === 'colorGame') {
-                startGame();
-            } else if (gameId === 'ludoDice') {
-                if (currentLudoWin > 0) {
-                    await updateBalance(currentLudoWin, 'ludo_game', `Won ${currentLudoWin} points from Ludo dice`);
-                }
-                diceResultPopup.style.display = 'none';
-                diceClaimBtn.disabled = false;
-                
-                adsgramContainer.classList.add('hidden');
-                adsgramLoading.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading ad...';
-                adsgramLoading.classList.add('hidden');
-                adsgramRewardInfo.classList.add('hidden');
-            }
-        }
-        
-        function showAdLoadingPopup(message) {
-            const adLoadingPopup = document.getElementById('ad-loading-popup');
-            const adLoadingMessage = document.getElementById('ad-loading-message');
-            
-            if (adLoadingMessage) {
-                adLoadingMessage.textContent = message || 'Please wait while we load the advertisement...';
-            }
-            
-            if (adProviderNameEl && currentAdProvider) {
-                adProviderNameEl.textContent = `Provider: ${currentAdProvider}`;
-            } else if (adProviderNameEl) {
-                adProviderNameEl.textContent = 'Provider: Loading...';
-            }
-            
-            if (adLoadingPopup) {
-                adLoadingPopup.style.display = 'flex';
-                
-                const closeBtn = adLoadingPopup.querySelector('.ad-loading-close');
-                if (closeBtn) {
-                    closeBtn.onclick = hideAdLoadingPopup;
-                }
-            }
-        }
-        
-        function hideAdLoadingPopup() {
-            const adLoadingPopup = document.getElementById('ad-loading-popup');
-            if (adLoadingPopup) {
-                adLoadingPopup.style.display = 'none';
-            }
-        }
-        
-        function updateAdProviderDisplay() {
-            if (adProviderNameEl && currentAdProvider) {
-                adProviderNameEl.textContent = `Provider: ${currentAdProvider}`;
-            }
-        }
-        
-        // ===== GAME RESET SYSTEM =====
-        async function checkForGameResets() {
-            try {
-                const resetFlagsRef = doc(db, "config", "resetFlags");
-                const resetSnap = await getDoc(resetFlagsRef);
-                
-                if (resetSnap.exists()) {
-                    const resetData = resetSnap.data();
-                    const today = new Date().toISOString().split('T')[0];
-                    
-                    const games = ['ludoDice', 'colorGame', 'watchVideo'];
-                    
-                    games.forEach(gameId => {
-                        const resetDate = resetData[`${gameId}_reset_date`];
-                        const lastReset = localStorage.getItem(`${gameId}_last_reset`);
-                        
-                        if (resetDate === today && lastReset !== today) {
-                            for (let i = 0; i < localStorage.length; i++) {
-                                const key = localStorage.key(i);
-                                if (key.includes(`${gameId}_playCount_${currentUser.uid}_`)) {
-                                    localStorage.removeItem(key);
-                                }
-                            }
-                            
-                            localStorage.setItem(`${gameId}_last_reset`, today);
-                            
-                            console.log(`🔄 ${gameId} limit reset by admin`);
-                            
-                            const gameNames = {
-                                'ludoDice': 'Ludo Dice',
-                                'colorGame': 'Color Game',
-                                'watchVideo': 'Watch & Earn'
-                            };
-                            showAlert(`🎮 ${gameNames[gameId]} limit has been reset by admin! You can play again.`);
-                        }
-                    });
-                    
-                    const fullResetDate = resetData[`full_reset_date`];
-                    const lastFullReset = localStorage.getItem(`full_last_reset`);
-                    
-                    if (fullResetDate === today && lastFullReset !== today) {
-                        games.forEach(gameId => {
-                            for (let i = 0; i < localStorage.length; i++) {
-                                const key = localStorage.key(i);
-                                if (key.includes(`${gameId}_playCount_`)) {
-                                    localStorage.removeItem(key);
-                                }
-                            }
-                        });
-                        
-                        localStorage.setItem(`full_last_reset`, today);
-                        showAlert("♻️ All game limits have been reset by admin!");
-                    }
-                }
-                
-                updatePlayCountDisplay();
-                
-            } catch (error) {
-                console.error("Error checking resets:", error);
-            }
-        }
-        
-        // ===== FIXED: WEBSITE VISIT RESET SYSTEM =====
-        async function checkWebsiteVisitReset() {
-            try {
-                const configRef = doc(db, "config", "main");
-                const configSnap = await getDoc(configRef);
-                
-                if (configSnap.exists()) {
-                    const config = configSnap.data();
-                    const lastWebsiteResetDate = config.lastWebsiteResetDate || '1970-01-01';
-                    const lastResetProcessed = localStorage.getItem('lastWebsiteResetProcessed') || '1970-01-01';
-                    
-                    if (lastWebsiteResetDate > lastResetProcessed) {
-                        for (let i = 0; i < localStorage.length; i++) {
-                            const key = localStorage.key(i);
-                            if (key.includes('website_visit_') || key.includes('visitedSitesToday')) {
-                                localStorage.removeItem(key);
-                            }
-                        }
-                        
-                        localStorage.setItem('lastWebsiteResetProcessed', lastWebsiteResetDate);
-                        console.log("✅ Website visits reset by admin");
-                        
-                        if (userData) {
-                            userData.visitedSitesToday = [];
-                            userData.lastSiteVisitDate = new Date().toISOString().split('T')[0];
-                            if (document.getElementById('visit-earn-page').classList.contains('active')) {
-                                populateWebsiteList();
-                            }
-                        }
-                    }
-                    
-                    if (!Array.isArray(config.websitesToVisit)) {
-                        console.log("⚠️ websitesToVisit is not an array, initializing...");
-                        
-                        const isFreshInstall = !config.socialTasks && !config.sliderBanners && !config.referralRules;
-                        
-                        const defaultWebsites = [
-                            { name: "Google", link: "https://www.google.com", reward: 10, timer: 30 },
-                            { name: "YouTube", link: "https://www.youtube.com", reward: 15, timer: 45 },
-                            { name: "Facebook", link: "https://www.facebook.com", reward: 20, timer: 60 }
-                        ];
-                        
-                        if (isFreshInstall) {
-                            await updateDoc(configRef, {
-                                websitesToVisit: defaultWebsites,
-                                updatedAt: serverTimestamp()
-                            }, { merge: true });
-                            
-                            console.log("✅ Default websites set for fresh install");
-                            
-                            appConfig.websitesToVisit = defaultWebsites;
-                        } else {
-                            await updateDoc(configRef, {
-                                websitesToVisit: [],
-                                updatedAt: serverTimestamp()
-                            }, { merge: true });
-                            
-                            console.log("✅ Reset corrupted websites array");
-                            appConfig.websitesToVisit = [];
-                        }
-                    } else if (config.websitesToVisit.length === 0) {
-                        console.log("⚠️ Empty websites array - admin can add websites");
-                        appConfig.websitesToVisit = [];
-                    }
-                }
-            } catch (error) {
-                console.error("Error checking website reset:", error);
-            }
-        }
-        
-        function updateGameLimitsDisplay() {
-            const ludoConfig = gamesConfig.ludoDice || {};
-            const ludoDailyLimit = ludoConfig.dailyPlayLimit || 0;
-            const ludoTimeLimit = ludoConfig.dailyTimeLimit || 0;
-            
-            let ludoLimitsText = '';
-            if (ludoDailyLimit > 0) ludoLimitsText += `Daily plays: ${ludoDailyLimit}`;
-            if (ludoTimeLimit > 0) ludoLimitsText += ` | Time: ${ludoTimeLimit} min`;
-            
-            const ludoLimitsEl = document.getElementById('ludo-game-limits');
-            if (ludoLimitsEl) {
-                ludoLimitsEl.textContent = ludoLimitsText;
-                ludoLimitsEl.style.display = ludoLimitsText ? 'block' : 'none';
-            }
-            
-            const colorConfig = gamesConfig.colorGame || {};
-            const colorDailyLimit = colorConfig.dailyPlayLimit || 0;
-            const colorTimeLimit = colorConfig.dailyTimeLimit || 0;
-            
-            let colorLimitsText = '';
-            if (colorDailyLimit > 0) colorLimitsText += `Daily plays: ${colorDailyLimit}`;
-            if (colorTimeLimit > 0) colorLimitsText += ` | Time: ${colorTimeLimit} min`;
-            
-            const colorLimitsEl = document.getElementById('color-game-limits');
-            if (colorLimitsEl) {
-                colorLimitsEl.textContent = colorLimitsText;
-                colorLimitsEl.style.display = colorLimitsText ? 'block' : 'none';
-            }
-            
-            const videoConfig = gamesConfig.watchVideo || {};
-            const videoDailyLimit = videoConfig.dailyPlayLimit || 0;
-            
-            if (videoDailyLimit > 0) {
-                const watchEarnCard = document.getElementById('watch-earn-card');
-                if (watchEarnCard) {
-                    const existingText = watchEarnCard.querySelector('.text-sm').textContent;
-                    watchEarnCard.querySelector('.text-sm').textContent = 
-                        `Instant ${videoConfig.rewardPerPlay || 50} coins | ${videoDailyLimit} plays/day`;
-                }
-            }
-        }
-        
-        function updatePlayCountDisplay() {
-            if (!currentUser) return;
-            
-            const today = new Date().toISOString().split('T')[0];
-            
-            const ludoPlayCountKey = `ludoDice_playCount_${currentUser.uid}_${today}`;
-            const ludoPlayCount = parseInt(localStorage.getItem(ludoPlayCountKey) || '0');
-            const ludoConfig = gamesConfig.ludoDice || {};
-            const ludoLimit = ludoConfig.dailyPlayLimit || 0;
-            
-            const ludoDisplayEl = document.getElementById('ludo-play-count-display');
-            if (ludoDisplayEl && ludoLimit > 0) {
-                ludoDisplayEl.textContent = `Today: ${ludoPlayCount}/${ludoLimit} plays`;
-                ludoDisplayEl.style.display = 'block';
-            }
-            
-            const colorPlayCountKey = `colorGame_playCount_${currentUser.uid}_${today}`;
-            const colorPlayCount = parseInt(localStorage.getItem(colorPlayCountKey) || '0');
-            const colorConfig = gamesConfig.colorGame || {};
-            const colorLimit = colorConfig.dailyPlayLimit || 0;
-            
-            const colorDisplayEl = document.getElementById('color-play-count-display');
-            if (colorDisplayEl && colorLimit > 0) {
-                colorDisplayEl.textContent = `Today: ${colorPlayCount}/${colorLimit} plays`;
-                colorDisplayEl.style.display = 'block';
-            }
-        }
-        
-        function updateGamePageDisplays() {
-            const ludoConfig = gamesConfig.ludoDice || {};
-            if (ludoConfig.visible === false) {
-                document.getElementById('ludo-game-page').style.display = 'none';
-            } else {
-                document.getElementById('ludo-game-page').style.display = 'block';
-                const gameCost = ludoConfig.gameCost || 10;
-                const winMultiplier = ludoConfig.winMultiplier || 10;
-                const rewardPerPlay = ludoConfig.rewardPerPlay || 10;
-                
-                document.getElementById('ludo-game-cost').textContent = `${gameCost} Points`;
-                document.getElementById('roll-btn-text').textContent = `ROLL DICE - ${gameCost} POINTS`;
-                document.getElementById('ludo-win-multiplier').textContent = `Win multiplier: Dice result × ${winMultiplier}`;
-                
-                const statusEl = document.getElementById('ludo-game-status');
-                if (statusEl) {
-                    statusEl.className = `game-status ${ludoConfig.visible === false ? 'game-status-hidden' : 'game-status-visible'}`;
-                    statusEl.textContent = ludoConfig.visible === false ? 'HIDDEN' : 'VISIBLE';
-                }
-                
-                if (!document.getElementById('ludo-game-page').classList.contains('active')) {
-                    document.getElementById('ludo-game-page').style.display = 'none';
-                }
-            }
-            
-            const colorConfig = gamesConfig.colorGame || {};
-            if (colorConfig.visible === false) {
-                document.getElementById('color-game-page').style.display = 'none';
-            } else {
-                document.getElementById('color-game-page').style.display = 'block';
-                const rewardPerPlay = colorConfig.rewardPerPlay || 100;
-                
-                document.getElementById('color-game-reward-display').textContent = `Win up to ${rewardPerPlay} coins`;
-                
-                const statusEl = document.getElementById('color-game-status');
-                if (statusEl) {
-                    statusEl.className = `game-status ${colorConfig.visible === false ? 'game-status-hidden' : 'game-status-visible'}`;
-                    statusEl.textContent = colorConfig.visible === false ? 'HIDDEN' : 'VISIBLE';
-                }
-                
-                if (!document.getElementById('color-game-page').classList.contains('active')) {
-                    document.getElementById('color-game-page').style.display = 'none';
-                }
-            }
-            
-            const videoConfig = gamesConfig.watchVideo || {};
-            if (videoConfig.visible === false) {
-                const watchEarnCard = document.getElementById('watch-earn-card');
-                if (watchEarnCard) watchEarnCard.style.display = 'none';
-            } else {
-                const watchEarnCard = document.getElementById('watch-earn-card');
-                if (watchEarnCard) {
-                    watchEarnCard.style.display = 'block';
-                    const rewardPerPlay = videoConfig.rewardPerPlay || 50;
-                    const rewardTextEl = watchEarnCard.querySelector('.text-sm');
-                    if (rewardTextEl) {
-                        rewardTextEl.textContent = `Instant ${rewardPerPlay} coins`;
-                    }
-                }
             }
         }
     </script>
