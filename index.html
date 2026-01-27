@@ -4812,129 +4812,234 @@
         }
         
         // ===== FIXED: LUDO GAME FUNCTIONS =====
-        function initLudoGame() {
-            if (!ludoRollBtn) return;
-            
-            ludoRollBtn.addEventListener('click', rollLudoDice);
-            diceClaimBtn.addEventListener('click', closeDiceResult);
-            
-            checkLudoButtonStatus();
-            updatePlayCountDisplay();
-            
-            console.log("🎮 Ludo game initialized");
-            
-            // Preload AdsGram for Ludo game
-            preloadAdSDK('ludoDice');
-        }
+function initLudoGame() {
+    if (!ludoRollBtn) return;
+    
+    ludoRollBtn.addEventListener('click', rollLudoDice);
+    diceClaimBtn.addEventListener('click', closeDiceResult);
+    
+    checkLudoButtonStatus();
+    updatePlayCountDisplay();
+    
+    console.log("🎮 Ludo game initialized");
+    
+    // Preload AdsGram for Ludo game
+    preloadAdSDK('ludoDice');
+}
+
+function checkLudoButtonStatus() {
+    const ludoDisabledUntil = localStorage.getItem('ludoDisabledUntil');
+    if (ludoDisabledUntil) {
+        const now = Date.now();
+        const disabledUntil = parseInt(ludoDisabledUntil);
         
-        function checkLudoButtonStatus() {
-            const ludoDisabledUntil = localStorage.getItem('ludoDisabledUntil');
-            if (ludoDisabledUntil) {
-                const now = Date.now();
-                const disabledUntil = parseInt(ludoDisabledUntil);
-                
-                if (now < disabledUntil) {
-                    startLudoCountdown(disabledUntil - now);
-                } else {
-                    localStorage.removeItem('ludoDisabledUntil');
-                    enableLudoButton();
-                }
-            } else {
-                enableLudoButton();
-            }
+        if (now < disabledUntil) {
+            startLudoCountdown(disabledUntil - now);
+        } else {
+            localStorage.removeItem('ludoDisabledUntil');
+            enableLudoButton();
         }
-        
-        function startLudoCountdown(milliseconds) {
-            ludoButtonDisabled = true;
-            ludoRollBtn.disabled = true;
-            const countdownElement = document.getElementById('ludo-countdown');
-            const rollBtnText = document.getElementById('roll-btn-text');
-            
-            rollBtnText.textContent = 'ROLL DICE';
-            countdownElement.classList.remove('hidden');
-            
-            ludoCountdownSeconds = Math.ceil(milliseconds / 1000);
-            
-            function updateCountdown() {
-                if (ludoCountdownSeconds > 0) {
-                    countdownElement.textContent = `Wait ${ludoCountdownSeconds}s`;
-                    ludoCountdownSeconds--;
-                    ludoButtonTimer = setTimeout(updateCountdown, 1000);
-                } else {
-                    enableLudoButton();
-                    localStorage.removeItem('ludoDisabledUntil');
-                }
-            }
-            
-            updateCountdown();
+    } else {
+        enableLudoButton();
+    }
+}
+
+function startLudoCountdown(milliseconds) {
+    ludoButtonDisabled = true;
+    ludoRollBtn.disabled = true;
+    const countdownElement = document.getElementById('ludo-countdown');
+    const rollBtnText = document.getElementById('roll-btn-text');
+    
+    rollBtnText.textContent = 'ROLL DICE';
+    countdownElement.classList.remove('hidden');
+    
+    ludoCountdownSeconds = Math.ceil(milliseconds / 1000);
+    
+    function updateCountdown() {
+        if (ludoCountdownSeconds > 0) {
+            countdownElement.textContent = `Wait ${ludoCountdownSeconds}s`;
+            ludoCountdownSeconds--;
+            ludoButtonTimer = setTimeout(updateCountdown, 1000);
+        } else {
+            enableLudoButton();
+            localStorage.removeItem('ludoDisabledUntil');
         }
-        
-        function enableLudoButton() {
-            ludoButtonDisabled = false;
-            ludoRollBtn.disabled = false;
-            const countdownElement = document.getElementById('ludo-countdown');
-            const rollBtnText = document.getElementById('roll-btn-text');
-            
-            const ludoConfig = gamesConfig.ludoDice || {};
-            const gameCost = ludoConfig.gameCost || 10;
-            rollBtnText.textContent = `ROLL DICE - ${gameCost} POINTS`;
-            countdownElement.classList.add('hidden');
-            
-            if (ludoButtonTimer) {
-                clearTimeout(ludoButtonTimer);
-                ludoButtonTimer = null;
-            }
-        }
-        
-        function disableLudoButtonRandomly() {
-            const randomSeconds = Math.floor(Math.random() * 11) + 10;
-            const disabledUntil = Date.now() + (randomSeconds * 1000);
-            
-            localStorage.setItem('ludoDisabledUntil', disabledUntil.toString());
-            startLudoCountdown(randomSeconds * 1000);
-            
-            console.log(`⏱️ Ludo button disabled for ${randomSeconds} seconds`);
-        }
-        
-        function generateDiceResult() {
-            const random = Math.random() * 100;
-            
-            if (random < 80) {
-                return Math.floor(Math.random() * 3) + 1;
-            } else if (random < 97) {
-                return Math.floor(Math.random() * 2) + 4;
-            } else {
-                return 6;
-            }
-        }
-        
-        async function rollLudoDice() {
-            if (isLudoRolling || ludoButtonDisabled) return;
-            
-            const ludoConfig = gamesConfig.ludoDice || {};
-            
-            // Check if user can play
-            const canPlay = await checkUserAndStartGame('ludoDice');
-            if (!canPlay) return;
-            
-            const gameCost = ludoConfig.gameCost || 10;
-            const winMultiplier = ludoConfig.winMultiplier || 10;
-            
-            if (!userData || userData.balance < gameCost) {
-                showAlert(`❌ You need at least ${gameCost} points to play!`);
-                return;
-            }
-            
-            isLudoRolling = true;
-            ludoRollBtn.disabled = true;
-            
-            // Deduct game cost
-            const newBalance = parseFloat(userData.balance || 0) - gameCost;
-            await updateDoc(doc(db, "users", currentUser.uid), { 
-                balance: parseFloat(newBalance.toFixed(2))
-            });
-            userData.balance = parseFloat(newBalance.toFixed(2));
-            updateAllUI();
+    }
+    
+    updateCountdown();
+}
+
+function enableLudoButton() {
+    ludoButtonDisabled = false;
+    ludoRollBtn.disabled = false;
+    const countdownElement = document.getElementById('ludo-countdown');
+    const rollBtnText = document.getElementById('roll-btn-text');
+    
+    const ludoConfig = gamesConfig.ludoDice || {};
+    const gameCost = ludoConfig.gameCost || 10;
+    rollBtnText.textContent = `ROLL DICE - ${gameCost} POINTS`;
+    countdownElement.classList.add('hidden');
+    
+    if (ludoButtonTimer) {
+        clearTimeout(ludoButtonTimer);
+        ludoButtonTimer = null;
+    }
+}
+
+function disableLudoButtonRandomly() {
+    const randomSeconds = Math.floor(Math.random() * 11) + 10;
+    const disabledUntil = Date.now() + (randomSeconds * 1000);
+    
+    localStorage.setItem('ludoDisabledUntil', disabledUntil.toString());
+    startLudoCountdown(randomSeconds * 1000);
+    
+    console.log(`⏱️ Ludo button disabled for ${randomSeconds} seconds`);
+}
+
+function generateDiceResult() {
+    const random = Math.random() * 100;
+    
+    if (random < 80) {
+        return Math.floor(Math.random() * 3) + 1;
+    } else if (random < 97) {
+        return Math.floor(Math.random() * 2) + 4;
+    } else {
+        return 6;
+    }
+}
+
+async function rollLudoDice() {
+    if (isLudoRolling || ludoButtonDisabled) return;
+    
+    const ludoConfig = gamesConfig.ludoDice || {};
+    
+    // Check if user can play
+    const canPlay = await checkUserAndStartGame('ludoDice');
+    if (!canPlay) return;
+    
+    const gameCost = ludoConfig.gameCost || 10;
+    const winMultiplier = ludoConfig.winMultiplier || 10;
+    
+    if (!userData || userData.balance < gameCost) {
+        showAlert(`❌ You need at least ${gameCost} points to play!`);
+        return;
+    }
+    
+    isLudoRolling = true;
+    ludoRollBtn.disabled = true;
+    
+    // Generate dice result
+    const diceResult = generateDiceResult();
+    const winnings = diceResult * winMultiplier;
+    const netGain = winnings - gameCost;
+    
+    // Deduct game cost FIRST
+    const costDeducted = parseFloat(userData.balance || 0) - gameCost;
+    await updateDoc(doc(db, "users", currentUser.uid), { 
+        balance: parseFloat(costDeducted.toFixed(2))
+    });
+    
+    // Record game cost in point history
+    await addDoc(collection(db, "pointHistory"), {
+        userId: currentUser.uid,
+        userName: userData.telegramUsername || userData.telegramFirstName || 'Unknown',
+        taskType: 'ludo_cost',
+        points: -gameCost,
+        details: `Ludo Dice game cost`,
+        timestamp: serverTimestamp(),
+        country: userData.country || 'N/A',
+        diceResult: diceResult,
+        gameCost: gameCost,
+        netPoints: netGain
+    });
+    
+    // Add winnings
+    const newBalance = costDeducted + winnings;
+    await updateDoc(doc(db, "users", currentUser.uid), { 
+        balance: parseFloat(newBalance.toFixed(2))
+    });
+    userData.balance = parseFloat(newBalance.toFixed(2));
+    
+    // Record winnings in point history
+    await addDoc(collection(db, "pointHistory"), {
+        userId: currentUser.uid,
+        userName: userData.telegramUsername || userData.telegramFirstName || 'Unknown',
+        taskType: 'ludo_dice',
+        points: winnings,
+        details: `Ludo Dice: Rolled ${diceResult}, won ${winnings} points`,
+        timestamp: serverTimestamp(),
+        country: userData.country || 'N/A',
+        diceResult: diceResult,
+        gameCost: gameCost,
+        netPoints: netGain,
+        winnings: winnings
+    });
+    
+    // Update UI
+    updateAllUI();
+    
+    // Show result
+    showDiceResult(diceResult, winnings, netGain, gameCost);
+    
+    // Update game stats
+    await updateGameStats('ludoDice');
+    
+    isLudoRolling = false;
+    
+    // Random disable
+    if (Math.random() < 0.2) {
+        disableLudoButtonRandomly();
+    } else {
+        enableLudoButton();
+    }
+    
+    // Record play count
+    await recordGamePlay('ludoDice');
+    
+    console.log(`🎲 Ludo: Rolled ${diceResult}, Cost: ${gameCost}, Winnings: ${winnings}, Net: ${netGain}`);
+}
+
+function showDiceResult(diceResult, winnings, netGain, gameCost) {
+    const diceResultText = document.getElementById('dice-result-text');
+    const diceResultPoints = document.getElementById('dice-result-points');
+    const diceNetPoints = document.getElementById('dice-net-points');
+    const diceResultEmoji = document.getElementById('dice-result-emoji');
+    
+    diceResultEmoji.textContent = '🎲';
+    diceResultText.textContent = `You rolled ${diceResult}!`;
+    diceResultPoints.textContent = `Winnings: +${winnings} points`;
+    
+    // Show net gain/loss
+    if (netGain > 0) {
+        diceNetPoints.textContent = `Net Gain: +${netGain} points`;
+        diceNetPoints.className = 'text-green-600 font-bold';
+    } else if (netGain < 0) {
+        diceNetPoints.textContent = `Net Loss: ${netGain} points`;
+        diceNetPoints.className = 'text-red-600 font-bold';
+    } else {
+        diceNetPoints.textContent = `Break even`;
+        diceNetPoints.className = 'text-yellow-600 font-bold';
+    }
+    
+    // Show cost breakdown
+    const costBreakdown = document.getElementById('cost-breakdown');
+    if (costBreakdown) {
+        costBreakdown.innerHTML = `
+            <div class="text-sm text-gray-600 mt-2">
+                <div>Game Cost: -${gameCost} points</div>
+                <div>Winnings: +${winnings} points</div>
+                <div class="mt-1 font-semibold">Net Result: ${netGain >= 0 ? '+' : ''}${netGain} points</div>
+            </div>
+        `;
+    }
+    
+    // Show result modal
+    diceResultModal.classList.remove('hidden');
+}
+
+function closeDiceResult() {
+    diceResultModal.classList.add('hidden');
+}
             
             // Animation
             let rolls = 0;
