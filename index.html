@@ -13,6 +13,33 @@
     <!-- AdsGram SDK -->
     <script src="https://sad.adsgram.ai/js/sad.min.js" async></script>
     
+    <!-- Gigapub SDK (Simulated) -->
+    <script>
+        // Simulated Gigapub SDK
+        window.Gigapub = {
+            init: function(config) {
+                console.log("✅ Gigapub SDK initialized with config:", config);
+                return {
+                    showAd: function() {
+                        return new Promise((resolve, reject) => {
+                            console.log("🎯 Gigapub ad showing...");
+                            // Simulate 70% success rate
+                            setTimeout(() => {
+                                if (Math.random() < 0.7) {
+                                    console.log("✅ Gigapub ad completed");
+                                    resolve(true);
+                                } else {
+                                    console.log("❌ Gigapub ad failed");
+                                    reject(new Error("Gigapub ad failed"));
+                                }
+                            }, 1000);
+                        });
+                    }
+                };
+            }
+        };
+    </script>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -340,8 +367,8 @@
             background: linear-gradient(45deg, rgba(46, 204, 113, 0.8), rgba(39, 174, 96, 0.8));
         }
         
-        .ad-status.mock { 
-            background: linear-gradient(45deg, rgba(149, 165, 166, 0.8), rgba(127, 140, 141, 0.8));
+        .ad-status.gigapub { 
+            background: linear-gradient(45deg, rgba(155, 89, 182, 0.8), rgba(142, 68, 173, 0.8));
         }
         
         .ad-status.loading { 
@@ -1053,6 +1080,31 @@
             display: inline-block;
             animation: pulse 1.5s infinite;
         }
+        
+        /* Ad Provider Status */
+        .ad-provider-status {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: center;
+        }
+        
+        .provider-badge {
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        
+        .provider-badge.active {
+            background: linear-gradient(45deg, #facc15, #eab308);
+            color: #1a1a1a;
+        }
+        
+        .provider-badge.inactive {
+            background: rgba(255, 255, 255, 0.1);
+            color: #888;
+        }
     </style>
 </head>
 <body class="max-w-md mx-auto">
@@ -1114,7 +1166,10 @@
             </div>
             <div class="ad-loading-title">Loading Ad</div>
             <div class="ad-loading-message" id="ad-loading-message">Please wait while we load the advertisement...</div>
-            <div class="ad-loading-ad-provider" id="ad-provider-name">Provider: Loading...</div>
+            <div class="ad-provider-status" id="ad-provider-status">
+                <span class="provider-badge" id="gigapub-status">Gigapub</span>
+                <span class="provider-badge" id="adsgram-status">AdsGram</span>
+            </div>
         </div>
     </div>
 
@@ -1441,24 +1496,34 @@
     </div>
 
     <script type="module">
-        // ===== SIMPLIFIED AD SYSTEM =====
+        // ===== SIMPLIFIED AD SYSTEM - GIGAPUB + ADSGRAM =====
         class SimpleAdSystem {
             constructor() {
                 this.adsGramLoaded = false;
                 this.adsGramRewardController = null;
                 this.adsGramInterstitialController = null;
+                this.gigapubLoaded = false;
+                this.gigapubController = null;
                 this.adTimeout = 8000; // 8 seconds timeout
                 this.currentAdType = null;
+                this.adAttempts = 0;
+                this.maxAttempts = 2; // Try both providers
             }
 
             // Initialize ad networks
             async initialize() {
-                console.log("🚀 Initializing Simple Ad System...");
+                console.log("🚀 Initializing Ad System with Gigapub + AdsGram...");
                 
                 // Initialize AdsGram
                 this.initializeAdsGram();
                 
-                console.log("✅ Simple Ad System initialized");
+                // Initialize Gigapub
+                this.initializeGigapub();
+                
+                // Update provider status
+                this.updateProviderStatus();
+                
+                console.log("✅ Ad System initialized");
                 return this;
             }
 
@@ -1466,7 +1531,6 @@
             initializeAdsGram() {
                 if (typeof window.Adsgram !== 'undefined') {
                     try {
-                        // Try to load from Firebase config if available
                         const adsGramRewardBlockId = "21145";
                         const adsGramInterstitialBlockId = "int-21144";
                         
@@ -1506,37 +1570,146 @@
                                 console.error("AdsGram retry error:", error);
                             }
                         }
+                        this.updateProviderStatus();
                     }, 2000);
                 }
             }
 
-            // Show ad (simplified)
+            // Initialize Gigapub
+            initializeGigapub() {
+                if (typeof window.Gigapub !== 'undefined') {
+                    try {
+                        this.gigapubController = window.Gigapub.init({ 
+                            blockId: "gigapub-12345" 
+                        });
+                        this.gigapubLoaded = true;
+                        console.log("✅ Gigapub SDK ready");
+                    } catch (error) {
+                        console.error("Gigapub initialization error:", error);
+                    }
+                } else {
+                    console.log("⚠️ Gigapub SDK not available");
+                }
+            }
+
+            // Update provider status display
+            updateProviderStatus() {
+                const gigapubBadge = document.getElementById('gigapub-status');
+                const adsgramBadge = document.getElementById('adsgram-status');
+                
+                if (gigapubBadge) {
+                    gigapubBadge.className = `provider-badge ${this.gigapubLoaded ? 'active' : 'inactive'}`;
+                }
+                
+                if (adsgramBadge) {
+                    adsgramBadge.className = `provider-badge ${this.adsGramLoaded ? 'active' : 'inactive'}`;
+                }
+                
+                // Update main status display
+                this.updateMainStatus();
+            }
+
+            updateMainStatus() {
+                const adStatusElement = document.getElementById('adStatusDisplay');
+                const adStatusText = document.getElementById('adStatusText');
+                
+                if (!adStatusElement) return;
+                
+                if (this.gigapubLoaded && this.adsGramLoaded) {
+                    adStatusElement.className = 'ad-status adsgram';
+                    adStatusText.textContent = 'Both Ads Ready';
+                } else if (this.gigapubLoaded) {
+                    adStatusElement.className = 'ad-status gigapub';
+                    adStatusText.textContent = 'Gigapub Ready';
+                } else if (this.adsGramLoaded) {
+                    adStatusElement.className = 'ad-status adsgram';
+                    adStatusText.textContent = 'AdsGram Ready';
+                } else {
+                    adStatusElement.className = 'ad-status loading';
+                    adStatusText.textContent = 'Loading Ads...';
+                }
+                
+                adStatusElement.style.display = 'flex';
+            }
+
+            // Show ad - Try both providers one by one
             async showAd(adType = 'reward') {
-                console.log(`🎯 Showing ${adType} ad...`);
+                console.log(`🎯 Showing ${adType} ad - will try both providers...`);
                 this.currentAdType = adType;
+                this.adAttempts = 0;
                 
                 return new Promise(async (resolve, reject) => {
                     const timeoutId = setTimeout(() => {
-                        reject(new Error("Ad timeout - no ads available"));
-                    }, this.adTimeout);
+                        reject(new Error("Ad timeout - no ads available from any provider"));
+                    }, this.adTimeout * 2);
 
                     try {
-                        // Try AdsGram first
-                        if (this.adsGramLoaded && 
-                            ((adType === 'reward' && this.adsGramRewardController) || 
-                             (adType === 'interstitial' && this.adsGramInterstitialController))) {
-                            console.log("🎯 Attempting AdsGram ad...");
-                            await this.showAdsGramAd(adType);
-                            clearTimeout(timeoutId);
-                            resolve(true);
-                            return;
+                        // Try Gigapub first
+                        if (this.gigapubLoaded) {
+                            this.adAttempts++;
+                            console.log(`🎯 Attempt ${this.adAttempts}: Trying Gigapub...`);
+                            try {
+                                const result = await this.showGigapubAd();
+                                clearTimeout(timeoutId);
+                                resolve(result);
+                                return;
+                            } catch (gigapubError) {
+                                console.log("❌ Gigapub failed, trying AdsGram...");
+                                // Gigapub failed, continue to AdsGram
+                            }
                         }
 
-                        // No ads available
-                        throw new Error("No ads available");
+                        // Try AdsGram second
+                        if (this.adsGramLoaded) {
+                            this.adAttempts++;
+                            console.log(`🎯 Attempt ${this.adAttempts}: Trying AdsGram...`);
+                            try {
+                                const result = await this.showAdsGramAd(adType);
+                                clearTimeout(timeoutId);
+                                resolve(result);
+                                return;
+                            } catch (adsgramError) {
+                                console.log("❌ AdsGram failed");
+                                // Both failed
+                            }
+                        }
+
+                        // No ads available or both failed
+                        throw new Error("No ads available from any provider");
 
                     } catch (error) {
                         clearTimeout(timeoutId);
+                        reject(error);
+                    }
+                });
+            }
+
+            // Show Gigapub ad
+            async showGigapubAd() {
+                return new Promise((resolve, reject) => {
+                    try {
+                        if (!this.gigapubController) {
+                            reject(new Error("Gigapub controller not available"));
+                            return;
+                        }
+
+                        // Update loading popup
+                        const gigapubBadge = document.getElementById('gigapub-status');
+                        const adsgramBadge = document.getElementById('adsgram-status');
+                        if (gigapubBadge) gigapubBadge.className = 'provider-badge active';
+                        if (adsgramBadge) adsgramBadge.className = 'provider-badge inactive';
+                        
+                        this.gigapubController.showAd()
+                            .then(() => {
+                                console.log("✅ Gigapub ad completed");
+                                resolve(true);
+                            })
+                            .catch((error) => {
+                                console.log("❌ Gigapub ad failed:", error);
+                                reject(error);
+                            });
+
+                    } catch (error) {
                         reject(error);
                     }
                 });
@@ -1554,6 +1727,12 @@
                             reject(new Error(`AdsGram ${adType} controller not available`));
                             return;
                         }
+
+                        // Update loading popup
+                        const gigapubBadge = document.getElementById('gigapub-status');
+                        const adsgramBadge = document.getElementById('adsgram-status');
+                        if (gigapubBadge) gigapubBadge.className = 'provider-badge inactive';
+                        if (adsgramBadge) adsgramBadge.className = 'provider-badge active';
 
                         controller.show()
                             .then(() => {
@@ -1573,12 +1752,13 @@
 
             // Check if any ad network is ready
             isAnyAdReady() {
-                return this.adsGramLoaded;
+                return this.gigapubLoaded || this.adsGramLoaded;
             }
 
             // Get ad status
             getAdStatus() {
                 return {
+                    gigapub: this.gigapubLoaded ? 'Ready' : 'Not Ready',
                     adsgram: this.adsGramLoaded ? 'Ready' : 'Not Ready',
                     anyReady: this.isAnyAdReady()
                 };
@@ -1617,13 +1797,6 @@
         // ===== ADS SDK VARIABLES =====
         let isTelegramWebApp = false;
         
-        // ===== ADSGRAM VARIABLES =====
-        let adsGramLoaded = false;
-        let adsGramInterstitialController = null;
-        let adsGramRewardController = null;
-        let adsGramInterstitialBlockId = "int-21144";
-        let adsGramRewardBlockId = "21145";
-        
         // ===== LUDO GAME VARIABLES =====
         let ludoGamePoints = 0;
         let isLudoRolling = false;
@@ -1658,9 +1831,6 @@
         let noticeAutoCancelTimer = null;
         let noticeAutoCancelSeconds = 10;
         let currentNoticeCancelable = true;
-        
-        // ===== CURRENT AD PROVIDER TRACKER =====
-        let currentAdProvider = null;
 
         const loader = document.getElementById('loader');
         const backButtonContainer = document.getElementById('back-button-container');
@@ -1680,40 +1850,15 @@
         const appNoticeIcon = document.getElementById('app-notice-icon');
         const noticeAutoCancelTimerEl = document.getElementById('notice-auto-cancel-timer');
         const noticeTimerSecondsEl = document.getElementById('notice-timer-seconds');
-        const adProviderNameEl = document.getElementById('ad-provider-name');
-
-        // Update ad status display function
-        function updateAdStatusDisplay() {
-            if (!simpleAdSystem) return;
-            
-            const adStatus = simpleAdSystem.getAdStatus();
-            const adStatusElement = document.getElementById('adStatusDisplay');
-            const adStatusText = document.getElementById('adStatusText');
-            
-            if (!adStatusElement) return;
-            
-            if (adStatus.adsgram === 'Ready') {
-                adStatusElement.className = 'ad-status adsgram';
-                adStatusText.textContent = 'AdsGram Ready';
-            } else {
-                adStatusElement.className = 'ad-status loading';
-                adStatusText.textContent = 'Loading Ads...';
-            }
-            
-            adStatusElement.style.display = 'flex';
-        }
 
         window.onload = async () => {
             lucide.createIcons();
             setupEventListeners();
             
-            // Initialize Simple Ad System FIRST
-            console.log("🚀 Starting Simple Ad System...");
+            // Initialize Ad System FIRST
+            console.log("🚀 Starting Ad System...");
             simpleAdSystem = new SimpleAdSystem();
             await simpleAdSystem.initialize();
-            
-            // Update ad status display
-            updateAdStatusDisplay();
             
             // Continue with other initializations
             await initializeTelegramUser();
@@ -1737,7 +1882,7 @@
             });
         };
         
-        // ===== FIXED: TELEGRAM USER INITIALIZATION =====
+        // ===== TELEGRAM USER INITIALIZATION =====
         async function initializeTelegramUser() {
             if (typeof window.Telegram !== 'undefined' && window.Telegram.WebApp) {
                 isTelegramWebApp = true;
@@ -1756,20 +1901,17 @@
                     await initializeFirebaseUser(telegramUser);
                 } else {
                     console.log("⚠️ Telegram user data not available");
-                    // Even without full user data, create a Telegram session user
                     await createTelegramSessionUser();
                 }
             } else {
                 console.log("⚠️ Not running in Telegram WebApp");
-                // Browser users will be treated as anonymous but won't be added to admin list
                 await createBrowserUser();
             }
         }
         
-        // ===== FIXED: CREATE TELEGRAM SESSION USER =====
+        // ===== CREATE TELEGRAM SESSION USER =====
         async function createTelegramSessionUser() {
             try {
-                // Generate session ID for Telegram users
                 const sessionId = `tg_session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
                 const userId = sessionId;
                 const userName = "Telegram User";
@@ -1797,7 +1939,7 @@
                     tasksCompleted: 0,
                     ludoGamesPlayed: 0,
                     ludoTotalWon: 0,
-                    userType: 'telegram_session', // Mark as Telegram session user
+                    userType: 'telegram_session',
                     telegramSession: true
                 };
                 
@@ -1814,16 +1956,13 @@
             }
         }
         
-        // ===== FIXED: CREATE BROWSER USER =====
+        // ===== CREATE BROWSER USER =====
         async function createBrowserUser() {
             try {
-                // Browser users get anonymous treatment
                 const userId = `browser_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
                 const userName = "Browser User";
                 const userEmail = `${userId}@browser.anon`;
                 
-                // Browser users don't get added to real database - they use localStorage only
-                // This prevents them from appearing in admin panel
                 const defaultUserData = { 
                     uid: userId, 
                     name: userName, 
@@ -1845,11 +1984,10 @@
                     tasksCompleted: 0,
                     ludoGamesPlayed: 0,
                     ludoTotalWon: 0,
-                    userType: 'browser_anonymous', // Mark as browser anonymous
+                    userType: 'browser_anonymous',
                     isBrowserUser: true
                 };
                 
-                // Store in localStorage only for browser users
                 localStorage.setItem('browserUserData', JSON.stringify(defaultUserData));
                 userData = defaultUserData;
                 currentUser = { uid: userId, email: userEmail, displayName: userName };
@@ -1863,10 +2001,9 @@
             }
         }
         
-        // ===== FIXED: INITIALIZE FIREBASE USER WITH TELEGRAM DATA =====
+        // ===== INITIALIZE FIREBASE USER =====
         async function initializeFirebaseUser(tgUser) {
             try {
-                // Use Telegram ID as main identifier
                 const userId = `tg_${tgUser.id}`;
                 const userName = tgUser.first_name || tgUser.username || 'Telegram User';
                 const userEmail = tgUser.id ? `${tgUser.id}@telegram.miniapp` : 'telegram@miniapp';
@@ -1880,7 +2017,6 @@
                     currentUser = { uid: userId, email: userEmail, displayName: userName };
                     console.log("✅ Existing Telegram user loaded from Firebase");
                     
-                    // Update user info if needed
                     if (!userData.telegramId || !userData.telegramUsername) {
                         await updateDoc(userRef, {
                             telegramId: tgUser.id,
@@ -1919,7 +2055,7 @@
                         tasksCompleted: 0,
                         ludoGamesPlayed: 0,
                         ludoTotalWon: 0,
-                        userType: 'telegram', // Mark as Telegram user
+                        userType: 'telegram',
                         lastLogin: serverTimestamp()
                     };
                     
@@ -1929,33 +2065,20 @@
                     console.log("✅ New Telegram user created in Firebase");
                 }
                 
-                // Load saved payment details
                 loadSavedPaymentDetails();
                 
                 updateAllUI();
                 
             } catch (error) {
                 console.error("Error initializing Firebase user:", error);
-                // Fallback to session user
                 await createTelegramSessionUser();
             }
         }
         
-        // ===== FIXED: CHECK IF USER IS TELEGRAM USER =====
-        function isTelegramUser() {
-            return userData && (userData.userType === 'telegram' || userData.userType === 'telegram_session' || userData.telegramId);
-        }
-        
-        // ===== FIXED: CHECK IF USER IS BROWSER USER =====
-        function isBrowserUser() {
-            return userData && (userData.userType === 'browser_anonymous' || userData.isBrowserUser);
-        }
-        
-        // ===== FIXED: UPDATE BALANCE WITH USER TYPE CHECK =====
+        // ===== UPDATE BALANCE FUNCTION =====
         async function updateBalance(amount, taskType = 'unknown', details = '') {
             if (!currentUser || amount === 0) return;
             
-            // For browser users, update localStorage only
             if (isBrowserUser()) {
                 const newBalance = (userData.balance || 0) + amount;
                 userData.balance = newBalance;
@@ -1968,7 +2091,6 @@
                     userData.tasksCompleted = tasksCompleted;
                 }
                 
-                // Save to localStorage
                 localStorage.setItem('browserUserData', JSON.stringify(userData));
                 
                 updateAllUI();
@@ -1976,7 +2098,6 @@
                 return;
             }
             
-            // For Telegram users, update Firebase
             const newBalance = (userData.balance || 0) + amount;
             
             if (amount > 0) {
@@ -2005,14 +2126,13 @@
             updateStatsUI();
         }
         
-        // ===== FIXED: RECORD POINT HISTORY =====
+        // ===== RECORD POINT HISTORY =====
         async function recordPointHistory(userId, taskType, points, details) {
             try {
                 const userRef = doc(db, "users", userId);
                 const userSnap = await getDoc(userRef);
                 const userData = userSnap.data();
                 
-                // Only record for Telegram users
                 if (userData.userType === 'telegram' || userData.userType === 'telegram_session') {
                     await addDoc(collection(db, "pointHistory"), {
                         userId: userId,
@@ -2056,18 +2176,15 @@
         }
 
         function showAppNotice(title, message, type = 'info', cancelable = true) {
-            // Clear any existing timer
             if (noticeAutoCancelTimer) {
                 clearTimeout(noticeAutoCancelTimer);
                 noticeAutoCancelTimer = null;
             }
             
-            // Update modal content
             appNoticeTitle.textContent = title;
             appNoticeMessage.textContent = message;
             currentNoticeCancelable = cancelable !== false;
             
-            // Set icon based on type
             let iconClass = 'fas fa-info-circle';
             if (type === 'warning') iconClass = 'fas fa-exclamation-triangle';
             else if (type === 'success') iconClass = 'fas fa-check-circle';
@@ -2076,11 +2193,9 @@
             
             appNoticeIcon.innerHTML = `<i class="${iconClass}"></i>`;
             
-            // Set modal type class
             appNoticeModal.className = `app-notice-modal app-notice-type-${type}`;
             appNoticeModal.style.display = 'flex';
             
-            // Show/hide dismiss button based on cancelable setting
             const dismissButton = appNoticeModal.querySelector('button[onclick="dismissNoticePermanently()"]');
             const okButton = appNoticeModal.querySelector('button[onclick="closeAppNotice()"]');
             
@@ -2089,12 +2204,10 @@
                     dismissButton.style.display = 'none';
                     okButton.style.display = 'none';
                     
-                    // Show auto-cancel timer
                     noticeAutoCancelTimerEl.classList.remove('hidden');
                     noticeAutoCancelSeconds = 10;
                     noticeTimerSecondsEl.textContent = noticeAutoCancelSeconds;
                     
-                    // Start auto-cancel countdown
                     startNoticeAutoCancelTimer();
                 } else {
                     dismissButton.style.display = 'inline-block';
@@ -2124,7 +2237,6 @@
         }
 
         function closeAppNotice() {
-            // Clear auto-cancel timer
             if (noticeAutoCancelTimer) {
                 clearInterval(noticeAutoCancelTimer);
                 noticeAutoCancelTimer = null;
@@ -2133,7 +2245,6 @@
             appNoticeModal.style.display = 'none';
             noticeAutoCancelTimerEl.classList.add('hidden');
             
-            // Reset button visibility
             const dismissButton = appNoticeModal.querySelector('button[onclick="dismissNoticePermanently()"]');
             const okButton = appNoticeModal.querySelector('button[onclick="closeAppNotice()"]');
             
@@ -2186,7 +2297,6 @@
                     updateGamesDisplay();
                     updateAdminConnectionStatus(true);
                     
-                    // Update game limits display
                     updateGameLimitsDisplay();
                     updatePlayCountDisplay();
                 }
@@ -2354,14 +2464,11 @@
         }
         
         function updateGameLimitsDisplay() {
-            // Update Ludo Game Limits
             const ludoConfig = gamesConfig.ludoDice || {};
             const ludoDailyLimit = ludoConfig.dailyPlayLimit || 0;
-            const ludoTimeLimit = ludoConfig.dailyTimeLimit || 0;
             
             let ludoLimitsText = '';
             if (ludoDailyLimit > 0) ludoLimitsText += `Daily plays: ${ludoDailyLimit}`;
-            if (ludoTimeLimit > 0) ludoLimitsText += ` | Time: ${ludoTimeLimit} min`;
             
             const ludoLimitsEl = document.getElementById('ludo-game-limits');
             if (ludoLimitsEl) {
@@ -2369,32 +2476,16 @@
                 ludoLimitsEl.style.display = ludoLimitsText ? 'block' : 'none';
             }
             
-            // Update Color Game Limits
             const colorConfig = gamesConfig.colorGame || {};
             const colorDailyLimit = colorConfig.dailyPlayLimit || 0;
-            const colorTimeLimit = colorConfig.dailyTimeLimit || 0;
             
             let colorLimitsText = '';
             if (colorDailyLimit > 0) colorLimitsText += `Daily plays: ${colorDailyLimit}`;
-            if (colorTimeLimit > 0) colorLimitsText += ` | Time: ${colorTimeLimit} min`;
             
             const colorLimitsEl = document.getElementById('color-game-limits');
             if (colorLimitsEl) {
                 colorLimitsEl.textContent = colorLimitsText;
                 colorLimitsEl.style.display = colorLimitsText ? 'block' : 'none';
-            }
-            
-            // Update Watch & Earn Limits
-            const videoConfig = gamesConfig.watchVideo || {};
-            const videoDailyLimit = videoConfig.dailyPlayLimit || 0;
-            
-            if (videoDailyLimit > 0) {
-                const watchEarnCard = document.getElementById('watch-earn-card');
-                if (watchEarnCard) {
-                    const existingText = watchEarnCard.querySelector('.text-sm').textContent;
-                    watchEarnCard.querySelector('.text-sm').textContent = 
-                        `Instant ${videoConfig.rewardPerPlay || 50} coins | ${videoDailyLimit} plays/day`;
-                }
             }
         }
         
@@ -2403,7 +2494,6 @@
             
             const today = new Date().toISOString().split('T')[0];
             
-            // Ludo play count
             const ludoPlayCountKey = `ludoDice_playCount_${currentUser.uid}_${today}`;
             const ludoPlayCount = parseInt(localStorage.getItem(ludoPlayCountKey) || '0');
             const ludoConfig = gamesConfig.ludoDice || {};
@@ -2415,7 +2505,6 @@
                 ludoDisplayEl.style.display = 'block';
             }
             
-            // Color game play count
             const colorPlayCountKey = `colorGame_playCount_${currentUser.uid}_${today}`;
             const colorPlayCount = parseInt(localStorage.getItem(colorPlayCountKey) || '0');
             const colorConfig = gamesConfig.colorGame || {};
@@ -2429,7 +2518,6 @@
         }
         
         function updateGamePageDisplays() {
-            // Update Ludo Game Page
             const ludoConfig = gamesConfig.ludoDice || {};
             if (ludoConfig.visible === false) {
                 document.getElementById('ludo-game-page').style.display = 'none';
@@ -2453,7 +2541,6 @@
                 }
             }
             
-            // Update Color Game Page
             const colorConfig = gamesConfig.colorGame || {};
             if (colorConfig.visible === false) {
                 document.getElementById('color-game-page').style.display = 'none';
@@ -2474,7 +2561,6 @@
                 }
             }
             
-            // Update Watch & Earn card
             const videoConfig = gamesConfig.watchVideo || {};
             if (videoConfig.visible === false) {
                 const watchEarnCard = document.getElementById('watch-earn-card');
@@ -2519,16 +2605,13 @@
                     const resetData = resetSnap.data();
                     const today = new Date().toISOString().split('T')[0];
                     
-                    // Check each game
                     const games = ['ludoDice', 'colorGame', 'watchVideo'];
                     
                     games.forEach(gameId => {
                         const resetDate = resetData[`${gameId}_reset_date`];
                         const lastReset = localStorage.getItem(`${gameId}_last_reset`);
                         
-                        // If admin reset this game today and we haven't processed it yet
                         if (resetDate === today && lastReset !== today) {
-                            // Clear local play count for ALL dates
                             for (let i = 0; i < localStorage.length; i++) {
                                 const key = localStorage.key(i);
                                 if (key.includes(`${gameId}_playCount_${currentUser.uid}_`)) {
@@ -2536,12 +2619,10 @@
                                 }
                             }
                             
-                            // Mark as processed
                             localStorage.setItem(`${gameId}_last_reset`, today);
                             
                             console.log(`🔄 ${gameId} limit reset by admin`);
                             
-                            // Show notification to user
                             const gameNames = {
                                 'ludoDice': 'Ludo Dice',
                                 'colorGame': 'Color Game',
@@ -2551,12 +2632,10 @@
                         }
                     });
                     
-                    // Check for full reset
                     const fullResetDate = resetData[`full_reset_date`];
                     const lastFullReset = localStorage.getItem(`full_last_reset`);
                     
                     if (fullResetDate === today && lastFullReset !== today) {
-                        // Clear ALL local game data
                         games.forEach(gameId => {
                             for (let i = 0; i < localStorage.length; i++) {
                                 const key = localStorage.key(i);
@@ -2578,7 +2657,7 @@
             }
         }
         
-        // ===== FIXED: WEBSITE VISIT RESET SYSTEM =====
+        // ===== WEBSITE VISIT RESET SYSTEM =====
         async function checkWebsiteVisitReset() {
             try {
                 const configRef = doc(db, "config", "main");
@@ -2590,7 +2669,6 @@
                     const lastResetProcessed = localStorage.getItem('lastWebsiteResetProcessed') || '1970-01-01';
                     
                     if (lastWebsiteResetDate > lastResetProcessed) {
-                        // Reset local website visits
                         for (let i = 0; i < localStorage.length; i++) {
                             const key = localStorage.key(i);
                             if (key.includes('website_visit_') || key.includes('visitedSitesToday')) {
@@ -2598,11 +2676,9 @@
                             }
                         }
                         
-                        // Mark as processed
                         localStorage.setItem('lastWebsiteResetProcessed', lastWebsiteResetDate);
                         console.log("✅ Website visits reset by admin");
                         
-                        // Refresh website list
                         if (userData) {
                             userData.visitedSitesToday = [];
                             userData.lastSiteVisitDate = new Date().toISOString().split('T')[0];
@@ -2612,11 +2688,9 @@
                         }
                     }
                     
-                    // Check if websitesToVisit exists and is a valid array
                     if (!Array.isArray(config.websitesToVisit)) {
                         console.log("⚠️ websitesToVisit is not an array, initializing...");
                         
-                        // Check if this is a fresh install by looking for other config fields
                         const isFreshInstall = !config.socialTasks && !config.sliderBanners && !config.referralRules;
                         
                         const defaultWebsites = [
@@ -2625,7 +2699,6 @@
                             { name: "Facebook", link: "https://www.facebook.com", reward: 20, timer: 60 }
                         ];
                         
-                        // Only set defaults if it's a fresh install
                         if (isFreshInstall) {
                             await updateDoc(configRef, {
                                 websitesToVisit: defaultWebsites,
@@ -2634,10 +2707,8 @@
                             
                             console.log("✅ Default websites set for fresh install");
                             
-                            // Update local config
                             appConfig.websitesToVisit = defaultWebsites;
                         } else {
-                            // If not fresh install but array is corrupted, set empty array
                             await updateDoc(configRef, {
                                 websitesToVisit: [],
                                 updatedAt: serverTimestamp()
@@ -2648,7 +2719,6 @@
                         }
                     } else if (config.websitesToVisit.length === 0) {
                         console.log("⚠️ Empty websites array - admin can add websites");
-                        // Don't auto-fill empty array - let admin manage it
                         appConfig.websitesToVisit = [];
                     }
                 }
@@ -2657,7 +2727,7 @@
             }
         }
         
-        // ===== FIXED: SPECIAL TASK SYSTEM =====
+        // ===== SPECIAL TASK SYSTEM =====
         function showSpecialTask() {
             const newCount = (userData.dailyAdCount || 0) + 1;
             const specialTaskCount = appConfig.watchAdSpecialTaskCount || 10;
@@ -2697,7 +2767,6 @@
                     </div>`;
                 specialAdPopup.style.display = 'flex';
                 
-                // Add event listeners for the new buttons
                 setTimeout(() => {
                     const showAdBtn = document.getElementById('show-special-ad-btn');
                     const claimBtn = document.getElementById('claim-special-ad-final-btn');
@@ -2714,7 +2783,6 @@
             }
         }
         
-        // ===== FIXED: COLOR GAME SPECIAL TASK =====
         function showColorGameSpecialTask() {
             specialAdPopup.innerHTML = `
                 <div class="special-task-content">
@@ -2752,7 +2820,6 @@
             specialAdPopup.style.display = 'flex';
             specialTaskAdCompleted = false;
             
-            // Add event listeners
             setTimeout(() => {
                 const showAdBtn = document.getElementById('show-special-ad-btn');
                 const claimBtn = document.getElementById('claim-special-ad-final-btn');
@@ -2768,17 +2835,14 @@
             }, 100);
         }
         
-        // ===== FIXED: COLOR GAME SPECIAL TASK AD =====
         async function startColorGameSpecialTaskAd() {
             const adStatus = document.getElementById('special-ad-status');
             const showAdBtn = document.getElementById('show-special-ad-btn');
             showAdBtn.classList.add('hidden');
             adStatus.textContent = "Waiting for you to click on the ad...";
 
-            // Show loading popup for special ad with provider name
             showAdLoadingPopup("Loading special ad for Color Game...");
             
-            // Use Simple Ad System for Color Game Special Task
             try {
                 await simpleAdSystem.showAd('interstitial');
                 hideAdLoadingPopup();
@@ -2808,7 +2872,6 @@
             }
         }
         
-        // ===== FIXED: LUDO DICE SPECIAL TASK =====
         function showLudoDiceSpecialTask() {
             specialAdPopup.innerHTML = `
                 <div class="special-task-content">
@@ -2846,7 +2909,6 @@
             specialAdPopup.style.display = 'flex';
             specialTaskAdCompleted = false;
             
-            // Add event listeners
             setTimeout(() => {
                 const showAdBtn = document.getElementById('show-special-ad-btn');
                 const claimBtn = document.getElementById('claim-special-ad-final-btn');
@@ -2862,18 +2924,15 @@
             }, 100);
         }
         
-        // ===== FIXED: START SPECIAL TASK AD =====
         async function startSpecialTaskAd() {
             const adStatus = document.getElementById('special-ad-status');
             const showAdBtn = document.getElementById('show-special-ad-btn');
             showAdBtn.classList.add('hidden');
             adStatus.textContent = "Waiting for you to click on the ad...";
 
-            // Show loading popup for special ad
             showAdLoadingPopup("Loading special ad...");
             
             try {
-                // Use SIMPLE AD SYSTEM for special ads
                 await simpleAdSystem.showAd('interstitial');
                 hideAdLoadingPopup();
             } catch(err) {
@@ -2903,7 +2962,6 @@
             }, 15000);
         }
         
-        // ===== FIXED: START SPECIAL TASK COUNTDOWN =====
         function startSpecialTaskCountdown() {
             const timerEl = document.getElementById('special-ad-timer');
             const totalEl = document.getElementById('special-ad-timer-total');
@@ -2913,7 +2971,6 @@
             specialTaskCountdownSeconds = parseInt(totalEl.textContent) || 60;
             timerEl.textContent = specialTaskCountdownSeconds;
             
-            // Reset progress bar
             const progressBar = document.getElementById('special-ad-progress-bar');
             if (progressBar) {
                 progressBar.style.width = '0%';
@@ -2939,7 +2996,6 @@
                 }
             }, 1000);
             
-            // Start timer countdown
             if (specialTaskTimer) {
                 clearInterval(specialTaskTimer);
             }
@@ -2962,7 +3018,6 @@
             specialTaskAdCompleted = true;
         }
         
-        // ===== FIXED: FINALIZE SPECIAL AD FUNCTION =====
         async function finalizeSpecialAd(gameId, reward, taskType) {
             if (!specialTaskAdCompleted) {
                 showAlert("Please complete the timer first!");
@@ -2973,12 +3028,10 @@
             showAlert(`🎉 Congratulations! You earned a special bonus of ${reward} coins.`);
             specialAdPopup.style.display = 'none';
             
-            // Reset variables
             specialTaskAdCompleted = false;
             if (specialTaskTimer) clearInterval(specialTaskTimer);
             if (specialTaskProgressInterval) clearInterval(specialTaskProgressInterval);
             
-            // Continue with regular game flow
             if (gameId === 'colorGame') {
                 startGame();
             } else if (gameId === 'ludoDice') {
@@ -2995,7 +3048,7 @@
             }
         }
         
-        // ===== FIXED: AD LOADING POPUP FUNCTIONS =====
+        // ===== AD LOADING POPUP FUNCTIONS =====
         function showAdLoadingPopup(message) {
             const adLoadingPopup = document.getElementById('ad-loading-popup');
             const adLoadingMessage = document.getElementById('ad-loading-message');
@@ -3004,20 +3057,16 @@
                 adLoadingMessage.textContent = message || 'Please wait while we load the advertisement...';
             }
             
-            // Update provider name display
-            if (adProviderNameEl && currentAdProvider) {
-                adProviderNameEl.textContent = `Provider: ${currentAdProvider}`;
-            } else if (adProviderNameEl) {
-                adProviderNameEl.textContent = 'Provider: Loading...';
+            // Update provider status
+            if (simpleAdSystem) {
+                simpleAdSystem.updateProviderStatus();
             }
             
             if (adLoadingPopup) {
                 adLoadingPopup.style.display = 'flex';
                 
-                // Fix close button event listener
                 const closeBtn = adLoadingPopup.querySelector('.ad-loading-close');
                 if (closeBtn) {
-                    // Remove existing listeners and add new one
                     closeBtn.onclick = hideAdLoadingPopup;
                 }
             }
@@ -3030,95 +3079,7 @@
             }
         }
         
-        // ===== FIXED: UPDATE AD PROVIDER DISPLAY =====
-        function updateAdProviderDisplay() {
-            if (adProviderNameEl && currentAdProvider) {
-                adProviderNameEl.textContent = `Provider: ${currentAdProvider}`;
-            }
-        }
-        
-        // ===== FIXED: ADSGRAM SDK INITIALIZATION =====
-        function initializeAdsGram() {
-            console.log("🎯 Initializing AdsGram...");
-            
-            if (typeof window.Adsgram !== 'undefined') {
-                try {
-                    adsGramInterstitialController = window.Adsgram.init({ blockId: adsGramInterstitialBlockId });
-                    adsGramRewardController = window.Adsgram.init({ blockId: adsGramRewardBlockId });
-                    
-                    adsGramLoaded = true;
-                    console.log("✅ AdsGram SDK initialized successfully");
-                    
-                    return true;
-                } catch (error) {
-                    console.log("❌ AdsGram initialization error:", error);
-                    return false;
-                }
-            } else {
-                console.log("⚠️ AdsGram SDK not available");
-                return false;
-            }
-        }
-        
-        async function showAdsGramInterstitial() {
-            if (!adsGramLoaded || !adsGramInterstitialController) {
-                console.log("❌ AdsGram interstitial not loaded");
-                throw new Error("AdsGram not loaded");
-            }
-            
-            console.log("🎯 Showing AdsGram interstitial ad...");
-            currentAdProvider = 'AdsGram';
-            updateAdProviderDisplay();
-            
-            return new Promise((resolve, reject) => {
-                try {
-                    adsGramInterstitialController.show()
-                        .then(() => {
-                            console.log("✅ AdsGram interstitial ad completed");
-                            resolve(true);
-                        })
-                        .catch((error) => {
-                            console.log("❌ AdsGram interstitial failed:", error);
-                            reject(error);
-                        });
-                    
-                } catch (error) {
-                    console.log("❌ AdsGram interstitial error:", error);
-                    reject(error);
-                }
-            });
-        }
-        
-        async function showAdsGramReward() {
-            if (!adsGramLoaded || !adsGramRewardController) {
-                console.log("❌ AdsGram reward not loaded");
-                throw new Error("AdsGram reward not loaded");
-            }
-            
-            console.log("🎯 Showing AdsGram reward ad...");
-            currentAdProvider = 'AdsGram';
-            updateAdProviderDisplay();
-            
-            return new Promise((resolve, reject) => {
-                try {
-                    adsGramRewardController.show()
-                        .then(() => {
-                            console.log("✅ AdsGram reward ad completed");
-                            resolve(true);
-                        })
-                        .catch((error) => {
-                            console.log("❌ AdsGram reward failed:", error);
-                            reject(error);
-                        });
-                    
-                } catch (error) {
-                    console.log("❌ AdsGram reward error:", error);
-                    reject(error);
-                }
-            });
-        }
-        
-        // ===== FIXED: LUDO GAME FUNCTIONS =====
+        // ===== LUDO GAME FUNCTIONS =====
         function initLudoGame() {
             if (!ludoRollBtn) return;
             
@@ -3217,7 +3178,6 @@
             
             const ludoConfig = gamesConfig.ludoDice || {};
             
-            // Check game play limits FIRST
             const limitCheck = checkGamePlayLimits('ludoDice');
             if (!limitCheck.allowed) {
                 showAlert(`❌ ${limitCheck.reason}`);
@@ -3232,8 +3192,7 @@
                 return;
             }
             
-            // Increment play count
-            const newPlayCount = incrementGamePlayCount('ludoDice');
+            incrementGamePlayCount('ludoDice');
             
             isLudoRolling = true;
             ludoRollBtn.disabled = true;
@@ -3245,7 +3204,6 @@
             userData.balance = newBalance;
             updateAllUI();
             
-            // Animation
             let rolls = 0;
             const totalRolls = 15;
             
@@ -3269,15 +3227,12 @@
             animateRoll();
         }
         
-        // ===== FIXED: SHOW LUDO RESULT WITH SIMPLE AD SYSTEM =====
         async function showLudoResult() {
-            // Update result popup
             document.getElementById('dice-result-icon').textContent = '🎲';
             document.getElementById('dice-result-title').textContent = 'DICE RESULT';
             document.getElementById('dice-result-face').textContent = diceFaces[currentLudoDice - 1];
             document.getElementById('dice-win-amount').textContent = `${currentLudoWin} POINTS`;
             
-            // Show AdsGram container
             adsgramContainer.classList.remove('hidden');
             adsgramLoading.classList.remove('hidden');
             adsgramRewardInfo.classList.remove('hidden');
@@ -3294,12 +3249,10 @@
             await recordGamePlay('ludoDice', currentUser.uid, currentLudoWin);
         }
         
-        // ===== FIXED: CLOSE DICE RESULT WITH SIMPLE AD SYSTEM =====
         async function closeDiceResult() {
             diceClaimBtn.disabled = true;
             diceClaimBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i> LOADING AD...';
             
-            // Check for special task
             const ludoPlayCountKey = `ludoDice_playCount_${currentUser.uid}_${new Date().toISOString().split('T')[0]}`;
             const ludoPlayCount = parseInt(localStorage.getItem(ludoPlayCountKey) || '0');
             const specialTaskCount = appConfig.ludoDiceSpecialTaskCount || 30;
@@ -3312,11 +3265,10 @@
                 return;
             }
             
-            // Show loading popup
             showAdLoadingPopup("Loading ad for bonus...");
             
             try {
-                // Use SIMPLE AD SYSTEM
+                // Try both providers one by one
                 await simpleAdSystem.showAd('reward');
                 
                 // Ad successful - add bonus
@@ -3331,18 +3283,17 @@
                 
             } catch (error) {
                 hideAdLoadingPopup();
-                console.log("❌ Ad failed, refunding points...");
+                console.log("❌ Both ads failed, refunding points...");
                 
-                // Ad failed - refund points
+                // Both ads failed - refund points
                 const ludoConfig = gamesConfig.ludoDice || {};
                 const gameCost = ludoConfig.gameCost || 10;
                 await updateBalance(gameCost, 'refund', 'Ludo dice game refund - ads not available');
                 
-                showAlert("⚠️ No ads available. Your points have been refunded.");
+                showAlert("⚠️ No ads available from any provider. Your points have been refunded.");
                 diceResultPopup.style.display = 'none';
             }
             
-            // Reset UI
             diceClaimBtn.disabled = false;
             diceClaimBtn.innerHTML = '<i class="fas fa-check mr-3"></i> RECEIVE BONUS';
             
@@ -3352,7 +3303,7 @@
             adsgramRewardInfo.classList.add('hidden');
         }
         
-        // ===== FIXED: WATCH & EARN FUNCTIONS =====
+        // ===== WATCH & EARN FUNCTIONS =====
         function checkWatchEarnStatus() {
             const watchEarnDisabledUntil = localStorage.getItem('watchEarnDisabledUntil');
             if (watchEarnDisabledUntil) {
@@ -3433,16 +3384,10 @@
             initLudoGame();
             checkWatchEarnStatus();
             
-            // Check for game resets when app starts
             checkForGameResets();
-            
-            // Check for website visit reset
             checkWebsiteVisitReset();
-            
-            // Check for app notice
             checkForAppNotice();
             
-            // Reset game play counts at midnight
             setInterval(() => {
                 const now = new Date();
                 if (now.getHours() === 0 && now.getMinutes() === 0) {
@@ -3450,18 +3395,13 @@
                 }
             }, 60000);
             
-            // Also reset on app start (in case it's a new day)
             resetGamePlayCounts();
             
-            // Check for game resets every 5 minutes
             setInterval(checkForGameResets, 300000);
-            
-            // Check for website reset every 10 minutes
             setInterval(checkWebsiteVisitReset, 600000);
             
             updateStatsUI();
             
-            // Show wallet validation warning if needed
             if (!walletValidated) {
                 showWalletValidationWarning("Please add valid payment details to withdraw your earnings");
             }
@@ -3573,16 +3513,14 @@
             }
         }
         
-        // ===== FIXED: GAME PLAY LIMITS FUNCTIONS =====
+        // ===== GAME PLAY LIMITS FUNCTIONS =====
         function checkGamePlayLimits(gameId) {
             const gameConfig = gamesConfig[gameId] || {};
             
-            // If game is hidden, deny access
             if (gameConfig.visible === false) {
                 return { allowed: false, reason: "Game is currently unavailable." };
             }
             
-            // Check daily play limit (from admin panel)
             const dailyPlayLimit = gameConfig.dailyPlayLimit || 0;
             
             if (dailyPlayLimit > 0) {
@@ -3610,7 +3548,6 @@
             
             console.log(`📊 ${gameId} play count: ${newCount}`);
             
-            // Update display
             updatePlayCountDisplay();
             
             return newCount;
@@ -3619,7 +3556,6 @@
         function resetGamePlayCounts() {
             const today = new Date().toISOString().split('T')[0];
             
-            // Check if we need to reset (after midnight)
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
                 if (key.includes('_playCount_') && !key.includes(today)) {
@@ -3652,7 +3588,6 @@
                     allTimeStats[gameId] = { playCount: 0, userCount: 0 };
                 }
                 
-                // Increment play count
                 dailyStats[today][gameId].playCount = (dailyStats[today][gameId].playCount || 0) + 1;
                 allTimeStats[gameId].playCount = (allTimeStats[gameId].playCount || 0) + 1;
                 
@@ -3676,7 +3611,7 @@
             }
         }
         
-        // ===== FIXED: WATCH & EARN =====
+        // ===== WATCH & EARN =====
         window.claimReward = async function() {
             if (watchEarnDisabled) return;
             
@@ -3688,17 +3623,14 @@
                 return;
             }
             
-            // Check game play limits FIRST
             const limitCheck = checkGamePlayLimits('watchVideo');
             if (!limitCheck.allowed) {
                 showAlert(`❌ ${limitCheck.reason}`);
                 return;
             }
             
-            // Increment play count
             const newCount = (userData.dailyAdCount || 0) + 1;
             
-            // Update user data based on user type
             if (isBrowserUser()) {
                 userData.dailyAdCount = newCount;
                 localStorage.setItem('browserUserData', JSON.stringify(userData));
@@ -3709,7 +3641,6 @@
                 userData.dailyAdCount = newCount;
             }
             
-            // Check for special task
             const specialTaskCount = appConfig.watchAdSpecialTaskCount || 10;
             if (newCount > 0 && newCount % specialTaskCount === 0) {
                 showSpecialTask();
@@ -3717,7 +3648,7 @@
                 try {
                     showAdLoadingPopup("Loading ad for Watch & Earn...");
                     
-                    // Use SIMPLE AD SYSTEM
+                    // Try both providers one by one
                     await simpleAdSystem.showAd('interstitial');
                     
                     const reward = videoConfig.rewardPerPlay || appConfig.adWatchReward || 50;
@@ -3732,16 +3663,15 @@
                 } catch (error) {
                     hideAdLoadingPopup();
                     console.log("❌ Watch & Earn ad failed:", error);
-                    showAlert("⚠️ Ad service not available. Please try again.");
+                    showAlert("⚠️ Ad service not available from any provider. Please try again.");
                 }
             }
         }
         
-        // ===== FIXED: COLOR GAME =====
+        // ===== COLOR GAME =====
         async function claimColorGameReward() {
             document.getElementById('color-game-popup').classList.add('hidden');
             
-            // Check game play limits FIRST
             const limitCheck = checkGamePlayLimits('colorGame');
             if (!limitCheck.allowed) {
                 showAlert(`❌ ${limitCheck.reason}`);
@@ -3749,10 +3679,8 @@
                 return;
             }
             
-            // Increment play count
             const newPlayCount = incrementGamePlayCount('colorGame');
             
-            // Check for special task
             const specialTaskCount = appConfig.colorGameSpecialTaskCount || 20;
             if (newPlayCount > 0 && newPlayCount % specialTaskCount === 0) {
                 showColorGameSpecialTask();
@@ -3762,7 +3690,7 @@
             try {
                 showAdLoadingPopup("Loading ad for color game...");
                 
-                // Use SIMPLE AD SYSTEM for Color Game
+                // Try both providers one by one
                 await simpleAdSystem.showAd('interstitial');
                 
                 const colorConfig = gamesConfig.colorGame || {};
@@ -3830,7 +3758,6 @@
             const reward = colorConfig.rewardPerPlay || appConfig.colorGameReward || 100;
             document.getElementById('color-game-reward-message').textContent = `Bravo! Watch an ad to claim ${reward} coins.`;
             
-            // Update play count display
             updatePlayCountDisplay();
         }
 
@@ -3846,7 +3773,7 @@
             }
         }
         
-        // ===== FIXED: WEBSITE VISIT FUNCTIONS =====
+        // ===== WEBSITE VISIT FUNCTIONS =====
         async function handleWebsiteVisit(e) {
             const button = e.target;
             const { link, reward, timer } = button.dataset;
@@ -3855,7 +3782,6 @@
             button.disabled = true;
             
             try {
-                // Use visitedSitesToday (consistent field name)
                 const visitedToday = userData.visitedSitesToday || [];
                 if (visitedToday.includes(link)) {
                     showAlert("⚠️ You've already visited this website today!");
@@ -3867,7 +3793,7 @@
                 
                 showAdLoadingPopup("Loading ad before website visit...");
                 
-                // Use SIMPLE AD SYSTEM
+                // Try both providers one by one
                 await simpleAdSystem.showAd('interstitial');
                 hideAdLoadingPopup();
                 
@@ -3884,10 +3810,8 @@
                         clearInterval(interval);
                         
                         try {
-                            // Use visitedSitesToday and lastSiteVisitDate (consistent field names)
                             const visited = [...visitedToday, link];
                             
-                            // Update based on user type
                             if (isBrowserUser()) {
                                 userData.visitedSitesToday = visited;
                                 userData.lastSiteVisitDate = new Date().toISOString().split('T')[0];
@@ -3934,14 +3858,12 @@
             }
         }
 
-        // ===== FIXED: WEBSITE LIST POPULATION =====
         function populateWebsiteList() {
             const listEl = document.getElementById('website-list');
             if (!listEl) return;
             
             listEl.innerHTML = '';
             
-            // Ensure websitesToVisit exists and is an array
             const websites = Array.isArray(appConfig.websitesToVisit) ? appConfig.websitesToVisit : [];
             
             if (websites.length === 0) { 
@@ -3997,7 +3919,7 @@
             });
         }
 
-        // ===== FIXED: SOCIAL TASKS FUNCTIONS =====
+        // ===== SOCIAL TASKS FUNCTIONS =====
         async function handleSocialFollow(e) {
             const button = e.target;
             const { link, reward } = button.dataset;
@@ -4006,7 +3928,6 @@
             try {
                 showAdLoadingPopup("Loading ad before social task...");
                 
-                // Use SIMPLE AD SYSTEM
                 await simpleAdSystem.showAd('interstitial');
                 hideAdLoadingPopup();
                 
@@ -4017,7 +3938,6 @@
                 
                 const completed = [...(userData.completedSocialTasks || []), link];
                 
-                // Update based on user type
                 if (isBrowserUser()) {
                     userData.completedSocialTasks = completed;
                     localStorage.setItem('browserUserData', JSON.stringify(userData));
@@ -4078,7 +3998,7 @@
             document.querySelectorAll('.follow-btn:not([disabled])').forEach(btn => btn.addEventListener('click', handleSocialFollow));
         }
         
-        // ===== FIXED: WALLET FUNCTIONS =====
+        // ===== WALLET FUNCTIONS =====
         function loadWalletPage() {
             if (!userData) return;
             
@@ -4117,7 +4037,6 @@
                            id="payment-details-input">
                 `;
                 
-                // Load saved payment details if available
                 const savedDetails = paymentDetails[selectedMethod];
                 if (savedDetails) {
                     setTimeout(() => {
@@ -4136,7 +4055,6 @@
         async function handleWithdrawal() {
             if (!currentUser || !userData) return;
             
-            // Browser users cannot withdraw
             if (isBrowserUser()) {
                 showAlert("❌ Browser users cannot withdraw. Please use Telegram app for withdrawals.");
                 return;
@@ -4146,10 +4064,8 @@
             const method = document.getElementById('withdraw-method').value;
             const paymentDetail = document.getElementById('payment-details-input')?.value.trim();
             
-            // Hide previous validation messages
             hidePaymentValidationMessage();
             
-            // Validation checks
             if (isNaN(amount) || amount < (appConfig.minWithdrawal || 1000)) {
                 showPaymentValidationMessage(`❌ Minimum withdrawal is ${appConfig.minWithdrawal || 1000} coins.`, true);
                 return;
@@ -4165,7 +4081,6 @@
                 return;
             }
             
-            // Validate payment details
             const validation = validatePaymentDetails(method, paymentDetail);
             if (!validation.valid) {
                 showPaymentValidationMessage(`❌ ${validation.message}`, true);
@@ -4192,7 +4107,6 @@
                 
                 showPaymentValidationMessage("✅ Withdrawal request submitted successfully!", false);
                 
-                // Update wallet validation status
                 walletValidated = true;
                 hideWalletValidationWarning();
                 
@@ -4210,7 +4124,6 @@
         async function loadWithdrawalHistory() {
             if (!currentUser) return;
             
-            // Browser users have no withdrawal history
             if (isBrowserUser()) {
                 document.getElementById('withdrawal-history-list').innerHTML = `
                     <div class="premium-card p-6 rounded-2xl text-center">
@@ -4278,7 +4191,7 @@
             }
         }
 
-        // ===== FIXED: REFERRAL PAGE FUNCTIONS =====
+        // ===== REFERRAL PAGE FUNCTIONS =====
         function loadReferPage() {
             if (!userData) return;
             
@@ -4362,7 +4275,7 @@
             }
         }
 
-        // ===== FIXED: ALERT FUNCTION =====
+        // ===== ALERT FUNCTION =====
         function showAlert(message) {
             const alertBox = document.getElementById('custom-alert');
             const msgEl = document.getElementById('alert-message');
@@ -4372,7 +4285,7 @@
             }
         }
 
-        // ===== FIXED: PROFILE PAGE FUNCTIONS =====
+        // ===== PROFILE PAGE FUNCTIONS =====
         function loadProfilePage() {
             if (!userData) return;
             
@@ -4395,23 +4308,21 @@
             document.getElementById('total-earned').textContent = userData.totalEarned || 0;
         }
         
-        // ===== FIXED: DAILY WEBSITE VISIT RESET =====
+        // ===== DAILY WEBSITE VISIT RESET =====
         async function resetDailyWebsiteVisits() {
             try {
                 const today = new Date().toISOString().split('T')[0];
-                // Use consistent field name: lastSiteVisitDate
                 const lastVisitDate = userData.lastSiteVisitDate || '1970-01-01';
                 
                 if (lastVisitDate !== today) {
-                    // Update based on user type
                     if (isBrowserUser()) {
                         userData.visitedSitesToday = [];
                         userData.lastSiteVisitDate = today;
                         localStorage.setItem('browserUserData', JSON.stringify(userData));
                     } else {
                         await updateDoc(doc(db, "users", currentUser.uid), { 
-                            visitedSitesToday: [],  // Consistent field name
-                            lastSiteVisitDate: today  // Consistent field name
+                            visitedSitesToday: [],
+                            lastSiteVisitDate: today
                         });
                         
                         userData.visitedSitesToday = [];
@@ -4425,7 +4336,7 @@
             }
         }
         
-        // ===== FIXED: WALLET VALIDATION FUNCTIONS =====
+        // ===== WALLET VALIDATION FUNCTIONS =====
         function validatePaymentDetails(method, details) {
             if (!details || details.trim() === '') {
                 return { valid: false, message: 'Please enter payment details' };
@@ -4435,7 +4346,6 @@
             
             switch(method.toLowerCase()) {
                 case 'upi':
-                    // UPI ID validation (username@bankname)
                     const upiRegex = /^[a-zA-Z0-9.\-_]{2,49}@[a-zA-Z]{2,}$/;
                     if (!upiRegex.test(trimmedDetails)) {
                         return { valid: false, message: 'Invalid UPI ID format (e.g., username@bankname)' };
@@ -4444,7 +4354,6 @@
                     break;
                     
                 case 'paytm':
-                    // Paytm number validation (Indian phone number)
                     const phoneRegex = /^[6-9]\d{9}$/;
                     if (!phoneRegex.test(trimmedDetails)) {
                         return { valid: false, message: 'Invalid Paytm number (10 digit Indian number)' };
@@ -4453,7 +4362,6 @@
                     break;
                     
                 case 'paypal':
-                    // PayPal email validation
                     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                     if (!emailRegex.test(trimmedDetails)) {
                         return { valid: false, message: 'Invalid PayPal email address' };
@@ -4462,7 +4370,6 @@
                     break;
                     
                 case 'phonepe':
-                    // PhonePe validation (phone number or UPI)
                     if (trimmedDetails.includes('@')) {
                         if (!/^[a-zA-Z0-9.\-_]{2,49}@[a-zA-Z]{2,}$/.test(trimmedDetails)) {
                             return { valid: false, message: 'Invalid PhonePe UPI ID' };
@@ -4479,7 +4386,6 @@
                     return { valid: false, message: 'Invalid payment method' };
             }
             
-            // Save to localStorage
             localStorage.setItem('paymentDetails', JSON.stringify(paymentDetails));
             walletValidated = true;
             
@@ -4525,11 +4431,10 @@
             }
         }
         
-        // ===== FIXED: USER DATA FUNCTIONS =====
+        // ===== USER DATA FUNCTIONS =====
         async function fetchUserData() {
             if (!currentUser) return;
             
-            // For browser users, load from localStorage
             if (isBrowserUser()) {
                 const savedData = localStorage.getItem('browserUserData');
                 if (savedData) {
@@ -4538,7 +4443,6 @@
                 return;
             }
             
-            // For Telegram users, load from Firebase
             const userRef = doc(db, "users", currentUser.uid);
             const userSnap = await getDoc(userRef);
             if (userSnap.exists()) { 
@@ -4553,18 +4457,15 @@
             const configRef = doc(db, "config", "main");
             const configSnap = await getDoc(configRef);
             
-            // Load existing config or create minimal defaults
             if (configSnap.exists()) {
                 appConfig = configSnap.data();
             } else {
-                // Only set basic defaults for fresh install
                 appConfig = {
                     referralRules: ["Your friend must sign up.", "Bonus is credited after they apply the code."],
                     referralShareText: "Join CashReward and earn money! Use my code {CODE} to get a bonus. App link: {APP_LINK}"
                 };
             }
             
-            // Ensure arrays exist but don't overwrite custom data
             if (!Array.isArray(appConfig.websitesToVisit)) {
                 appConfig.websitesToVisit = [];
             }
@@ -4579,7 +4480,6 @@
                 ];
             }
             
-            // Set defaults only for missing special task configs
             if (!appConfig.watchAdSpecialTaskCount) appConfig.watchAdSpecialTaskCount = 10;
             if (!appConfig.watchAdSpecialTaskReward) appConfig.watchAdSpecialTaskReward = 100;
             if (!appConfig.watchAdSpecialTaskTimer) appConfig.watchAdSpecialTaskTimer = 60;
@@ -4736,6 +4636,11 @@
                     }
                 }
             });
+        }
+
+        // ===== UTILITY FUNCTIONS =====
+        function isBrowserUser() {
+            return userData && (userData.userType === 'browser_anonymous' || userData.isBrowserUser);
         }
     </script>
 </body>
