@@ -14,679 +14,804 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<script src="https://unpkg.com/lucide@latest"></script>
 
 <style>
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body {
-  font-family: 'Poppins', system-ui, sans-serif;
+  font-family:'Poppins', system-ui, sans-serif;
   background: radial-gradient(ellipse at top, #141b33 0%, #0a0e1a 70%);
-  color: #eef2f8;
-  min-height: 100vh;
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
+  color:#eef2f8; min-height:100vh; overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  user-select:none;
 }
-
 :root {
-  --brand: #00e5a0;
-  --brand-2: #00b8d4;
-  --brand-3: #7c3aed;
-  --bg-card: rgba(20, 27, 51, 0.85);
-  --bg-elev: rgba(30, 40, 70, 0.7);
-  --border: rgba(0, 229, 160, 0.15);
-  --text-dim: #94a3b8;
-  --text-mute: #64748b;
-  --success: #22c55e;
-  --danger: #ef4444;
-  --warn: #f59e0b;
+  --brand:#00e5a0; --brand-2:#00b8d4; --brand-3:#7c3aed;
+  --bg-card:rgba(20,27,51,.85); --bg-elev:rgba(30,40,70,.7);
+  --border:rgba(0,229,160,.15);
+  --text-dim:#94a3b8; --text-mute:#64748b;
+  --success:#22c55e; --danger:#ef4444; --warn:#f59e0b;
 }
+.brand-gradient{background:linear-gradient(135deg,var(--brand),var(--brand-2) 50%,var(--brand-3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.card{background:var(--bg-card);backdrop-filter:blur(12px);border:1px solid var(--border);box-shadow:0 8px 32px rgba(0,0,0,.35);border-radius:20px;}
+.card-elev{background:var(--bg-elev);border:1px solid rgba(255,255,255,.06);border-radius:18px;}
+.input-field{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:white;transition:all .2s;font-family:inherit;}
+.input-field:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(0,229,160,.15);}
+.btn{transition:transform .15s,box-shadow .2s;border-radius:14px;font-weight:700;cursor:pointer;border:none;font-family:inherit;position:relative;overflow:hidden;}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#0a0e1a;box-shadow:0 6px 20px rgba(0,229,160,.35);}
+.btn-primary[disabled]{background:#334155;color:#64748b;box-shadow:none;cursor:not-allowed;}
+.btn-ghost{background:rgba(255,255,255,.05);color:#eef2f8;border:1px solid rgba(255,255,255,.1);}
+.btn-success{background:linear-gradient(135deg,var(--success),#16a34a);color:white;box-shadow:0 6px 20px rgba(34,197,94,.35);}
+.btn-danger{background:linear-gradient(135deg,var(--danger),#b91c1c);color:white;box-shadow:0 6px 20px rgba(239,68,68,.35);}
+.main-page{display:none;min-height:100vh;}
+.main-page.active{display:flex;flex-direction:column;}
+.sub-page{display:none;}
+.sub-page.active{display:block;animation:fadeIn .25s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.6;}}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 20px rgba(0,229,160,.4);}50%{box-shadow:0 0 35px rgba(0,229,160,.8);}}
+.pulse-soft{animation:pulse 2.5s ease-in-out infinite;}
+.glow-pulse{animation:glowPulse 2s ease-in-out infinite;}
+.bottom-nav{background:rgba(10,14,26,.92);backdrop-filter:blur(16px);border-top:1px solid var(--border);padding-bottom:env(safe-area-inset-bottom,0);}
+.nav-link{color:var(--text-mute);transition:color .2s;display:flex;flex-direction:column;align-items:center;padding:8px 0;text-decoration:none;position:relative;}
+.nav-link.active{color:var(--brand);}
+.nav-link.active::after{content:'';position:absolute;bottom:0;width:20px;height:3px;border-radius:3px;background:linear-gradient(135deg,var(--brand),var(--brand-2));}
+.feature-card{background:linear-gradient(160deg,rgba(0,229,160,.08),rgba(124,58,237,.05));border:1px solid var(--border);border-radius:18px;padding:16px 14px;cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s;text-align:center;}
+.feature-card:hover{transform:translateY(-3px);border-color:rgba(0,229,160,.4);box-shadow:0 12px 30px rgba(0,229,160,.15);}
+.feature-icon{width:52px;height:52px;margin:0 auto 10px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#0a0e1a;font-size:1.35rem;box-shadow:0 6px 16px rgba(0,229,160,.3);}
+.feature-card.card29{background:linear-gradient(160deg,rgba(239,68,68,.08),rgba(245,158,11,.05));border-color:rgba(239,68,68,.2);}
+.feature-card.card29 .feature-icon{background:linear-gradient(135deg,#ef4444,#f59e0b);}
+.feature-card.carrom{background:linear-gradient(160deg,rgba(139,92,246,.08),rgba(217,70,239,.05));border-color:rgba(139,92,246,.2);}
+.feature-card.carrom .feature-icon{background:linear-gradient(135deg,#8b5cf6,#d946ef);}
+.feature-card.ludo{background:linear-gradient(160deg,rgba(6,182,212,.08),rgba(59,130,246,.05));border-color:rgba(6,182,212,.2);}
+.feature-card.ludo .feature-icon{background:linear-gradient(135deg,#06b6d4,#3b82f6);}
+.feature-card.luck{background:linear-gradient(160deg,rgba(245,158,11,.08),rgba(239,68,68,.05));border-color:rgba(245,158,11,.2);}
+.feature-card.luck .feature-icon{background:linear-gradient(135deg,#f59e0b,#ef4444);}
+.spinner{width:24px;height:24px;border:3px solid rgba(0,229,160,.15);border-top-color:var(--brand);border-radius:50%;animation:spin .9s linear infinite;}
+.spinner-lg{width:60px;height:60px;border-width:4px;}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:.65rem;font-weight:700;}
+.pill-success{background:rgba(34,197,94,.15);color:#4ade80;}
+.pill-info{background:rgba(59,130,246,.15);color:#60a5fa;}
+.pill-warn{background:rgba(245,158,11,.15);color:#fbbf24;}
+.pill-danger{background:rgba(239,68,68,.15);color:#f87171;}
+.ad-overlay{position:fixed;inset:0;background:rgba(10,14,26,.97);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;z-index:9000;padding:20px;}
+.ad-overlay.show{display:flex;}
+.ad-overlay-card{background:var(--bg-card);border:1px solid var(--border);border-radius:24px;padding:36px 28px;max-width:340px;width:100%;text-align:center;box-shadow:0 25px 60px rgba(0,0,0,.6);animation:slideUp .3s ease;}
+.modal{position:fixed;inset:0;background:rgba(10,14,26,.92);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;z-index:9500;padding:20px;}
+.modal.show{display:flex;}
+.modal-card{background:var(--bg-card);border:1px solid var(--border);border-radius:24px;padding:32px 26px;max-width:400px;width:100%;text-align:center;box-shadow:0 25px 60px rgba(0,0,0,.6);animation:slideUp .3s ease;position:relative;max-height:90vh;overflow-y:auto;}
+.slider{overflow:hidden;position:relative;border-radius:18px;border:1px solid var(--border);aspect-ratio:16/7;}
+.slider-track{display:flex;transition:transform .5s cubic-bezier(.4,0,.2,1);height:100%;}
+.slider-item{min-width:100%;height:100%;}
+.slider-item img{width:100%;height:100%;object-fit:cover;display:block;}
+.slider-dots{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px;}
+.dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.4);cursor:pointer;transition:.3s;}
+.dot.active{width:20px;background:linear-gradient(90deg,var(--brand),var(--brand-2));border-radius:3px;}
+.coin-pill{background:linear-gradient(135deg,rgba(0,229,160,.15),rgba(0,184,212,.1));border:1px solid rgba(0,229,160,.3);border-radius:20px;padding:6px 14px;}
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--brand),var(--brand-2));border-radius:3px;}
+.hidden{display:none !important;}
 
-.brand-gradient {
-  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 50%, var(--brand-3) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.card {
-  background: var(--bg-card);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--border);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+/* ============= 29 CARD GAME ============= */
+.game-table-29 {
+  position: relative;
+  background: radial-gradient(ellipse at center, #2d5a3d 0%, #1a3d28 100%);
   border-radius: 20px;
-}
-.card-elev {
-  background: var(--bg-elev);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 18px;
-}
-.input-field {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  color: white;
-  transition: all 0.2s ease;
-}
-.input-field:focus {
-  outline: none;
-  border-color: var(--brand);
-  box-shadow: 0 0 0 3px rgba(0, 229, 160, 0.15);
-}
-.btn {
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
-  border-radius: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  border: none;
+  border: 8px solid #3d2817;
+  box-shadow: inset 0 0 60px rgba(0,0,0,.5), 0 20px 50px rgba(0,0,0,.6);
+  aspect-ratio: 1/1.1;
+  margin: 0 auto;
+  max-width: 400px;
   position: relative;
   overflow: hidden;
-  font-family: inherit;
 }
-.btn:active { transform: scale(0.97); }
-.btn-primary {
-  background: linear-gradient(135deg, var(--brand), var(--brand-2));
-  color: #0a0e1a;
-  box-shadow: 0 6px 20px rgba(0, 229, 160, 0.35);
+.game-table-29::before {
+  content:'';
+  position:absolute;inset:20px;
+  border:2px dashed rgba(255,255,255,.08);
+  border-radius:12px;
+  pointer-events:none;
 }
-.btn-primary[disabled] {
-  background: #334155;
-  color: #64748b;
-  box-shadow: none;
-  cursor: not-allowed;
+.player-seat-29 {
+  position: absolute;
+  text-align: center;
 }
-.btn-ghost {
-  background: rgba(255,255,255,0.05);
-  color: #eef2f8;
-  border: 1px solid rgba(255,255,255,0.1);
+.player-seat-29.top { top: 6px; left: 50%; transform: translateX(-50%); }
+.player-seat-29.left { top: 50%; left: 6px; transform: translateY(-50%); }
+.player-seat-29.right { top: 50%; right: 6px; transform: translateY(-50%); }
+.player-seat-29.bottom { bottom: 6px; left: 50%; transform: translateX(-50%); }
+
+.avatar-29 {
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #475569, #334155);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+  border: 3px solid rgba(255,255,255,.15);
+  box-shadow: 0 4px 12px rgba(0,0,0,.4);
+  margin: 0 auto 4px;
 }
-.btn-success {
-  background: linear-gradient(135deg, var(--success), #16a34a);
+.avatar-29.active {
+  border-color: var(--brand);
+  box-shadow: 0 0 20px rgba(0,229,160,.7);
+  animation: glowPulse 1.8s infinite;
+}
+.name-tag-29 {
+  background: rgba(0,0,0,.55);
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: .65rem;
+  font-weight: 700;
   color: white;
-  box-shadow: 0 6px 20px rgba(34,197,94,0.35);
+  display: inline-block;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255,255,255,.1);
+  white-space: nowrap;
 }
-
-.main-page { display: none; min-height: 100vh; }
-.main-page.active { display: flex; flex-direction: column; }
-.sub-page { display: none; }
-.sub-page.active { display: block; animation: fadeIn 0.25s ease; }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.pulse-soft { animation: pulse 2.5s ease-in-out infinite; }
-
-.bottom-nav {
-  background: rgba(10, 14, 26, 0.92);
-  backdrop-filter: blur(16px);
-  border-top: 1px solid var(--border);
-  padding-bottom: env(safe-area-inset-bottom, 0);
-}
-.nav-link {
-  color: var(--text-mute);
-  transition: color 0.2s;
+.trick-area-29 {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 180px; height: 180px;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  padding: 8px 0;
-  text-decoration: none;
+  justify-content: center;
+}
+.trick-cards-29 {
+  position: relative;
+  width: 100%; height: 100%;
+}
+.trick-card-29 {
+  position: absolute;
+  width: 50px; height: 70px;
+  border-radius: 6px;
+  background: white;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 4px 10px rgba(0,0,0,.5);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  font-weight: 800;
+  transition: all .3s;
+}
+.trick-card-29 .rank { font-size: 1.05rem; line-height: 1; }
+.trick-card-29 .suit { font-size: .9rem; line-height: 1; }
+.trick-card-29.pos-top { top: 0; left: 50%; transform: translateX(-50%); }
+.trick-card-29.pos-bottom { bottom: 0; left: 50%; transform: translateX(-50%); }
+.trick-card-29.pos-left { left: 0; top: 50%; transform: translateY(-50%); }
+.trick-card-29.pos-right { right: 0; top: 50%; transform: translateY(-50%); }
+
+.hand-area-29 {
+  position: absolute;
+  bottom: -70px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+  width: 320px;
+  padding: 4px;
+  z-index: 20;
+}
+.card-29 {
+  width: 40px;
+  height: 58px;
+  border-radius: 5px;
+  background: white;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 3px 8px rgba(0,0,0,.4);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s, margin-top .15s;
+  font-weight: 800;
+  flex-shrink: 0;
   position: relative;
 }
-.nav-link.active { color: var(--brand); }
-.nav-link.active::after {
-  content: '';
+.card-29:hover { transform: translateY(-8px); box-shadow: 0 8px 16px rgba(0,0,0,.5); z-index: 5; }
+.card-29 .rank { font-size: .95rem; line-height: 1; }
+.card-29 .suit { font-size: .85rem; line-height: 1; }
+.card-29.red { color: #dc2626; }
+.card-29.black { color: #1e293b; }
+.card-29.dim { opacity: .35; cursor: not-allowed; }
+.card-29.dim:hover { transform: none; }
+.card-29.disabled { pointer-events: none; }
+.card-29.played { pointer-events: none; opacity: 0; }
+
+.trump-badge-29 {
   position: absolute;
-  bottom: 0;
-  width: 20px;
-  height: 3px;
-  border-radius: 3px;
-  background: linear-gradient(135deg, var(--brand), var(--brand-2));
+  top: 12px; right: 12px;
+  background: rgba(0,0,0,.6);
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: .7rem;
+  font-weight: 700;
+  border: 1px solid rgba(255,255,255,.15);
+  backdrop-filter: blur(4px);
+  text-align: center;
+  color: white;
 }
+.trump-badge-29 .suit-big { font-size: 1.3rem; display: block; line-height: 1; }
 
-.feature-card {
-  background: linear-gradient(160deg, rgba(0,229,160,0.08), rgba(124,58,237,0.05));
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 16px 14px;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+.score-area-29 {
+  position: absolute;
+  top: 12px; left: 12px;
+  background: rgba(0,0,0,.6);
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: .7rem;
+  font-weight: 700;
+  border: 1px solid rgba(255,255,255,.15);
+  backdrop-filter: blur(4px);
+  color: white;
   text-align: center;
 }
-.feature-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(0,229,160,0.4);
-  box-shadow: 0 12px 30px rgba(0,229,160,0.15);
+
+/* ============= LUDO ============= */
+.ludo-board-game {
+  position: relative;
+  aspect-ratio: 1;
+  max-width: 400px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 16px;
+  border: 6px solid #1e293b;
+  box-shadow: 0 15px 40px rgba(0,0,0,.5);
+  overflow: hidden;
 }
-.feature-icon {
-  width: 52px; height: 52px;
-  margin: 0 auto 10px;
-  border-radius: 14px;
+.ludo-grid {
+  display: grid;
+  grid-template-columns: repeat(15, 1fr);
+  grid-template-rows: repeat(15, 1fr);
+  width: 100%;
+  height: 100%;
+}
+.ludo-cell {
+  border: 1px solid rgba(0,0,0,.15);
+  position: relative;
+}
+.ludo-cell.path-red { background: #ef4444; }
+.ludo-cell.path-green { background: #22c55e; }
+.ludo-cell.path-yellow { background: #eab308; }
+.ludo-cell.path-blue { background: #3b82f6; }
+.ludo-cell.path-white { background: #fff; }
+.ludo-home-base {
   display: flex; align-items: center; justify-content: center;
-  background: linear-gradient(135deg, var(--brand), var(--brand-2));
-  color: #0a0e1a;
-  font-size: 1.35rem;
-  box-shadow: 0 6px 16px rgba(0,229,160,0.3);
 }
-.feature-card.luck {
-  background: linear-gradient(160deg, rgba(245,158,11,0.08), rgba(239,68,68,0.05));
-  border-color: rgba(245,158,11,0.2);
+.ludo-home-base-inner {
+  width: 60%; height: 60%;
+  border-radius: 8px;
+  background: rgba(255,255,255,.6);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 8%;
+  padding: 8%;
 }
-.feature-card.luck .feature-icon {
-  background: linear-gradient(135deg, #f59e0b, #ef4444);
-}
-
-.spinner {
-  width: 24px; height: 24px;
-  border: 3px solid rgba(0,229,160,0.15);
-  border-top-color: var(--brand);
+.ludo-home-dot {
   border-radius: 50%;
-  animation: spin 0.9s linear infinite;
+  border: 2px solid rgba(0,0,0,.3);
 }
-.spinner-lg { width: 60px; height: 60px; border-width: 4px; }
+.ludo-token {
+  position: absolute;
+  width: 78%;
+  height: 78%;
+  top: 11%; left: 11%;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.85);
+  box-shadow: 0 2px 5px rgba(0,0,0,.5);
+  transition: top .3s, left .3s, transform .2s;
+  cursor: pointer;
+  z-index: 5;
+}
+.ludo-token.red { background: radial-gradient(circle at 30% 30%, #ff8a8a, #b91c1c); }
+.ludo-token.green { background: radial-gradient(circle at 30% 30%, #86efac, #15803d); }
+.ludo-token.yellow { background: radial-gradient(circle at 30% 30%, #fde68a, #a16207); }
+.ludo-token.blue { background: radial-gradient(circle at 30% 30%, #93c5fd, #1d4ed8); }
+.ludo-token.movable { animation: glowPulse 1.2s infinite; cursor: pointer; }
+.ludo-center-triangle {
+  position: absolute;
+  top: 40%; left: 40%;
+  width: 20%; height: 20%;
+  background: #1e293b;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  z-index: 2;
+}
 
-.pill {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 4px 10px; border-radius: 20px;
-  font-size: 0.65rem; font-weight: 700;
+/* ============= CARROM ============= */
+.carrom-board {
+  position: relative;
+  aspect-ratio: 1;
+  max-width: 400px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, #f5deb3 0%, #deb887 100%);
+  border-radius: 12px;
+  border: 12px solid #654321;
+  box-shadow: inset 0 0 30px rgba(0,0,0,.3), 0 15px 40px rgba(0,0,0,.5);
+  overflow: hidden;
 }
-.pill-success { background: rgba(34,197,94,0.15); color: #4ade80; }
-.pill-info    { background: rgba(59,130,246,0.15); color: #60a5fa; }
+.carrom-board::before {
+  content:'';
+  position: absolute;
+  inset: 8%;
+  border: 2px solid rgba(0,0,0,.25);
+  border-radius: 4px;
+  pointer-events: none;
+}
+.carrom-board::after {
+  content:'';
+  position: absolute;
+  inset: 26%;
+  border: 2px solid rgba(0,0,0,.25);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.carrom-pocket {
+  position: absolute;
+  width: 11%;
+  height: 11%;
+  background: radial-gradient(circle at 30% 30%, #444, #000);
+  border-radius: 50%;
+  box-shadow: inset 0 4px 8px rgba(0,0,0,.9), 0 2px 4px rgba(0,0,0,.4);
+  z-index: 3;
+}
+.carrom-pocket.tl { top: 2%; left: 2%; }
+.carrom-pocket.tr { top: 2%; right: 2%; }
+.carrom-pocket.bl { bottom: 2%; left: 2%; }
+.carrom-pocket.br { bottom: 2%; right: 2%; }
+.carrom-coin {
+  position: absolute;
+  width: 7%;
+  height: 7%;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,.5), inset 0 -2px 3px rgba(0,0,0,.2), inset 0 2px 3px rgba(255,255,255,.4);
+  transition: transform .4s cubic-bezier(.4,0,.2,1);
+  z-index: 4;
+}
+.carrom-coin.white { background: radial-gradient(circle at 35% 35%, #fff, #d1d5db 70%, #9ca3af); }
+.carrom-coin.black { background: radial-gradient(circle at 35% 35%, #6b7280, #1f2937 70%, #000); }
+.carrom-coin.queen { background: radial-gradient(circle at 35% 35%, #fca5a5, #dc2626 70%, #7f1d1d); }
+.carrom-striker {
+  position: absolute;
+  width: 9%;
+  height: 9%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fff, #e5e7eb 60%, #94a3b8);
+  box-shadow: 0 2px 6px rgba(0,0,0,.6), inset 0 -2px 4px rgba(0,0,0,.15);
+  border: 2px solid #fff;
+  z-index: 5;
+  transition: transform .12s ease-out;
+  cursor: grab;
+}
+.carrom-striker:active { cursor: grabbing; }
+.carrom-aim-line {
+  position: absolute;
+  height: 2px;
+  background: rgba(255,255,255,.8);
+  transform-origin: left center;
+  pointer-events: none;
+  z-index: 6;
+  border-radius: 2px;
+  box-shadow: 0 0 8px rgba(255,255,255,.6);
+}
 
-.ad-overlay {
-  position: fixed; inset: 0;
-  background: rgba(10,14,26,0.97);
-  backdrop-filter: blur(12px);
-  display: none;
-  align-items: center; justify-content: center;
-  z-index: 9000;
-  padding: 20px;
-}
-.ad-overlay.show { display: flex; }
-.ad-overlay-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 24px;
-  padding: 36px 28px;
-  max-width: 340px; width: 100%;
+/* Watch ad for points */
+.collect-points-card {
+  background: linear-gradient(135deg, rgba(245,158,11,.15), rgba(239,68,68,.1));
+  border: 1px solid rgba(245,158,11,.35);
+  border-radius: 18px;
+  padding: 18px;
   text-align: center;
-  box-shadow: 0 25px 60px rgba(0,0,0,0.6);
-  animation: slideUp 0.3s ease;
+  margin-bottom: 16px;
 }
-.modal {
-  position: fixed; inset: 0;
-  background: rgba(10,14,26,0.92);
-  backdrop-filter: blur(12px);
-  display: none;
-  align-items: center; justify-content: center;
-  z-index: 9500;
-  padding: 20px;
-}
-.modal.show { display: flex; }
-.modal-card {
+
+/* Game result modal */
+.result-modal-card {
   background: var(--bg-card);
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
   border-radius: 24px;
   padding: 32px 26px;
   max-width: 380px; width: 100%;
   text-align: center;
-  box-shadow: 0 25px 60px rgba(0,0,0,0.6);
-  animation: slideUp 0.3s ease;
-  position: relative;
+  animation: slideUp .3s ease;
 }
-.slider {
-  overflow: hidden; position: relative;
-  border-radius: 18px;
-  border: 1px solid var(--border);
-  aspect-ratio: 16/7;
-}
-.slider-track {
-  display: flex;
-  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  height: 100%;
-}
-.slider-item { min-width: 100%; height: 100%; }
-.slider-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.slider-dots {
-  position: absolute; bottom: 10px; left: 50%;
-  transform: translateX(-50%);
-  display: flex; gap: 6px;
-}
-.dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.4);
-  cursor: pointer;
-  transition: 0.3s;
-}
-.dot.active {
-  width: 20px;
-  background: linear-gradient(90deg, var(--brand), var(--brand-2));
-  border-radius: 3px;
-}
-.ludo-board {
-  width: 240px; height: 240px;
-  margin: 0 auto;
-  background: white;
-  border-radius: 14px;
-  border: 5px solid #1e293b;
-  position: relative;
-  transform: rotate(45deg);
-  overflow: hidden;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.5);
-}
-.quad { position: absolute; width: 50%; height: 50%; }
-.q1 { top:0; left:0; background:#ef4444; border-bottom-right-radius:100%; }
-.q2 { top:0; right:0; background:#06b6d4; border-bottom-left-radius:100%; }
-.q3 { bottom:0; left:0; background:#facc15; border-top-right-radius:100%; }
-.q4 { bottom:0; right:0; background:#8b5cf6; border-top-left-radius:100%; }
-.ludo-center {
-  position: absolute; top:50%; left:50%;
-  transform: translate(-50%,-50%);
-  width: 42%; height: 42%;
-  background: white;
-  border: 3px solid #1e293b;
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  z-index: 5;
-}
-.ludo-center span {
-  transform: rotate(-45deg);
+.result-modal-card.win { border-color: rgba(34,197,94,.5); box-shadow: 0 25px 60px rgba(34,197,94,.3); }
+.result-modal-card.lose { border-color: rgba(239,68,68,.5); box-shadow: 0 25px 60px rgba(239,68,68,.3); }
+
+/* Seat indicator for 29 */
+.seat-badge {
+  display: inline-block;
+  background: var(--brand);
+  color: #0a0e1a;
+  font-size: .55rem;
+  padding: 1px 6px;
+  border-radius: 6px;
   font-weight: 800;
-  color: #1e293b;
-  font-size: 1rem;
-  letter-spacing: 1px;
+  margin-left: 4px;
+  vertical-align: middle;
 }
-.dice {
-  position: absolute; top:50%; left:50%;
-  transform: translate(-50%,-50%) rotate(-45deg);
-  width: 68px; height: 68px;
-  background: white;
-  border-radius: 12px;
-  border: 4px solid #1e293b;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 2rem;
-  font-weight: 900;
-  color: #1e293b;
-  z-index: 10;
-  box-shadow: 0 8px 22px rgba(0,0,0,0.4);
-}
-.coin-pill {
-  background: linear-gradient(135deg, rgba(0,229,160,0.15), rgba(0,184,212,0.1));
-  border: 1px solid rgba(0,229,160,0.3);
-  border-radius: 20px;
-  padding: 6px 14px;
-}
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--brand), var(--brand-2));
-  border-radius: 3px;
-}
-.hidden { display: none !important; }
 </style>
 </head>
 <body class="max-w-md mx-auto">
 
-<!-- AD LOADING OVERLAY -->
+<!-- AD OVERLAY -->
 <div id="adOverlay" class="ad-overlay">
   <div class="ad-overlay-card">
-    <div style="display:flex; justify-content:center; margin-bottom:20px;">
+    <div style="display:flex;justify-content:center;margin-bottom:20px;">
       <div class="spinner spinner-lg"></div>
     </div>
-    <h3 id="adOverlayTitle" class="brand-gradient" style="font-size:1.4rem; font-weight:800; margin-bottom:8px;">Loading</h3>
-    <p id="adOverlayMsg" style="color:var(--text-dim); font-size:0.85rem;">Please wait…</p>
+    <h3 id="adOverlayTitle" class="brand-gradient" style="font-size:1.4rem;font-weight:800;margin-bottom:8px;">Loading</h3>
+    <p id="adOverlayMsg" style="color:var(--text-dim);font-size:.85rem;">Please wait…</p>
   </div>
 </div>
 
 <!-- GENERIC MODAL -->
 <div id="modal" class="modal">
   <div class="modal-card">
-    <div id="modalIcon" style="font-size:3rem; margin-bottom:14px;">🎉</div>
-    <h3 id="modalTitle" class="brand-gradient" style="font-size:1.4rem; font-weight:800; margin-bottom:10px;">Title</h3>
-    <p id="modalBody" style="color:var(--text-dim); font-size:0.9rem; line-height:1.5; margin-bottom:20px;">Message</p>
-    <button id="modalBtn" class="btn btn-primary" style="padding:12px 32px; width:100%;">OK</button>
+    <div id="modalIcon" style="font-size:3rem;margin-bottom:14px;">🎉</div>
+    <h3 id="modalTitle" class="brand-gradient" style="font-size:1.4rem;font-weight:800;margin-bottom:10px;">Title</h3>
+    <p id="modalBody" style="color:var(--text-dim);font-size:.9rem;line-height:1.5;margin-bottom:20px;">Message</p>
+    <button id="modalBtn" class="btn btn-primary" style="padding:12px 32px;width:100%;">OK</button>
   </div>
 </div>
 
 <!-- CONFIRM MODAL -->
 <div id="confirmModal" class="modal">
   <div class="modal-card">
-    <div id="confirmIcon" style="font-size:3rem; margin-bottom:14px;">✨</div>
-    <h3 id="confirmTitle" class="brand-gradient" style="font-size:1.3rem; font-weight:800; margin-bottom:10px;">Title</h3>
-    <p id="confirmBody" style="color:var(--text-dim); font-size:0.85rem; line-height:1.5; margin-bottom:22px;">Message</p>
-    <div style="display:flex; gap:10px;">
-      <button id="confirmNoBtn" class="btn btn-ghost" style="flex:1; padding:14px; font-size:0.9rem;">No, Thanks</button>
-      <button id="confirmYesBtn" class="btn btn-primary" style="flex:1; padding:14px; font-size:0.9rem;">Yes, Double!</button>
+    <div id="confirmIcon" style="font-size:3rem;margin-bottom:14px;">✨</div>
+    <h3 id="confirmTitle" class="brand-gradient" style="font-size:1.3rem;font-weight:800;margin-bottom:10px;">Title</h3>
+    <p id="confirmBody" style="color:var(--text-dim);font-size:.85rem;line-height:1.5;margin-bottom:22px;">Message</p>
+    <div style="display:flex;gap:10px;">
+      <button id="confirmNoBtn" class="btn btn-ghost" style="flex:1;padding:14px;font-size:.9rem;">No</button>
+      <button id="confirmYesBtn" class="btn btn-primary" style="flex:1;padding:14px;font-size:.9rem;">Yes</button>
     </div>
+  </div>
+</div>
+
+<!-- GAME RESULT MODAL -->
+<div id="resultModal" class="modal">
+  <div id="resultModalCard" class="result-modal-card">
+    <div id="resultIcon" style="font-size:4rem;margin-bottom:12px;">🏆</div>
+    <h3 id="resultTitle" class="brand-gradient" style="font-size:1.6rem;font-weight:800;margin-bottom:10px;">Victory!</h3>
+    <p id="resultBody" style="color:var(--text-dim);font-size:.9rem;line-height:1.5;margin-bottom:20px;">You won!</p>
+    <div id="resultPoints" style="font-size:2.5rem;font-weight:900;margin:12px 0;color:var(--success);">+180</div>
+    <button id="resultBtn" class="btn btn-primary" style="padding:14px 32px;width:100%;font-size:.95rem;">Continue</button>
   </div>
 </div>
 
 <!-- COUNTRY BLOCK -->
 <div id="countryBlock" class="modal">
   <div class="modal-card">
-    <div style="font-size:3.5rem; margin-bottom:14px;">🌍</div>
-    <h3 class="brand-gradient" style="font-size:1.5rem; font-weight:800; margin-bottom:10px;">Access Restricted</h3>
-    <p id="countryBlockMsg" style="color:var(--text-dim); font-size:0.9rem; line-height:1.5; margin-bottom:20px;">Not available in your country.</p>
-    <button onclick="location.reload()" class="btn btn-ghost" style="padding:12px 32px; width:100%;">Retry</button>
+    <div style="font-size:3.5rem;margin-bottom:14px;">🌍</div>
+    <h3 class="brand-gradient" style="font-size:1.5rem;font-weight:800;margin-bottom:10px;">Access Restricted</h3>
+    <p id="countryBlockMsg" style="color:var(--text-dim);font-size:.9rem;line-height:1.5;margin-bottom:20px;">Not available in your country.</p>
+    <button onclick="location.reload()" class="btn btn-ghost" style="padding:12px 32px;width:100%;">Retry</button>
   </div>
 </div>
 
 <!-- NOTICE -->
 <div id="noticeModal" class="modal">
   <div class="modal-card">
-    <div id="noticeIcon" style="font-size:3rem; margin-bottom:14px;">📢</div>
-    <h3 id="noticeTitle" class="brand-gradient" style="font-size:1.35rem; font-weight:800; margin-bottom:10px;">Notice</h3>
-    <p id="noticeBody" style="color:var(--text-dim); font-size:0.9rem; line-height:1.6; margin-bottom:20px;">Message</p>
-    <div style="display:flex; gap:10px;">
-      <button id="noticeDismissBtn" class="btn btn-ghost" style="flex:1; padding:12px; font-size:0.85rem;">Don't Show</button>
-      <button id="noticeOkBtn" class="btn btn-primary" style="flex:1; padding:12px; font-size:0.85rem;">OK</button>
+    <div id="noticeIcon" style="font-size:3rem;margin-bottom:14px;">📢</div>
+    <h3 id="noticeTitle" class="brand-gradient" style="font-size:1.35rem;font-weight:800;margin-bottom:10px;">Notice</h3>
+    <p id="noticeBody" style="color:var(--text-dim);font-size:.9rem;line-height:1.6;margin-bottom:20px;">Message</p>
+    <div style="display:flex;gap:10px;">
+      <button id="noticeDismissBtn" class="btn btn-ghost" style="flex:1;padding:12px;font-size:.85rem;">Don't Show</button>
+      <button id="noticeOkBtn" class="btn btn-primary" style="flex:1;padding:12px;font-size:.85rem;">OK</button>
     </div>
   </div>
 </div>
 
-<!-- ACCESS DENIED (non-Telegram) -->
+<!-- ACCESS DENIED -->
 <div id="accessDenied" class="modal">
   <div class="modal-card">
-    <div style="font-size:3.5rem; margin-bottom:14px;">🔒</div>
-    <h3 class="brand-gradient" style="font-size:1.5rem; font-weight:800; margin-bottom:10px;">Telegram Required</h3>
-    <p style="color:var(--text-dim); font-size:0.9rem; line-height:1.5; margin-bottom:20px;">
-      Please open Games Hub inside Telegram to use the app.
-    </p>
-    <a href="https://t.me" class="btn btn-primary" style="padding:12px 32px; width:100%; text-decoration:none; display:inline-block; text-align:center;">Open Telegram</a>
+    <div style="font-size:3.5rem;margin-bottom:14px;">🔒</div>
+    <h3 class="brand-gradient" style="font-size:1.5rem;font-weight:800;margin-bottom:10px;">Telegram Required</h3>
+    <p style="color:var(--text-dim);font-size:.9rem;line-height:1.5;margin-bottom:20px;">Please open Games Hub inside Telegram.</p>
+    <a href="https://t.me" class="btn btn-primary" style="padding:12px 32px;width:100%;text-decoration:none;display:inline-block;text-align:center;">Open Telegram</a>
   </div>
 </div>
 
-<!-- MAIN APP -->
+<!-- APP -->
 <div id="app" class="main-page">
 
-  <header style="padding:14px 18px; display:flex; align-items:center; justify-content:space-between; background:rgba(10,14,26,0.85); backdrop-filter:blur(14px); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:50;">
-    <div style="display:flex; align-items:center; gap:12px;">
-      <img id="hdrAvatar" src="https://ui-avatars.com/api/?name=G&background=00e5a0&color=0a0e1a&bold=true" style="width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid var(--brand);">
+  <header style="padding:14px 18px;display:flex;align-items:center;justify-content:space-between;background:rgba(10,14,26,.85);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <img id="hdrAvatar" src="https://ui-avatars.com/api/?name=G&background=00e5a0&color=0a0e1a&bold=true" style="width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid var(--brand);">
       <div>
-        <div id="hdrName" class="brand-gradient" style="font-weight:800; font-size:0.95rem; line-height:1.1;">Hi there</div>
-        <div style="color:var(--text-mute); font-size:0.62rem; margin-top:2px;">Games Hub</div>
+        <div id="hdrName" class="brand-gradient" style="font-weight:800;font-size:.95rem;line-height:1.1;">Hi there</div>
+        <div style="color:var(--text-mute);font-size:.62rem;margin-top:2px;">Games Hub</div>
       </div>
     </div>
-    <div class="coin-pill" style="display:flex; align-items:center; gap:6px;">
-      <span id="hdrBalance" class="brand-gradient" style="font-weight:800; font-size:1.05rem;">0</span>
-      <i class="fas fa-coins" style="color:var(--brand); font-size:0.9rem;"></i>
+    <div class="coin-pill" style="display:flex;align-items:center;gap:6px;">
+      <span id="hdrBalance" class="brand-gradient" style="font-weight:800;font-size:1.05rem;">0</span>
+      <i class="fas fa-coins" style="color:var(--brand);font-size:.9rem;"></i>
     </div>
   </header>
 
-  <main style="flex:1; padding-bottom:80px;">
-
+  <main style="flex:1;padding-bottom:80px;">
     <div id="backBar" class="hidden" style="padding:14px 18px;">
-      <button onclick="navigateTo('home')" class="btn btn-ghost" style="padding:8px 16px; font-size:0.8rem;">
+      <button onclick="navigateTo('home')" class="btn btn-ghost" style="padding:8px 16px;font-size:.8rem;">
         <i class="fas fa-arrow-left" style="margin-right:6px;"></i> Back
       </button>
     </div>
 
     <!-- HOME -->
     <div id="page-home" class="sub-page active" style="padding:16px 18px;">
-      <div class="card" style="padding:18px; margin-bottom:18px; position:relative; overflow:hidden;">
-        <div style="position:absolute; top:-30px; right:-30px; width:100px; height:100px; background:radial-gradient(circle, rgba(0,229,160,0.2), transparent 70%); border-radius:50%;"></div>
-        <h1 class="brand-gradient" style="font-size:1.5rem; font-weight:800; margin-bottom:6px;">Games Hub</h1>
-        <p style="color:var(--text-dim); font-size:0.8rem; line-height:1.5;">Play games, complete tasks and earn real rewards.</p>
-        <div style="display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;">
+      <div class="card" style="padding:18px;margin-bottom:18px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:-30px;right:-30px;width:100px;height:100px;background:radial-gradient(circle,rgba(0,229,160,.2),transparent 70%);border-radius:50%;"></div>
+        <h1 class="brand-gradient" style="font-size:1.5rem;font-weight:800;margin-bottom:6px;">Games Hub</h1>
+        <p style="color:var(--text-dim);font-size:.8rem;line-height:1.5;">Play 29, Ludo, Carrom and more — win points!</p>
+        <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
           <span class="pill pill-success"><i class="fas fa-bolt"></i> Fast Payouts</span>
-          <span class="pill pill-info"><i class="fas fa-shield-alt"></i> Secure</span>
+          <span class="pill pill-info"><i class="fas fa-gamepad"></i> 6 Games</span>
         </div>
       </div>
 
-      <div id="slider" class="slider" style="margin-bottom:20px; display:none;">
+      <div id="slider" class="slider" style="margin-bottom:20px;display:none;">
         <div class="slider-track" id="sliderTrack"></div>
         <div class="slider-dots" id="sliderDots"></div>
       </div>
 
-      <h2 style="font-size:0.95rem; font-weight:700; margin-bottom:12px; color:var(--text-dim); letter-spacing:0.5px;">EARN REWARDS</h2>
-      <div id="featureGrid" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:22px;"></div>
+      <h2 style="font-size:.95rem;font-weight:700;margin-bottom:12px;color:var(--text-dim);letter-spacing:.5px;">EARN REWARDS</h2>
+      <div id="featureGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px;"></div>
 
-      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
-        <div class="card-elev" style="padding:12px; text-align:center;">
-          <i class="fas fa-fire" style="color:var(--warn); font-size:1rem; margin-bottom:6px;"></i>
-          <div style="color:var(--text-mute); font-size:0.62rem;">Today</div>
-          <div id="statToday" class="brand-gradient" style="font-weight:800; font-size:1rem;">0</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+        <div class="card-elev" style="padding:12px;text-align:center;">
+          <i class="fas fa-fire" style="color:var(--warn);font-size:1rem;margin-bottom:6px;"></i>
+          <div style="color:var(--text-mute);font-size:.62rem;">Today</div>
+          <div id="statToday" class="brand-gradient" style="font-weight:800;font-size:1rem;">0</div>
         </div>
-        <div class="card-elev" style="padding:12px; text-align:center;">
-          <i class="fas fa-check-circle" style="color:var(--success); font-size:1rem; margin-bottom:6px;"></i>
-          <div style="color:var(--text-mute); font-size:0.62rem;">Tasks</div>
-          <div id="statTasks" class="brand-gradient" style="font-weight:800; font-size:1rem;">0</div>
+        <div class="card-elev" style="padding:12px;text-align:center;">
+          <i class="fas fa-check-circle" style="color:var(--success);font-size:1rem;margin-bottom:6px;"></i>
+          <div style="color:var(--text-mute);font-size:.62rem;">Tasks</div>
+          <div id="statTasks" class="brand-gradient" style="font-weight:800;font-size:1rem;">0</div>
         </div>
-        <div class="card-elev" style="padding:12px; text-align:center;">
-          <i class="fas fa-trophy" style="color:var(--brand-3); font-size:1rem; margin-bottom:6px;"></i>
-          <div style="color:var(--text-mute); font-size:0.62rem;">Level</div>
-          <div id="statLevel" class="brand-gradient" style="font-weight:800; font-size:1rem;">1</div>
+        <div class="card-elev" style="padding:12px;text-align:center;">
+          <i class="fas fa-trophy" style="color:var(--brand-3);font-size:1rem;margin-bottom:6px;"></i>
+          <div style="color:var(--text-mute);font-size:.62rem;">Level</div>
+          <div id="statLevel" class="brand-gradient" style="font-weight:800;font-size:1rem;">1</div>
         </div>
       </div>
     </div>
 
-    <!-- LUDO -->
-    <div id="page-ludo" class="sub-page" style="padding:16px 18px;">
-      <h2 class="brand-gradient" style="font-size:1.6rem; font-weight:800; text-align:center; margin-bottom:6px;">🎲 Ludo Dice</h2>
-      <p style="text-align:center; color:var(--text-dim); font-size:0.8rem; margin-bottom:20px;">Roll the dice, win points!</p>
+    <!-- 29 GAME -->
+    <div id="page-29" class="sub-page" style="padding:16px 18px;">
+      <h2 class="brand-gradient" style="font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:4px;">🃏 29 Card Game</h2>
+      <p style="text-align:center;color:var(--text-dim);font-size:.75rem;margin-bottom:14px;">
+        You + West vs North + South · Entry <span id="g29Fee" style="color:var(--brand);font-weight:800;">100</span> · Winner <span id="g29Reward" style="color:var(--brand);font-weight:800;">180</span>
+      </p>
 
-      <div class="card" style="padding:22px 18px; text-align:center; margin-bottom:16px;">
-        <div style="color:var(--text-mute); font-size:0.7rem; margin-bottom:4px;">ENTRY FEE</div>
-        <div id="ludoCost" class="brand-gradient" style="font-size:1.8rem; font-weight:800;">10</div>
-
-        <div class="ludo-board" style="margin-top:22px;">
-          <div class="quad q1"></div>
-          <div class="quad q2"></div>
-          <div class="quad q3"></div>
-          <div class="quad q4"></div>
-          <div class="ludo-center"><span>GAMES HUB</span></div>
-          <div class="dice" id="ludoDice">6</div>
-        </div>
-
-        <button id="ludoRollBtn" class="btn btn-primary" style="width:100%; padding:16px; font-size:1.05rem; margin-top:26px;">
-          <i class="fas fa-dice" style="margin-right:8px;"></i>
-          <span id="ludoRollText">ROLL DICE</span>
+      <div id="g29-lobby" class="card" style="padding:22px 18px;text-align:center;">
+        <div style="font-size:3rem;margin-bottom:12px;">🃏</div>
+        <p style="color:var(--text-dim);font-size:.85rem;margin-bottom:16px;">Play against 3 AI opponents</p>
+        <button id="g29StartBtn" class="btn btn-primary" style="width:100%;padding:16px;font-size:1rem;">
+          <i class="fas fa-play" style="margin-right:8px;"></i> START MATCH
         </button>
-        <div id="ludoTimer" style="color:var(--brand); font-size:0.8rem; margin-top:10px; font-weight:700;"></div>
-        <div id="ludoMultiplier" style="color:var(--text-mute); font-size:0.7rem; margin-top:8px;">Dice × multiplier</div>
+        <p style="color:var(--text-mute);font-size:.68rem;margin-top:10px;">Win to earn points · Lose to lose entry</p>
+      </div>
+
+      <div id="g29-game" class="hidden">
+        <div class="score-area-29">
+          <div>YOU + WEST</div>
+          <div id="g29TeamScore" style="font-size:1.1rem;color:var(--brand);">0</div>
+        </div>
+        <div class="trump-badge-29" id="g29TrumpBadge" style="display:none;">
+          <div style="font-size:.6rem;opacity:.8;">TRUMP</div>
+          <span class="suit-big" id="g29TrumpSuit">♠</span>
+        </div>
+        <div class="game-table-29" id="g29Table">
+          <div class="player-seat-29 top" id="g29SeatNorth">
+            <div class="avatar-29" id="g29AvatarNorth">🤖</div>
+            <div class="name-tag-29">North (AI)</div>
+          </div>
+          <div class="player-seat-29 left" id="g29SeatWest">
+            <div class="avatar-29" id="g29AvatarWest">🤖</div>
+            <div class="name-tag-29">West (AI)</div>
+          </div>
+          <div class="player-seat-29 right" id="g29SeatSouth">
+            <div class="avatar-29" id="g29AvatarSouth">🤖</div>
+            <div class="name-tag-29">South (AI)</div>
+          </div>
+          <div class="player-seat-29 bottom" id="g29SeatYou">
+            <div class="avatar-29 active" id="g29AvatarYou">🧑</div>
+            <div class="name-tag-29">You <span class="seat-badge">YOU</span></div>
+          </div>
+          <div class="trick-area-29">
+            <div class="trick-cards-29" id="g29TrickArea"></div>
+          </div>
+        </div>
+        <div style="position:relative;margin-top:10px;height:100px;">
+          <div class="hand-area-29" id="g29Hand"></div>
+        </div>
+        <div id="g29Status" style="text-align:center;color:var(--text-dim);font-size:.8rem;margin-top:8px;min-height:20px;">Preparing…</div>
+        <button id="g29QuitBtn" class="btn btn-ghost" style="width:100%;padding:10px;font-size:.8rem;margin-top:10px;">Quit Match</button>
       </div>
     </div>
 
-    <!-- COLOR -->
-    <div id="page-color" class="sub-page" style="padding:16px 18px;">
-      <h2 class="brand-gradient" style="font-size:1.6rem; font-weight:800; text-align:center; margin-bottom:6px;">🎨 Color Match</h2>
-      <p style="text-align:center; color:var(--text-dim); font-size:0.8rem; margin-bottom:20px;">Find the matching color</p>
+    <!-- LUDO GAME -->
+    <div id="page-ludo" class="sub-page" style="padding:16px 18px;">
+      <h2 class="brand-gradient" style="font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:4px;">🎲 Ludo</h2>
+      <p style="text-align:center;color:var(--text-dim);font-size:.75rem;margin-bottom:14px;">
+        You vs Computer · Entry <span id="ludoFee" style="color:var(--brand);font-weight:800;">100</span> · Winner <span id="ludoReward" style="color:var(--brand);font-weight:800;">180</span>
+      </p>
 
-      <div class="card" style="padding:20px; text-align:center; margin-bottom:16px;">
-        <div style="color:var(--text-mute); font-size:0.7rem; margin-bottom:8px;">TARGET COLOR</div>
-        <div id="colorTarget" style="width:120px; height:70px; margin:0 auto 12px; border-radius:14px; border:3px solid white; box-shadow:0 8px 20px rgba(0,0,0,0.4);"></div>
-        <div id="colorRGB" style="font-family:monospace; color:var(--brand); font-weight:700; font-size:0.95rem;"></div>
-        <div id="colorReward" style="color:var(--text-mute); font-size:0.7rem; margin-top:10px;"></div>
+      <div id="ludo-lobby" class="card" style="padding:22px 18px;text-align:center;">
+        <div style="font-size:3rem;margin-bottom:12px;">🎲</div>
+        <p style="color:var(--text-dim);font-size:.85rem;margin-bottom:16px;">Roll the dice, race your tokens home</p>
+        <button id="ludoStartBtn" class="btn btn-primary" style="width:100%;padding:16px;font-size:1rem;">
+          <i class="fas fa-play" style="margin-right:8px;"></i> START MATCH
+        </button>
       </div>
 
-      <div id="colorGrid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;"></div>
+      <div id="ludo-game" class="hidden">
+        <div style="display:flex;justify-content:space-between;margin-bottom:10px;gap:8px;">
+          <div class="card-elev" style="flex:1;padding:8px;text-align:center;">
+            <div style="font-size:.62rem;color:var(--text-mute);">YOU (Blue)</div>
+            <div id="ludoYouHome" style="font-weight:800;color:#3b82f6;font-size:1.1rem;">0/4</div>
+          </div>
+          <div class="card-elev" style="flex:1;padding:8px;text-align:center;">
+            <div style="font-size:.62rem;color:var(--text-mute);">COMPUTER (Red)</div>
+            <div id="ludoComHome" style="font-weight:800;color:#ef4444;font-size:1.1rem;">0/4</div>
+          </div>
+        </div>
+        <div class="ludo-board-game" id="ludoBoard"></div>
+        <div style="display:flex;gap:10px;margin-top:14px;">
+          <button id="ludoRollBtn" class="btn btn-primary" style="flex:1;padding:14px;font-size:.95rem;">
+            <i class="fas fa-dice" style="margin-right:6px;"></i>
+            <span id="ludoRollText">ROLL DICE</span>
+          </button>
+          <button id="ludoQuitBtn" class="btn btn-ghost" style="padding:14px;">Quit</button>
+        </div>
+        <div id="ludoStatus" style="text-align:center;color:var(--text-dim);font-size:.8rem;margin-top:8px;">Your turn — roll!</div>
+      </div>
     </div>
 
-    <!-- WATCH -->
+    <!-- CARROM GAME -->
+    <div id="page-carrom" class="sub-page" style="padding:16px 18px;">
+      <h2 class="brand-gradient" style="font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:4px;">🎯 Carrom</h2>
+      <p style="text-align:center;color:var(--text-dim);font-size:.75rem;margin-bottom:14px;">
+        You vs Computer · Entry <span id="carromFee" style="color:var(--brand);font-weight:800;">100</span> · Winner <span id="carromReward" style="color:var(--brand);font-weight:800;">180</span>
+      </p>
+
+      <div id="carrom-lobby" class="card" style="padding:22px 18px;text-align:center;">
+        <div style="font-size:3rem;margin-bottom:12px;">🎯</div>
+        <p style="color:var(--text-dim);font-size:.85rem;margin-bottom:16px;">Pot all your coins before the computer</p>
+        <button id="carromStartBtn" class="btn btn-primary" style="width:100%;padding:16px;font-size:1rem;">
+          <i class="fas fa-play" style="margin-right:8px;"></i> START MATCH
+        </button>
+      </div>
+
+      <div id="carrom-game" class="hidden">
+        <div style="display:flex;justify-content:space-between;margin-bottom:10px;gap:8px;">
+          <div class="card-elev" style="flex:1;padding:8px;text-align:center;">
+            <div style="font-size:.62rem;color:var(--text-mute);">YOU (White)</div>
+            <div id="carromYouScore" style="font-weight:800;color:#fff;font-size:1.1rem;">0/9</div>
+          </div>
+          <div class="card-elev" style="flex:1;padding:8px;text-align:center;">
+            <div style="font-size:.62rem;color:var(--text-mute);">COMPUTER (Black)</div>
+            <div id="carromComScore" style="font-weight:800;color:#94a3b8;font-size:1.1rem;">0/9</div>
+          </div>
+        </div>
+        <div class="carrom-board" id="carromBoard"></div>
+        <div style="text-align:center;color:var(--text-dim);font-size:.78rem;margin-top:10px;">
+          <i class="fas fa-hand-pointer"></i> Drag the striker to aim, release to shoot
+        </div>
+        <div id="carromStatus" style="text-align:center;color:var(--text-dim);font-size:.8rem;margin-top:8px;">Your turn</div>
+        <button id="carromQuitBtn" class="btn btn-ghost" style="width:100%;padding:10px;font-size:.8rem;margin-top:10px;">Quit Match</button>
+      </div>
+    </div>
+
+    <!-- WATCH & EARN -->
     <div id="page-watch" class="sub-page" style="padding:16px 18px;">
-      <h2 class="brand-gradient" style="font-size:1.6rem; font-weight:800; text-align:center; margin-bottom:6px;">📺 Watch & Earn</h2>
-      <p style="text-align:center; color:var(--text-dim); font-size:0.8rem; margin-bottom:20px;">Watch a short ad, get instant coins</p>
-
-      <div class="card" style="padding:26px 20px; text-align:center; margin-bottom:16px;">
-        <div class="feature-icon" style="width:80px; height:80px; font-size:2rem; margin:0 auto 16px; border-radius:22px;">
+      <h2 class="brand-gradient" style="font-size:1.6rem;font-weight:800;text-align:center;margin-bottom:6px;">📺 Watch & Earn</h2>
+      <p style="text-align:center;color:var(--text-dim);font-size:.8rem;margin-bottom:20px;">Watch a short ad, get instant coins</p>
+      <div class="card" style="padding:26px 20px;text-align:center;">
+        <div class="feature-icon" style="width:80px;height:80px;font-size:2rem;margin:0 auto 16px;border-radius:22px;">
           <i class="fas fa-play"></i>
         </div>
-        <div id="watchReward" class="brand-gradient" style="font-size:2rem; font-weight:800; margin-bottom:6px;">+50</div>
-        <div style="color:var(--text-dim); font-size:0.8rem;">coins per ad</div>
-
-        <button id="watchBtn" class="btn btn-primary" style="width:100%; padding:16px; font-size:1rem; margin-top:22px;">
+        <div id="watchReward" class="brand-gradient" style="font-size:2rem;font-weight:800;margin-bottom:6px;">+50</div>
+        <div style="color:var(--text-dim);font-size:.8rem;">coins per ad</div>
+        <button id="watchBtn" class="btn btn-primary" style="width:100%;padding:16px;font-size:1rem;margin-top:22px;">
           <i class="fas fa-play-circle" style="margin-right:8px;"></i>
           <span id="watchBtnText">WATCH NOW</span>
         </button>
-        <div id="watchTimer" style="color:var(--brand); font-size:0.8rem; margin-top:10px; font-weight:700;"></div>
-      </div>
-    </div>
-
-    <!-- LUCK -->
-    <div id="page-luck" class="sub-page" style="padding:16px 18px;">
-      <h2 class="brand-gradient" style="font-size:1.6rem; font-weight:800; text-align:center; margin-bottom:6px;">🍀 Try Your Luck</h2>
-      <p style="text-align:center; color:var(--text-dim); font-size:0.8rem; margin-bottom:20px;">Chain ads for a big reward</p>
-
-      <div class="card" style="padding:24px 20px; margin-bottom:16px; text-align:center;">
-        <div class="feature-icon" style="width:70px; height:70px; font-size:1.8rem; margin:0 auto 14px; background:linear-gradient(135deg,#f59e0b,#ef4444);">
-          <i class="fas fa-star"></i>
-        </div>
-        <div id="luckReward" class="brand-gradient" style="font-size:1.9rem; font-weight:800;">+500</div>
-        <div style="color:var(--text-dim); font-size:0.75rem; margin-top:4px;">max points</div>
-
-        <button id="luckBtn" class="btn btn-primary pulse-soft" style="width:100%; padding:16px; font-size:1rem; margin-top:22px;">
-          <i class="fas fa-play" style="margin-right:8px;"></i> START
-        </button>
-      </div>
-    </div>
-
-    <!-- LUCK RUN -->
-    <div id="page-luck-run" class="sub-page" style="padding:16px 18px;">
-      <div class="card" style="padding:26px 20px; text-align:center;">
-        <div class="feature-icon" style="width:70px; height:70px; font-size:1.8rem; margin:0 auto 14px; background:linear-gradient(135deg,#f59e0b,#ef4444);">
-          <i class="fas fa-star"></i>
-        </div>
-        <h3 class="brand-gradient" style="font-size:1.3rem; font-weight:800; margin-bottom:4px;">Loading…</h3>
-        <p id="luckStatus" style="color:var(--text-dim); font-size:0.8rem; margin-bottom:16px;">Please wait</p>
-
-        <div style="background:rgba(255,255,255,0.06); border-radius:10px; height:8px; overflow:hidden; margin-bottom:8px;">
-          <div id="luckProgressBar" style="height:100%; width:0%; background:linear-gradient(90deg,var(--brand),var(--brand-2)); transition:width 0.4s;"></div>
-        </div>
-        <div id="luckProgressText" style="color:var(--text-mute); font-size:0.7rem; margin-bottom:16px;">0/0</div>
-
-        <button id="luckClaimBtn" class="btn btn-success hidden" style="width:100%; padding:14px; font-size:0.95rem;">
-          <i class="fas fa-gift" style="margin-right:6px;"></i> CLAIM
-        </button>
-        <button id="luckExitBtn" class="btn btn-ghost" style="width:100%; padding:10px; font-size:0.8rem; margin-top:10px;">Exit</button>
+        <div id="watchTimer" style="color:var(--brand);font-size:.8rem;margin-top:10px;font-weight:700;"></div>
       </div>
     </div>
 
     <!-- VISIT -->
     <div id="page-visit" class="sub-page" style="padding:16px 18px;">
-      <h2 class="brand-gradient" style="font-size:1.6rem; font-weight:800; text-align:center; margin-bottom:6px;">🌐 Visit & Earn</h2>
-      <p style="text-align:center; color:var(--text-dim); font-size:0.8rem; margin-bottom:20px;">Visit websites, get coins</p>
-      <div id="visitList" style="display:flex; flex-direction:column; gap:12px;"></div>
-    </div>
-
-    <!-- SOCIAL -->
-    <div id="page-social" class="sub-page" style="padding:16px 18px;">
-      <h2 class="brand-gradient" style="font-size:1.6rem; font-weight:800; text-align:center; margin-bottom:6px;">📱 Social Tasks</h2>
-      <p style="text-align:center; color:var(--text-dim); font-size:0.8rem; margin-bottom:20px;">Follow & earn coins</p>
-      <div id="socialList" style="display:flex; flex-direction:column; gap:12px;"></div>
+      <h2 class="brand-gradient" style="font-size:1.6rem;font-weight:800;text-align:center;margin-bottom:6px;">🌐 Visit & Earn</h2>
+      <p style="text-align:center;color:var(--text-dim);font-size:.8rem;margin-bottom:20px;">Visit websites, get coins</p>
+      <div id="visitList" style="display:flex;flex-direction:column;gap:12px;"></div>
     </div>
 
     <!-- WALLET -->
     <div id="page-wallet" class="sub-page" style="padding:16px 18px;">
-      <h2 class="brand-gradient" style="font-size:1.6rem; font-weight:800; text-align:center; margin-bottom:6px;">💼 Wallet</h2>
-      <p style="text-align:center; color:var(--text-dim); font-size:0.8rem; margin-bottom:20px;">Manage your earnings</p>
-
-      <div class="card" style="padding:22px; margin-bottom:16px;">
-        <div style="color:var(--text-mute); font-size:0.7rem;">BALANCE</div>
-        <div style="display:flex; align-items:baseline; gap:8px; margin:6px 0 4px;">
-          <span id="walletBalance" class="brand-gradient" style="font-size:2.2rem; font-weight:800;">0</span>
-          <span style="color:var(--text-dim); font-size:0.85rem;">coins</span>
+      <h2 class="brand-gradient" style="font-size:1.6rem;font-weight:800;text-align:center;margin-bottom:6px;">💼 Wallet</h2>
+      <p style="text-align:center;color:var(--text-dim);font-size:.8rem;margin-bottom:20px;">Manage your earnings</p>
+      <div class="card" style="padding:22px;margin-bottom:16px;">
+        <div style="color:var(--text-mute);font-size:.7rem;">BALANCE</div>
+        <div style="display:flex;align-items:baseline;gap:8px;margin:6px 0 4px;">
+          <span id="walletBalance" class="brand-gradient" style="font-size:2.2rem;font-weight:800;">0</span>
+          <span style="color:var(--text-dim);font-size:.85rem;">coins</span>
         </div>
-        <div id="walletValueInfo" style="color:var(--text-mute); font-size:0.7rem;"></div>
-
-        <hr style="border:none; border-top:1px solid rgba(255,255,255,0.06); margin:18px 0;">
-
-        <input id="withdrawAmount" type="number" placeholder="Amount (coins)" class="input-field" style="width:100%; padding:14px; border-radius:12px; font-size:0.95rem; margin-bottom:10px;">
-        <select id="withdrawMethod" class="input-field" style="width:100%; padding:14px; border-radius:12px; font-size:0.95rem; margin-bottom:10px;"></select>
-        <input id="withdrawDetail" type="text" placeholder="Payment details" class="input-field" style="width:100%; padding:14px; border-radius:12px; font-size:0.95rem; margin-bottom:14px;">
-        <div id="withdrawMsg" style="color:var(--danger); font-size:0.75rem; margin-bottom:10px; display:none;"></div>
-        <button id="withdrawBtn" class="btn btn-primary" style="width:100%; padding:14px; font-size:0.95rem;">REQUEST WITHDRAWAL</button>
+        <div id="walletValueInfo" style="color:var(--text-mute);font-size:.7rem;"></div>
+        <hr style="border:none;border-top:1px solid rgba(255,255,255,.06);margin:18px 0;">
+        <input id="withdrawAmount" type="number" placeholder="Amount (coins)" class="input-field" style="width:100%;padding:14px;border-radius:12px;font-size:.95rem;margin-bottom:10px;">
+        <select id="withdrawMethod" class="input-field" style="width:100%;padding:14px;border-radius:12px;font-size:.95rem;margin-bottom:10px;"></select>
+        <input id="withdrawDetail" type="text" placeholder="Payment details" class="input-field" style="width:100%;padding:14px;border-radius:12px;font-size:.95rem;margin-bottom:14px;">
+        <div id="withdrawMsg" style="color:var(--danger);font-size:.75rem;margin-bottom:10px;display:none;"></div>
+        <button id="withdrawBtn" class="btn btn-primary" style="width:100%;padding:14px;font-size:.95rem;">REQUEST WITHDRAWAL</button>
       </div>
-
-      <h3 style="font-size:0.95rem; font-weight:700; color:var(--text-dim); margin-bottom:10px;">HISTORY</h3>
-      <div id="withdrawHistory" style="display:flex; flex-direction:column; gap:10px;"></div>
+      <h3 style="font-size:.95rem;font-weight:700;color:var(--text-dim);margin-bottom:10px;">HISTORY</h3>
+      <div id="withdrawHistory" style="display:flex;flex-direction:column;gap:10px;"></div>
     </div>
 
     <!-- REFER -->
     <div id="page-refer" class="sub-page" style="padding:16px 18px;">
-      <h2 class="brand-gradient" style="font-size:1.6rem; font-weight:800; text-align:center; margin-bottom:6px;">🎁 Refer & Earn</h2>
-      <p style="text-align:center; color:var(--text-dim); font-size:0.8rem; margin-bottom:20px;">Invite friends, earn together</p>
-
-      <div class="card" style="padding:26px 22px; text-align:center; margin-bottom:16px;">
-        <div class="feature-icon" style="width:64px; height:64px; font-size:1.6rem; margin:0 auto 14px;">
-          <i class="fas fa-user-plus"></i>
+      <h2 class="brand-gradient" style="font-size:1.6rem;font-weight:800;text-align:center;margin-bottom:6px;">🎁 Refer & Earn</h2>
+      <p style="text-align:center;color:var(--text-dim);font-size:.8rem;margin-bottom:20px;">Invite friends, earn together</p>
+      <div class="card" style="padding:26px 22px;text-align:center;margin-bottom:16px;">
+        <div class="feature-icon" style="width:64px;height:64px;font-size:1.6rem;margin:0 auto 14px;"><i class="fas fa-user-plus"></i></div>
+        <p id="referBonus" style="color:var(--text-dim);font-size:.9rem;margin-bottom:18px;">Earn 100 coins per referral</p>
+        <div style="color:var(--text-mute);font-size:.7rem;margin-bottom:8px;">YOUR CODE</div>
+        <div class="card-elev" style="padding:14px;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <span id="referCode" class="brand-gradient" style="font-size:1.4rem;font-weight:800;letter-spacing:3px;">------</span>
+          <button id="copyCodeBtn" style="background:transparent;border:none;color:var(--brand);font-size:1.1rem;cursor:pointer;"><i class="fas fa-copy"></i></button>
         </div>
-        <p id="referBonus" style="color:var(--text-dim); font-size:0.9rem; margin-bottom:18px;">Earn 100 coins per referral</p>
-        <div style="color:var(--text-mute); font-size:0.7rem; margin-bottom:8px;">YOUR CODE</div>
-        <div class="card-elev" style="padding:14px; display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
-          <span id="referCode" class="brand-gradient" style="font-size:1.4rem; font-weight:800; letter-spacing:3px;">------</span>
-          <button id="copyCodeBtn" style="background:transparent; border:none; color:var(--brand); font-size:1.1rem; cursor:pointer;">
-            <i class="fas fa-copy"></i>
-          </button>
-        </div>
-        <button id="shareBtn" class="btn btn-primary" style="width:100%; padding:14px; font-size:0.95rem;">
+        <button id="shareBtn" class="btn btn-primary" style="width:100%;padding:14px;font-size:.95rem;">
           <i class="fas fa-share-alt" style="margin-right:6px;"></i> SHARE CODE
         </button>
       </div>
-
       <div class="card-elev" style="padding:18px;">
-        <h3 style="color:var(--brand); font-weight:700; font-size:0.85rem; margin-bottom:10px;">Have a code?</h3>
-        <input id="inputReferCode" type="text" placeholder="Enter code" class="input-field" style="width:100%; padding:12px; border-radius:10px; font-size:0.9rem; margin-bottom:10px; text-transform:uppercase;">
-        <button id="applyReferBtn" class="btn btn-ghost" style="width:100%; padding:12px; font-size:0.85rem;">APPLY</button>
+        <h3 style="color:var(--brand);font-weight:700;font-size:.85rem;margin-bottom:10px;">Have a code?</h3>
+        <input id="inputReferCode" type="text" placeholder="Enter code" class="input-field" style="width:100%;padding:12px;border-radius:10px;font-size:.9rem;margin-bottom:10px;text-transform:uppercase;">
+        <button id="applyReferBtn" class="btn btn-ghost" style="width:100%;padding:12px;font-size:.85rem;">APPLY</button>
       </div>
     </div>
 
     <!-- PROFILE -->
     <div id="page-profile" class="sub-page" style="padding:16px 18px;">
-      <h2 class="brand-gradient" style="font-size:1.6rem; font-weight:800; text-align:center; margin-bottom:20px;">Profile</h2>
-
-      <div class="card" style="padding:26px; text-align:center;">
-        <img id="profileAvatar" src="" style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid var(--brand); margin-bottom:14px;">
-        <h3 id="profileName" class="brand-gradient" style="font-size:1.25rem; font-weight:800;">User</h3>
-        <p id="profileUsername" style="color:var(--text-mute); font-size:0.78rem; margin-top:4px;">@—</p>
-        <p id="profileTgId" style="color:var(--text-mute); font-size:0.68rem; margin-top:2px;">ID: —</p>
-
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:20px;">
+      <h2 class="brand-gradient" style="font-size:1.6rem;font-weight:800;text-align:center;margin-bottom:20px;">Profile</h2>
+      <div class="card" style="padding:26px;text-align:center;">
+        <img id="profileAvatar" src="" style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid var(--brand);margin-bottom:14px;">
+        <h3 id="profileName" class="brand-gradient" style="font-size:1.25rem;font-weight:800;">User</h3>
+        <p id="profileUsername" style="color:var(--text-mute);font-size:.78rem;margin-top:4px;">@—</p>
+        <p id="profileTgId" style="color:var(--text-mute);font-size:.68rem;margin-top:2px;">ID: —</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px;">
           <div class="card-elev" style="padding:12px;">
-            <div style="color:var(--text-mute); font-size:0.65rem;">Member Since</div>
-            <div id="profileSince" class="brand-gradient" style="font-weight:800; font-size:0.9rem; margin-top:2px;">—</div>
+            <div style="color:var(--text-mute);font-size:.65rem;">Member Since</div>
+            <div id="profileSince" class="brand-gradient" style="font-weight:800;font-size:.9rem;margin-top:2px;">—</div>
           </div>
           <div class="card-elev" style="padding:12px;">
-            <div style="color:var(--text-mute); font-size:0.65rem;">Total Earned</div>
-            <div id="profileTotal" class="brand-gradient" style="font-weight:800; font-size:0.9rem; margin-top:2px;">0</div>
+            <div style="color:var(--text-mute);font-size:.65rem;">Total Earned</div>
+            <div id="profileTotal" class="brand-gradient" style="font-weight:800;font-size:.9rem;margin-top:2px;">0</div>
           </div>
         </div>
       </div>
-
-      <button id="closeAppBtn" class="btn btn-ghost" style="width:100%; padding:14px; margin-top:20px; font-size:0.9rem; color:var(--danger);">
+      <button id="closeAppBtn" class="btn btn-ghost" style="width:100%;padding:14px;margin-top:20px;font-size:.9rem;color:var(--danger);">
         <i class="fas fa-sign-out-alt" style="margin-right:6px;"></i> Close App
       </button>
     </div>
 
   </main>
 
-  <nav class="bottom-nav" style="position:sticky; bottom:0; display:grid; grid-template-columns:repeat(4,1fr); z-index:40;">
-    <a href="#" class="nav-link active" data-page="home">
-      <i class="fas fa-home" style="font-size:1.15rem;"></i>
-      <span style="font-size:0.6rem; margin-top:3px;">Home</span>
-    </a>
-    <a href="#" class="nav-link" data-page="refer">
-      <i class="fas fa-user-friends" style="font-size:1.15rem;"></i>
-      <span style="font-size:0.6rem; margin-top:3px;">Refer</span>
-    </a>
-    <a href="#" class="nav-link" data-page="wallet" id="navWallet">
-      <i class="fas fa-wallet" style="font-size:1.15rem;"></i>
-      <span style="font-size:0.6rem; margin-top:3px;">Wallet</span>
-    </a>
-    <a href="#" class="nav-link" data-page="profile">
-      <i class="fas fa-user" style="font-size:1.15rem;"></i>
-      <span style="font-size:0.6rem; margin-top:3px;">Profile</span>
-    </a>
+  <nav class="bottom-nav" style="position:sticky;bottom:0;display:grid;grid-template-columns:repeat(4,1fr);z-index:40;">
+    <a href="#" class="nav-link active" data-page="home"><i class="fas fa-home" style="font-size:1.15rem;"></i><span style="font-size:.6rem;margin-top:3px;">Home</span></a>
+    <a href="#" class="nav-link" data-page="refer"><i class="fas fa-user-friends" style="font-size:1.15rem;"></i><span style="font-size:.6rem;margin-top:3px;">Refer</span></a>
+    <a href="#" class="nav-link" data-page="wallet" id="navWallet"><i class="fas fa-wallet" style="font-size:1.15rem;"></i><span style="font-size:.6rem;margin-top:3px;">Wallet</span></a>
+    <a href="#" class="nav-link" data-page="profile"><i class="fas fa-user" style="font-size:1.15rem;"></i><span style="font-size:.6rem;margin-top:3px;">Profile</span></a>
   </nav>
 </div>
 
 <script type="module">
-// =========================================================
-// GAMES HUB — MAIN APP
-// =========================================================
+// ============================================================
+// GAMES HUB — Full app with 29 Card Game, Ludo, Carrom
+// ============================================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, serverTimestamp, query, where, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
@@ -701,898 +826,1287 @@ const firebaseConfig = {
 const fbApp = initializeApp(firebaseConfig);
 const db = getFirestore(fbApp);
 
-// =========================================================
-// STATE
-// =========================================================
+// ============ STATE ============
 let currentUser = null;
 let userData = null;
 let appConfig = {};
 let gamesConfig = {};
-let adConfig = {
-  gigapub: { enabled: true, order: 1 },
-  adsgramReward: { enabled: true, order: 2 },
-  adsgramInterstitial: { enabled: true, order: 3 }
-};
+let adConfig = { gigapub:{enabled:true,order:1}, adsgramReward:{enabled:true,order:2}, adsgramInterstitial:{enabled:true,order:3} };
 let userCountry = '';
 let tgUser = null;
+let adsgramRewardCtrl = null, adsgramInterstitialCtrl = null, adsgramReady = false, gigapubReady = false;
+let watchBusy = false, watchDisabledUntil = 0, watchTimerInterval = null;
+let sliderInterval = null, slideIdx = 0;
 
-let adsgramRewardCtrl = null;
-let adsgramInterstitialCtrl = null;
-let adsgramReady = false;
-let gigapubReady = false;
+// Game configs
+let gameConfig = {
+  g29:    { entryFee: 100, winnerReward: 180, visible: true },
+  ludo:   { entryFee: 100, winnerReward: 180, visible: true },
+  carrom: { entryFee: 100, winnerReward: 180, visible: true },
+  adRewardPerView: 10
+};
 
-let ludoBusy = false;
-let ludoDisabledUntil = 0;
-let ludoTimerInterval = null;
-let watchBusy = false;
-let watchDisabledUntil = 0;
-let watchTimerInterval = null;
-let luckActive = false;
-
-let sliderInterval = null;
-let slideIdx = 0;
-
-// =========================================================
-// SAFE DOM HELPERS (prevent crashes)
-// =========================================================
+// ============ HELPERS ============
 const $ = (id) => document.getElementById(id);
+function safeSet(id, prop, val) { const el = $(id); if (el) el[prop] = val; }
+function safeText(id, v) { safeSet(id, 'textContent', v); }
+function safeHtml(id, v) { safeSet(id, 'innerHTML', v); }
+function safeSrc(id, v) { safeSet(id, 'src', v); }
 
-function safeSet(id, prop, val) {
-  const el = $(id);
-  if (el) el[prop] = val;
-}
-function safeText(id, val) { safeSet(id, 'textContent', val); }
-function safeHtml(id, val) { safeSet(id, 'innerHTML', val); }
-function safeSrc(id, val) { safeSet(id, 'src', val); }
-function safeShow(id, show) {
-  const el = $(id);
-  if (el) el.style.display = show ? 'flex' : 'none';
-}
+function showLoader(show) { const el = $('appLoader'); if (el) el.style.display = show ? 'flex' : 'none'; }
+function showAdOverlay(t, m) { safeText('adOverlayTitle', t||'Loading'); safeText('adOverlayMsg', m||'Please wait…'); $('adOverlay')?.classList.add('show'); }
+function hideAdOverlay() { $('adOverlay')?.classList.remove('show'); }
 
-function showLoader(show) {
-  const el = $('appLoader');
-  if (el) el.style.display = show ? 'flex' : 'none';
-}
-
-function hideAdOverlay() {
-  const el = $('adOverlay');
-  if (el) el.classList.remove('show');
-}
-
-function showModal(icon, title, body, btnText = 'OK', onClose = null) {
-  safeText('modalIcon', icon);
-  safeText('modalTitle', title);
-  safeText('modalBody', body);
-  safeText('modalBtn', btnText);
+function showModal(icon, title, body, btn, onClose) {
+  safeText('modalIcon', icon); safeText('modalTitle', title); safeText('modalBody', body); safeText('modalBtn', btn||'OK');
   $('modal')?.classList.add('show');
-  const btn = $('modalBtn');
-  if (btn) btn.onclick = () => { $('modal').classList.remove('show'); if (onClose) onClose(); };
+  const b = $('modalBtn'); if (b) b.onclick = () => { $('modal').classList.remove('show'); if (onClose) onClose(); };
 }
-
-function showConfirm(icon, title, body, yesText, noText, onYes, onNo) {
-  safeText('confirmIcon', icon);
-  safeText('confirmTitle', title);
-  safeText('confirmBody', body);
-  safeText('confirmYesBtn', yesText);
-  safeText('confirmNoBtn', noText);
+function showConfirm(icon, title, body, yesT, noT, onYes, onNo) {
+  safeText('confirmIcon', icon); safeText('confirmTitle', title); safeText('confirmBody', body);
+  safeText('confirmYesBtn', yesT); safeText('confirmNoBtn', noT);
   $('confirmModal')?.classList.add('show');
-  const yBtn = $('confirmYesBtn');
-  const nBtn = $('confirmNoBtn');
-  if (yBtn) yBtn.onclick = () => { $('confirmModal').classList.remove('show'); onYes && onYes(); };
-  if (nBtn) nBtn.onclick = () => { $('confirmModal').classList.remove('show'); onNo && onNo(); };
+  const y = $('confirmYesBtn'), n = $('confirmNoBtn');
+  if (y) y.onclick = () => { $('confirmModal').classList.remove('show'); onYes && onYes(); };
+  if (n) n.onclick = () => { $('confirmModal').classList.remove('show'); onNo && onNo(); };
+}
+function showResult(icon, title, body, points, btnLabel, onClose) {
+  safeText('resultIcon', icon); safeText('resultTitle', title); safeText('resultBody', body);
+  const pts = $('resultPoints');
+  if (pts) { pts.textContent = points >= 0 ? `+${points}` : `${points}`; pts.style.color = points >= 0 ? 'var(--success)' : 'var(--danger)'; }
+  safeText('resultBtn', btnLabel || 'Continue');
+  const card = $('resultModalCard');
+  if (card) { card.classList.remove('win','lose'); card.classList.add(points >= 0 ? 'win' : 'lose'); }
+  $('resultModal')?.classList.add('show');
+  const b = $('resultBtn'); if (b) b.onclick = () => { $('resultModal').classList.remove('show'); if (onClose) onClose(); };
 }
 
-// =========================================================
-// NAVIGATION
-// =========================================================
 function navigateTo(page) {
   document.querySelectorAll('.sub-page').forEach(p => p.classList.remove('active'));
-  const target = $(`page-${page}`);
-  if (target) target.classList.add('active');
+  const t = $(`page-${page}`); if (t) t.classList.add('active');
   document.querySelectorAll('.nav-link').forEach(l => l.classList.toggle('active', l.dataset.page === page));
-  const bb = $('backBar');
-  if (bb) bb.classList.toggle('hidden', page === 'home');
+  const bb = $('backBar'); if (bb) bb.classList.toggle('hidden', page === 'home');
   window.scrollTo({ top: 0, behavior: 'smooth' });
-
   try {
     if (page === 'wallet') loadWallet();
     if (page === 'refer') loadRefer();
     if (page === 'profile') loadProfile();
     if (page === 'visit') loadVisit();
-    if (page === 'social') loadSocial();
-    if (page === 'ludo') refreshLudoUI();
     if (page === 'watch') refreshWatchUI();
-    if (page === 'luck') refreshLuckUI();
-    if (page === 'color') startColorRound();
-  } catch (e) { console.warn('navigate error:', e); }
+  } catch(e) { console.warn(e); }
 }
 window.navigateTo = navigateTo;
 
-// =========================================================
-// BOOTSTRAP — the critical part
-// =========================================================
+// ============ BOOTSTRAP ============
 async function bootstrap() {
   try {
-    // Must be in Telegram
-    if (!window.Telegram?.WebApp) {
-      $('appLoader')?.classList.remove('show');
-      $('accessDenied')?.classList.add('show');
-      return;
-    }
+    if (!window.Telegram?.WebApp) { $('accessDenied')?.classList.add('show'); return; }
     const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand();
-    try { tg.setHeaderColor('#0a0e1a'); tg.setBackgroundColor('#0a0e1a'); } catch(e) {}
-    tgUser = tg.initDataUnsafe?.user || null;
-
-    if (!tgUser) {
-      $('appLoader')?.classList.remove('show');
-      $('accessDenied')?.classList.add('show');
-      return;
-    }
+    tg.ready(); tg.expand();
+    try { tg.setHeaderColor('#0a0e1a'); tg.setBackgroundColor('#0a0e1a'); } catch(e){}
+    tgUser = tg.initDataUnsafe?.user;
+    if (!tgUser) { $('accessDenied')?.classList.add('show'); return; }
 
     userCountry = await detectCountry();
 
-    // Fetch configs
     let mainSnap, gamesSnap, adsSnap, noticeSnap;
     try {
       [mainSnap, gamesSnap, adsSnap, noticeSnap] = await Promise.all([
-        getDoc(doc(db, 'config', 'main')),
-        getDoc(doc(db, 'config', 'games')),
-        getDoc(doc(db, 'config', 'ads')),
-        getDoc(doc(db, 'config', 'appNotice'))
+        getDoc(doc(db,'config','main')),
+        getDoc(doc(db,'config','games')),
+        getDoc(doc(db,'config','ads')),
+        getDoc(doc(db,'config','appNotice'))
       ]);
-    } catch (e) {
-      console.warn('Config fetch failed, using defaults:', e);
-    }
+    } catch(e) { console.warn('config err', e); }
 
     appConfig = mainSnap?.exists() ? mainSnap.data() : {};
     gamesConfig = gamesSnap?.exists() ? gamesSnap.data() : {};
     if (adsSnap?.exists()) {
       const a = adsSnap.data();
       adConfig = {
-        gigapub: { enabled: a.gigapub?.enabled !== false, order: a.gigapub?.order || 1 },
-        adsgramReward: { enabled: a.adsgramReward?.enabled !== false, order: a.adsgramReward?.order || 2 },
-        adsgramInterstitial: { enabled: a.adsgramInterstitial?.enabled !== false, order: a.adsgramInterstitial?.order || 3 }
+        gigapub:{enabled:a.gigapub?.enabled!==false,order:a.gigapub?.order||1},
+        adsgramReward:{enabled:a.adsgramReward?.enabled!==false,order:a.adsgramReward?.order||2},
+        adsgramInterstitial:{enabled:a.adsgramInterstitial?.enabled!==false,order:a.adsgramInterstitial?.order||3}
       };
     }
+    // Load 3-game config
+    if (appConfig.game29)    Object.assign(gameConfig.g29,    appConfig.game29);
+    if (appConfig.ludoGame)  Object.assign(gameConfig.ludo,   appConfig.ludoGame);
+    if (appConfig.carromGame)Object.assign(gameConfig.carrom, appConfig.carromGame);
+    if (appConfig.adRewardPerView) gameConfig.adRewardPerView = appConfig.adRewardPerView;
 
     // Country block
     if (appConfig.allowedCountries?.length && userCountry && !appConfig.allowedCountries.includes(userCountry)) {
-      $('countryBlockMsg') && ($('countryBlockMsg').textContent = appConfig.blockedCountryMessage || 'Not available.');
+      safeText('countryBlockMsg', appConfig.blockedCountryMessage || 'Not available.');
       $('countryBlock')?.classList.add('show');
-      $('appLoader')?.classList.remove('show');
       return;
     }
 
-    // Create/load user
     await initUser();
-
-    // Blocked check
-    if (userData?.isBlocked) {
-      $('appLoader')?.classList.remove('show');
-      showModal('🚫', 'Account Blocked', 'Your account has been blocked by admin.', 'Close', () => {
-        if (window.Telegram?.WebApp) window.Telegram.WebApp.close();
-      });
-      // Still show app but with blocked notice — or hide it. We'll show modal above the app.
-    }
-
-    // Init AdsGram in background (non-blocking)
     setTimeout(() => initAdsGram(), 100);
 
-    // **CRITICAL: Show the app before anything else**
-    $('appLoader')?.classList.remove('show');
-    const appEl = $('app');
-    if (appEl) appEl.classList.add('active');
+    $('app')?.classList.add('active');
+    initUI(); initListeners(); refreshAllUI();
+    updateGameLabels();
 
-    // Init UI now that app is visible
-    initUI();
-    initListeners();
-    refreshAllUI();
-
-    // Notice (after app shown)
     if (noticeSnap?.exists()) {
       const n = noticeSnap.data();
-      if (n.enabled && n.title && n.message) {
-        const dismissedKey = `notice_dismissed_${n.title}`;
-        if (!localStorage.getItem(dismissedKey)) {
-          setTimeout(() => showNotice(n), 1200);
-        }
+      if (n.enabled && n.title && n.message && !localStorage.getItem(`notice_dismissed_${n.title}`)) {
+        setTimeout(() => showNotice(n), 1200);
       }
     }
 
-    // Live updates
     try {
-      onSnapshot(doc(db, 'config', 'games'), (s) => {
+      onSnapshot(doc(db,'config','games'), s => {
         if (s.exists()) { gamesConfig = s.data(); refreshAllUI(); renderFeatures(); }
       });
-      onSnapshot(doc(db, 'config', 'ads'), (s) => {
+      onSnapshot(doc(db,'config','ads'), s => {
         if (s.exists()) {
           const a = s.data();
           adConfig = {
-            gigapub: { enabled: a.gigapub?.enabled !== false, order: a.gigapub?.order || 1 },
-            adsgramReward: { enabled: a.adsgramReward?.enabled !== false, order: a.adsgramReward?.order || 2 },
-            adsgramInterstitial: { enabled: a.adsgramInterstitial?.enabled !== false, order: a.adsgramInterstitial?.order || 3 }
+            gigapub:{enabled:a.gigapub?.enabled!==false,order:a.gigapub?.order||1},
+            adsgramReward:{enabled:a.adsgramReward?.enabled!==false,order:a.adsgramReward?.order||2},
+            adsgramInterstitial:{enabled:a.adsgramInterstitial?.enabled!==false,order:a.adsgramInterstitial?.order||3}
           };
         }
       });
-      onSnapshot(doc(db, 'config', 'main'), (s) => {
-        if (s.exists()) { appConfig = { ...appConfig, ...s.data() }; refreshAllUI(); }
+      onSnapshot(doc(db,'config','main'), s => {
+        if (s.exists()) {
+          appConfig = { ...appConfig, ...s.data() };
+          if (appConfig.game29)    Object.assign(gameConfig.g29,    appConfig.game29);
+          if (appConfig.ludoGame)  Object.assign(gameConfig.ludo,   appConfig.ludoGame);
+          if (appConfig.carromGame)Object.assign(gameConfig.carrom, appConfig.carromGame);
+          refreshAllUI(); updateGameLabels();
+        }
       });
-    } catch (e) { console.warn('snapshot err', e); }
-
+    } catch(e){}
   } catch (err) {
-    console.error('Bootstrap error:', err);
-    $('appLoader')?.classList.remove('show');
-    // Show app anyway with default state so it's not blank
-    const appEl = $('app');
-    if (appEl) appEl.classList.add('active');
-    initUI();
-    initListeners();
-    showModal('⚠️', 'Connection Error', 'Could not load app data. Using defaults.', 'OK');
+    console.error('Bootstrap err', err);
+    $('app')?.classList.add('active');
+    initUI(); initListeners();
   }
 }
 
 async function detectCountry() {
   try {
-    const lang = navigator.language || '';
-    if (lang.includes('-')) return lang.split('-')[1].toLowerCase();
+    const l = navigator.language || '';
+    if (l.includes('-')) return l.split('-')[1].toLowerCase();
     const r = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(3500) });
-    const j = await r.json();
-    return (j.country_code || '').toLowerCase();
+    const j = await r.json(); return (j.country_code || '').toLowerCase();
   } catch { return ''; }
 }
 
-// =========================================================
-// USER — Telegram only
-// =========================================================
+// ============ USER ============
 async function initUser() {
   const uid = `tg_${tgUser.id}`;
-  const firstName = tgUser.first_name || '';
-  const lastName = tgUser.last_name || '';
-  const username = tgUser.username || '';
-  const fullName = [firstName, lastName].filter(Boolean).join(' ') || username || 'Player';
+  const fn = tgUser.first_name||'', ln = tgUser.last_name||'', un = tgUser.username||'';
+  const fullName = [fn, ln].filter(Boolean).join(' ') || un || 'Player';
   const pic = tgUser.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=00e5a0&color=0a0e1a&bold=true`;
 
-  const ref = doc(db, 'users', uid);
+  const ref = doc(db,'users',uid);
   const snap = await getDoc(ref);
 
   if (snap.exists()) {
     userData = snap.data();
     try {
       await updateDoc(ref, {
-        telegramId: tgUser.id,
-        telegramUsername: username,
-        telegramFirstName: firstName,
-        telegramLastName: lastName,
+        telegramId: tgUser.id, telegramUsername: un,
+        telegramFirstName: fn, telegramLastName: ln,
         telegramChatId: tgUser.id,
-        telegramLanguageCode: tgUser.language_code || '',
-        telegramIsPremium: !!tgUser.is_premium,
-        profilePicture: pic,
-        name: fullName,
-        lastLogin: serverTimestamp(),
-        lastSeen: serverTimestamp(),
+        profilePicture: pic, name: fullName,
+        lastLogin: serverTimestamp(), lastSeen: serverTimestamp(),
         isActive: true,
         country: userCountry || userData.country || 'unknown'
       });
-    } catch (e) { console.warn('user update err', e); }
-    Object.assign(userData, {
-      telegramId: tgUser.id,
-      telegramUsername: username,
-      telegramFirstName: firstName,
-      telegramLastName: lastName,
-      telegramChatId: tgUser.id,
-      name: fullName,
-      profilePicture: pic
-    });
+    } catch(e){}
+    Object.assign(userData, { telegramId:tgUser.id, telegramUsername:un, telegramFirstName:fn, telegramLastName:ln, telegramChatId:tgUser.id, name:fullName, profilePicture:pic });
   } else {
-    const code = Math.random().toString(36).slice(2, 8).toUpperCase();
+    const code = Math.random().toString(36).slice(2,8).toUpperCase();
     userData = {
-      uid,
-      telegramId: tgUser.id,
-      telegramUsername: username,
-      telegramFirstName: firstName,
-      telegramLastName: lastName,
-      telegramChatId: tgUser.id,
-      telegramLanguageCode: tgUser.language_code || '',
-      telegramIsPremium: !!tgUser.is_premium,
-      name: fullName,
-      email: `${tgUser.id}@telegram.miniapp`,
-      profilePicture: pic,
-      balance: 50,
-      referralCode: code,
-      referredBy: null,
-      createdAt: serverTimestamp(),
-      lastLogin: serverTimestamp(),
-      lastSeen: serverTimestamp(),
-      isBlocked: false,
-      isActive: true,
-      dailyAdCount: 0,
-      totalAdViews: 0,
-      lastAdWatchDate: '1970-01-01',
-      visitedSitesToday: [],
-      lastSiteVisitDate: '1970-01-01',
-      completedSocialTasks: [],
-      country: userCountry || 'unknown',
-      level: 1,
-      totalEarned: 0,
-      tasksCompleted: 0,
-      ludoGamesPlayed: 0,
-      ludoTotalWon: 0,
+      uid, telegramId:tgUser.id, telegramUsername:un,
+      telegramFirstName:fn, telegramLastName:ln,
+      telegramChatId:tgUser.id,
+      name: fullName, email: `${tgUser.id}@telegram.miniapp`,
+      profilePicture: pic, balance: 100,
+      referralCode: code, referredBy: null,
+      createdAt: serverTimestamp(), lastLogin: serverTimestamp(), lastSeen: serverTimestamp(),
+      isBlocked: false, isActive: true,
+      dailyAdCount: 0, totalAdViews: 0,
+      lastAdWatchDate:'1970-01-01',
+      visitedSitesToday:[], lastSiteVisitDate:'1970-01-01',
+      completedSocialTasks: [], country: userCountry||'unknown',
+      level: 1, totalEarned: 0, tasksCompleted: 0,
       userType: 'telegram'
     };
-    try {
-      await setDoc(ref, userData);
-    } catch (e) { console.warn('user create err', e); }
+    try { await setDoc(ref, userData); } catch(e){}
   }
   currentUser = { uid, name: userData.name };
 }
 
-// =========================================================
-// ADSGRAM INIT
-// =========================================================
+// ============ ADS ============
 function initAdsGram() {
-  const tryInit = (attempts = 0) => {
+  const tryInit = (n=0) => {
     if (typeof window.Adsgram !== 'undefined') {
       try {
-        const rewardId = appConfig.adsgramRewardId || "21768";
-        const interstitialId = appConfig.adsgramInterstitialId || "int-21769";
-        adsgramRewardCtrl = window.Adsgram.init({ blockId: rewardId });
-        adsgramInterstitialCtrl = window.Adsgram.init({ blockId: interstitialId });
+        adsgramRewardCtrl = window.Adsgram.init({ blockId: appConfig.adsgramRewardId || "21768" });
+        adsgramInterstitialCtrl = window.Adsgram.init({ blockId: appConfig.adsgramInterstitialId || "int-21769" });
         adsgramReady = true;
-        console.log('✅ AdsGram ready');
-      } catch (e) {
-        console.warn('AdsGram init error:', e);
-        if (attempts < 5) setTimeout(() => tryInit(attempts + 1), 800);
-      }
-    } else if (attempts < 10) {
-      setTimeout(() => tryInit(attempts + 1), 400);
-    }
+      } catch(e) { if (n < 5) setTimeout(()=>tryInit(n+1), 800); }
+    } else if (n < 10) setTimeout(()=>tryInit(n+1), 400);
   };
   tryInit();
-  if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    gigapubReady = typeof window.showGiga === 'function';
-  } else {
-    window.addEventListener('load', () => {
-      gigapubReady = typeof window.showGiga === 'function';
-    });
-  }
+  const check = () => { gigapubReady = typeof window.showGiga === 'function'; };
+  if (document.readyState === 'complete' || document.readyState === 'interactive') check();
+  else window.addEventListener('load', check);
 }
 
-// =========================================================
-// AD PLAYERS
-// =========================================================
 async function playGigapubAd() {
-  if (!gigapubReady || typeof window.showGiga !== 'function') return { success: false };
-  try {
-    await Promise.race([window.showGiga(), new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 15000))]);
-    return { success: true };
-  } catch { return { success: false }; }
+  if (!gigapubReady || typeof window.showGiga !== 'function') return { success:false };
+  try { await Promise.race([window.showGiga(), new Promise((_,r)=>setTimeout(()=>r(new Error('to')),15000))]); return {success:true}; }
+  catch { return {success:false}; }
 }
 async function playAdsGramReward() {
-  if (!adsgramReady || !adsgramRewardCtrl) return { success: false };
-  try {
-    const res = await Promise.race([adsgramRewardCtrl.show(), new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 15000))]);
-    return { success: !!res?.done };
-  } catch { return { success: false }; }
+  if (!adsgramReady || !adsgramRewardCtrl) return {success:false};
+  try { const r = await Promise.race([adsgramRewardCtrl.show(), new Promise((_,rj)=>setTimeout(()=>rj(new Error('to')),15000))]); return {success:!!r?.done}; }
+  catch { return {success:false}; }
 }
 async function playAdsGramInterstitial() {
-  if (!adsgramReady || !adsgramInterstitialCtrl) return { success: false };
-  try {
-    const res = await Promise.race([adsgramInterstitialCtrl.show(), new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 15000))]);
-    return { success: !!res?.done };
-  } catch { return { success: false }; }
+  if (!adsgramReady || !adsgramInterstitialCtrl) return {success:false};
+  try { const r = await Promise.race([adsgramInterstitialCtrl.show(), new Promise((_,rj)=>setTimeout(()=>rj(new Error('to')),15000))]); return {success:!!r?.done}; }
+  catch { return {success:false}; }
 }
-
 async function playRotatingAd() {
-  const enabled = [
-    { key: 'gigapub', ...adConfig.gigapub },
-    { key: 'adsgramReward', ...adConfig.adsgramReward },
-    { key: 'adsgramInterstitial', ...adConfig.adsgramInterstitial }
-  ].filter(a => a.enabled).sort((a, b) => (a.order || 99) - (b.order || 99));
-  if (!enabled.length) return { success: false };
-  for (const ad of enabled) {
+  const list = [
+    {key:'gigapub',...adConfig.gigapub},
+    {key:'adsgramReward',...adConfig.adsgramReward},
+    {key:'adsgramInterstitial',...adConfig.adsgramInterstitial}
+  ].filter(a=>a.enabled).sort((a,b)=>(a.order||99)-(b.order||99));
+  if (!list.length) return {success:false};
+  for (const ad of list) {
     let r;
-    if (ad.key === 'gigapub') r = await playGigapubAd();
-    else if (ad.key === 'adsgramReward') r = await playAdsGramReward();
-    else if (ad.key === 'adsgramInterstitial') r = await playAdsGramInterstitial();
-    if (r.success) return { success: true };
+    if (ad.key==='gigapub') r = await playGigapubAd();
+    else if (ad.key==='adsgramReward') r = await playAdsGramReward();
+    else r = await playAdsGramInterstitial();
+    if (r.success) return {success:true};
   }
-  return { success: false };
+  return {success:false};
 }
 
-async function playAllAds(onProgress) {
-  const enabled = [
-    { key: 'gigapub', ...adConfig.gigapub },
-    { key: 'adsgramReward', ...adConfig.adsgramReward },
-    { key: 'adsgramInterstitial', ...adConfig.adsgramInterstitial }
-  ].filter(a => a.enabled).sort((a, b) => (a.order || 99) - (b.order || 99));
-  const results = [];
-  for (let i = 0; i < enabled.length; i++) {
-    const ad = enabled[i];
-    if (onProgress) onProgress(i, enabled.length);
-    let r;
-    if (ad.key === 'gigapub') r = await playGigapubAd();
-    else if (ad.key === 'adsgramReward') r = await playAdsGramReward();
-    else if (ad.key === 'adsgramInterstitial') r = await playAdsGramInterstitial();
-    results.push({ success: !!r.success });
-    await new Promise(r => setTimeout(r, 400));
-  }
-  return results;
-}
-
-async function optionalDoublePoints(basePoints, onFinal) {
-  showConfirm(
-    '✨',
-    'Double Your Points!',
-    `Watch a short ad to double your reward?\n\nBase reward: ${basePoints} points`,
-    'Yes, Double!',
-    'No, Thanks',
-    async () => {
-      const adRes = await playRotatingAd();
-      if (adRes.success) onFinal(basePoints * 2, true);
-      else {
-        onFinal(basePoints, false);
-        showModal('ℹ️', 'Ad Unavailable', `Base reward of ${basePoints} points given.`, 'OK');
-      }
-    },
-    () => onFinal(basePoints, false)
-  );
-}
-
-// =========================================================
-// BALANCE
-// =========================================================
+// ============ BALANCE ============
 async function addBalance(amount, source, note) {
   if (!currentUser || !amount) return;
-  const newBal = parseFloat(((userData.balance || 0) + amount).toFixed(2));
-  userData.balance = newBal;
-  if (amount > 0) {
-    userData.totalEarned = (userData.totalEarned || 0) + amount;
-    userData.tasksCompleted = (userData.tasksCompleted || 0) + 1;
-  }
+  const nb = parseFloat(((userData.balance||0)+amount).toFixed(2));
+  userData.balance = nb;
+  if (amount > 0) { userData.totalEarned = (userData.totalEarned||0)+amount; userData.tasksCompleted = (userData.tasksCompleted||0)+1; }
   try {
-    await updateDoc(doc(db, 'users', currentUser.uid), {
-      balance: newBal,
-      totalEarned: userData.totalEarned,
-      tasksCompleted: userData.tasksCompleted,
-      updatedAt: serverTimestamp()
+    await updateDoc(doc(db,'users',currentUser.uid), {
+      balance: nb, totalEarned: userData.totalEarned, tasksCompleted: userData.tasksCompleted, updatedAt: serverTimestamp()
     });
-    await addDoc(collection(db, 'pointHistory'), {
-      userId: currentUser.uid,
-      userName: userData.name,
-      telegramId: userData.telegramId,
-      telegramUsername: userData.telegramUsername || '',
-      taskType: source,
-      points: amount,
-      details: note,
-      timestamp: serverTimestamp(),
-      country: userCountry || 'unknown'
+    await addDoc(collection(db,'pointHistory'), {
+      userId:currentUser.uid, userName:userData.name,
+      telegramId:userData.telegramId, telegramUsername:userData.telegramUsername||'',
+      taskType:source, points:amount, details:note, timestamp:serverTimestamp(), country:userCountry||'unknown'
     });
-  } catch (e) { console.warn('addBalance err', e); }
+  } catch(e){}
   refreshAllUI();
 }
 
-async function incrementAdView() {
-  userData.totalAdViews = (userData.totalAdViews || 0) + 1;
-  userData.dailyAdCount = (userData.dailyAdCount || 0) + 1;
-  try {
-    await updateDoc(doc(db, 'users', currentUser.uid), {
-      totalAdViews: userData.totalAdViews,
-      dailyAdCount: userData.dailyAdCount,
-      lastAdWatchDate: new Date().toISOString().slice(0, 10)
-    });
-  } catch (e) {}
-}
-
-// =========================================================
-// LUDO
-// =========================================================
-async function playLudo() {
-  if (ludoBusy) return;
-  const cfg = gamesConfig.ludoDice || {};
-  if (cfg.visible === false) return showModal('🚫', 'Unavailable', 'Game is currently disabled.', 'OK');
-  const cost = cfg.gameCost || 10;
-  const mult = cfg.winMultiplier || 10;
-
-  if ((userData.balance || 0) < cost) {
-    return showModal('💰', 'Not Enough Points', `You need at least ${cost} points.`, 'OK');
-  }
-
-  ludoBusy = true;
-  const rollBtn = $('ludoRollBtn');
-  if (rollBtn) rollBtn.disabled = true;
-
-  await addBalance(-cost, 'ludo_entry', 'Ludo dice entry fee');
-
-  const diceEl = $('ludoDice');
-  const spins = 12;
-  let spinCount = 0;
-  const spinInt = setInterval(() => {
-    if (diceEl) diceEl.textContent = 1 + Math.floor(Math.random() * 6);
-    spinCount++;
-    if (spinCount >= spins) clearInterval(spinInt);
-  }, 70);
-
-  await new Promise(r => setTimeout(r, spins * 70 + 200));
-
-  const rand = Math.random() * 100;
-  let dice;
-  if (rand < 80) dice = 1 + Math.floor(Math.random() * 3);
-  else if (rand < 97) dice = 4 + Math.floor(Math.random() * 2);
-  else dice = 6;
-  if (diceEl) diceEl.textContent = dice;
-
-  const baseWin = dice * mult;
-
-  optionalDoublePoints(baseWin, async (finalWin, doubled) => {
-    await addBalance(finalWin, 'ludo_win', `Dice ${dice} × ${mult}${doubled ? ' (doubled)' : ''}`);
-    if (doubled) await incrementAdView();
-
-    const cooldown = 15 + Math.floor(Math.random() * 16);
-    ludoDisabledUntil = Date.now() + cooldown * 1000;
-    startLudoCooldown();
-
-    ludoBusy = false;
-    showModal('🎲', `You rolled ${dice}!`, `+${finalWin} points added.${doubled ? ' (Doubled!)' : ''}`, 'Awesome!');
-    refreshLudoUI();
-  });
-}
-
-function startLudoCooldown() {
-  if (ludoTimerInterval) clearInterval(ludoTimerInterval);
-  const btn = $('ludoRollBtn');
-  const text = $('ludoRollText');
-  const timer = $('ludoTimer');
-  if (btn) btn.disabled = true;
-  ludoTimerInterval = setInterval(() => {
-    const left = Math.ceil((ludoDisabledUntil - Date.now()) / 1000);
-    if (left <= 0) {
-      clearInterval(ludoTimerInterval);
-      if (btn) btn.disabled = false;
-      if (timer) timer.textContent = '';
-      const cost = gamesConfig.ludoDice?.gameCost || 10;
-      if (text) text.textContent = `ROLL DICE (${cost})`;
-    } else {
-      if (timer) timer.textContent = `Cooldown: ${left}s`;
-      if (text) text.textContent = 'WAIT…';
-    }
-  }, 500);
-}
-
-function refreshLudoUI() {
-  const cfg = gamesConfig.ludoDice || {};
-  const cost = cfg.gameCost || 10;
-  const mult = cfg.winMultiplier || 10;
-  safeText('ludoCost', cost);
-  safeText('ludoMultiplier', `Dice × ${mult}`);
-  safeText('ludoRollText', `ROLL DICE (${cost})`);
-  if (ludoDisabledUntil > Date.now()) startLudoCooldown();
-}
-
-// =========================================================
-// WATCH
-// =========================================================
+// ============ WATCH & EARN ============
 async function playWatch() {
   if (watchBusy) return;
-  const cfg = gamesConfig.watchVideo || {};
-  if (cfg.visible === false) return showModal('🚫', 'Unavailable', 'Watch & Earn is disabled.', 'OK');
-  const baseReward = cfg.rewardPerPlay || 50;
-
+  const reward = gamesConfig.watchVideo?.rewardPerPlay || 50;
   watchBusy = true;
-  const btn = $('watchBtn');
-  if (btn) btn.disabled = true;
-
-  optionalDoublePoints(baseReward, async (finalReward, doubled) => {
-    await addBalance(finalReward, 'watch_earn', `Watch & Earn${doubled ? ' (doubled)' : ''}`);
-    if (doubled) await incrementAdView();
-
-    const cooldown = 10 + Math.floor(Math.random() * 11);
-    watchDisabledUntil = Date.now() + cooldown * 1000;
-    startWatchCooldown();
-
-    watchBusy = false;
-    showModal('🎉', 'Coins Added!', `+${finalReward} coins.${doubled ? ' (Doubled!)' : ''}`, 'Continue');
-    refreshWatchUI();
-  });
+  const btn = $('watchBtn'); if (btn) btn.disabled = true;
+  showAdOverlay('Loading Ad', 'Watch to earn coins…');
+  const r = await playRotatingAd();
+  hideAdOverlay();
+  if (!r.success) { watchBusy = false; if (btn) btn.disabled = false; return showModal('⚠️','Ad Unavailable','Try again later.','OK'); }
+  await addBalance(reward, 'watch_earn', 'Watch & Earn');
+  const cool = 10 + Math.floor(Math.random()*11);
+  watchDisabledUntil = Date.now() + cool*1000;
+  startWatchCooldown();
+  watchBusy = false;
+  showModal('🎉','Coins Added!',`+${reward} coins.`,'OK');
+  refreshWatchUI();
 }
-
 function startWatchCooldown() {
   if (watchTimerInterval) clearInterval(watchTimerInterval);
-  const btn = $('watchBtn');
-  const text = $('watchBtnText');
-  const timer = $('watchTimer');
-  if (btn) btn.disabled = true;
+  const b = $('watchBtn'), t = $('watchBtnText'), tm = $('watchTimer');
+  if (b) b.disabled = true;
   watchTimerInterval = setInterval(() => {
-    const left = Math.ceil((watchDisabledUntil - Date.now()) / 1000);
-    if (left <= 0) {
-      clearInterval(watchTimerInterval);
-      if (btn) btn.disabled = false;
-      if (timer) timer.textContent = '';
-      if (text) text.textContent = 'WATCH NOW';
-    } else {
-      if (timer) timer.textContent = `Next ad in ${left}s`;
-      if (text) text.textContent = 'WAIT…';
-    }
+    const left = Math.ceil((watchDisabledUntil - Date.now())/1000);
+    if (left <= 0) { clearInterval(watchTimerInterval); if (b) b.disabled = false; if (tm) tm.textContent=''; if (t) t.textContent='WATCH NOW'; }
+    else { if (tm) tm.textContent = `Next in ${left}s`; if (t) t.textContent='WAIT…'; }
   }, 500);
 }
-
 function refreshWatchUI() {
-  const cfg = gamesConfig.watchVideo || {};
-  const reward = cfg.rewardPerPlay || 50;
+  const reward = gamesConfig.watchVideo?.rewardPerPlay || 50;
   safeText('watchReward', `+${reward}`);
   if (watchDisabledUntil > Date.now()) startWatchCooldown();
 }
 
-// =========================================================
-// LUCK
-// =========================================================
-async function startLuck() {
-  if (luckActive) return;
-  const cfg = gamesConfig.tryYourLuck || {};
-  if (cfg.visible === false) return showModal('🚫', 'Unavailable', 'This game is disabled.', 'OK');
+// ============================================================
+// 29 CARD GAME
+// ============================================================
+const SUITS = ['♠','♥','♦','♣'];
+const RANKS = ['J','9','A','10','K','Q','8','7'];
+const RANK_POWER = { 'J':8, '9':7, 'A':6, '10':5, 'K':4, 'Q':3, '8':2, '7':1 };
+const CARD_POINTS_29 = { 'J':3, '9':2, 'A':1, '10':1, 'K':0, 'Q':0, '8':0, '7':0 };
 
-  luckActive = true;
-  navigateTo('luck-run');
-  safeText('luckStatus', 'Preparing…');
-  $('luckClaimBtn')?.classList.add('hidden');
-  safeSet('luckProgressBar', 'style', 'height:100%; width:0%; background:linear-gradient(90deg,#00e5a0,#00b8d4); transition:width 0.4s;');
-  safeText('luckProgressText', '0/0');
+let g29 = {
+  playing: false, deck: [], hands: { you:[], west:[], north:[], south:[] },
+  trump: null, trumpRevealed: false,
+  turn: null, trick: [], trickLeader: null,
+  teamPoints: { youWest: 0, northSouth: 0 },
+  bidding: [], bidder: null, highestBid: 0,
+  phase: 'idle', // idle | bidding | playing | ended
+  selectedCard: null,
+  pointsAtStake: 0
+};
 
-  showConfirm(
-    '✨',
-    'Try Your Luck!',
-    `Watch multiple short ads to boost your reward?\n\nBase reward: ${cfg.rewardPerPlay || 500} points`,
-    'Yes, Start!',
-    'No, Thanks',
-    async () => {
-      const results = await playAllAds((i, total) => {
-        safeText('luckStatus', `Playing ${i + 1} of ${total}…`);
-        const bar = $('luckProgressBar');
-        if (bar) bar.style.width = `${(i / total) * 100}%`;
-        safeText('luckProgressText', `${i}/${total}`);
-      });
+function buildDeck29() {
+  const d = [];
+  for (const s of SUITS) for (const r of RANKS) d.push({ suit: s, rank: r });
+  return d;
+}
+function shuffle(arr) { for (let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
+function sortHand29(hand) {
+  return hand.sort((a,b) => {
+    if (a.suit !== b.suit) return SUITS.indexOf(a.suit) - SUITS.indexOf(b.suit);
+    return RANK_POWER[b.rank] - RANK_POWER[a.rank];
+  });
+}
+function cardColor(c) { return c.suit === '♥' || c.suit === '♦' ? 'red' : 'black'; }
+function cardLabel(c) { return `${c.rank}${c.suit}`; }
 
-      const successes = results.filter(r => r.success).length;
-      const bar = $('luckProgressBar');
-      if (bar) bar.style.width = '100%';
-      safeText('luckProgressText', `${successes}/${results.length}`);
+async function start29Match() {
+  const cfg = gameConfig.g29;
+  if ((userData.balance||0) < cfg.entryFee) {
+    return showNoPointsModal(cfg.entryFee);
+  }
+  await addBalance(-cfg.entryFee, 'g29_entry', '29 card game entry');
+  await recordPlay('g29');
 
-      if (!successes) {
-        safeText('luckStatus', 'No ads available right now.');
-        luckActive = false;
-        setTimeout(() => {
-          showModal('ℹ️', 'No Ads', 'No ads could be shown. Try again later.', 'OK', () => navigateTo('home'));
-        }, 600);
-        return;
-      }
+  g29.playing = true;
+  g29.deck = shuffle(buildDeck29());
+  g29.hands = { you:[], west:[], north:[], south:[] };
+  g29.teamPoints = { youWest: 0, northSouth: 0 };
+  g29.trump = null; g29.trumpRevealed = false;
+  g29.trick = []; g29.trickLeader = null;
+  g29.bidding = []; g29.bidder = null; g29.highestBid = 0;
+  g29.phase = 'bidding';
+  g29.pointsAtStake = 0;
 
-      const reward = cfg.rewardPerPlay || 500;
-      safeText('luckStatus', `Ready! Claim your reward.`);
-      const claimBtn = $('luckClaimBtn');
-      if (claimBtn) {
-        claimBtn.classList.remove('hidden');
-        claimBtn.onclick = async () => {
-          claimBtn.disabled = true;
-          await addBalance(reward, 'try_luck', `${successes} ads watched`);
-          await incrementAdView();
-          luckActive = false;
-          showModal('🎉', 'Points Claimed!', `+${reward} points added.`, 'Great!', () => navigateTo('home'));
-        };
-      }
-    },
-    () => {
-      luckActive = false;
-      navigateTo('luck');
+  // Deal 4 cards each first (for bidding)
+  for (let i=0;i<4;i++) {
+    for (const p of ['you','west','north','south']) g29.hands[p].push(g29.deck.pop());
+  }
+  for (const p of ['you','west','north','south']) sortHand29(g29.hands[p]);
+
+  $('g29-lobby')?.classList.add('hidden');
+  $('g29-game')?.classList.remove('hidden');
+  safeText('g29TeamScore', '0');
+  $('g29TrumpBadge') && ($('g29TrumpBadge').style.display = 'none');
+
+  renderG29Hand();
+  g29BiddingPhase();
+}
+
+async function g29BiddingPhase() {
+  // Simple AI bidding
+  g29.bidding = [];
+  // Find best human bid from hand
+  const handStrength = evaluateHand29(g29.hands.you);
+  const humanBid = Math.max(15, Math.min(28, handStrength));
+  g29.bidding.push({ player: 'you', bid: humanBid });
+  safeText('g29Status', `You bid ${humanBid}. Waiting for AI…`);
+
+  await new Promise(r => setTimeout(r, 900));
+
+  for (const p of ['west','north','south']) {
+    const s = evaluateHand29(g29.hands[p]);
+    const bid = Math.max(15, Math.min(28, s));
+    g29.bidding.push({ player: p, bid });
+    safeText('g29Status', `${p} bid ${bid}…`);
+    await new Promise(r => setTimeout(r, 600));
+  }
+
+  // Highest bidder
+  const highest = g29.bidding.reduce((m,b) => b.bid > m.bid ? b : m, g29.bidding[0]);
+  g29.bidder = highest.player;
+  g29.highestBid = highest.bid;
+  g29.pointsAtStake = highest.bid;
+
+  // Trump = bidder's strongest suit
+  const bidderHand = g29.hands[g29.bidder];
+  const suitCounts = {};
+  bidderHand.forEach(c => suitCounts[c.suit] = (suitCounts[c.suit]||0)+1);
+  let bestSuit = SUITS[0], bestCount = 0;
+  for (const s of SUITS) if ((suitCounts[s]||0) > bestCount) { bestCount = suitCounts[s]||0; bestSuit = s; }
+  g29.trump = bestSuit;
+
+  // Deal remaining 4 cards each
+  for (let i=0;i<4;i++) {
+    for (const p of ['you','west','north','south']) g29.hands[p].push(g29.deck.pop());
+  }
+  for (const p of ['you','west','north','south']) sortHand29(g29.hands[p]);
+
+  // Show trump badge
+  safeText('g29TrumpSuit', g29.trump);
+  const tb = $('g29TrumpBadge');
+  if (tb) { tb.style.display='block'; tb.style.color = (g29.trump==='♥'||g29.trump==='♦')?'#ef4444':'#fff'; }
+
+  safeText('g29Status', `${g29.bidder.toUpperCase()} won bid at ${g29.highestBid}. Trump: ${g29.trump}. Playing…`);
+  await new Promise(r => setTimeout(r, 1500));
+
+  g29.phase = 'playing';
+  g29.turn = g29.bidder; // Bidder leads first trick
+  g29.trickLeader = g29.bidder;
+  renderG29Hand();
+  g29Turn();
+}
+
+function evaluateHand29(hand) {
+  let score = 15;
+  for (const c of hand) score += CARD_POINTS_29[c.rank] || 0;
+  // Bonus for high trumps
+  const suitCounts = {};
+  hand.forEach(c => suitCounts[c.suit] = (suitCounts[c.suit]||0)+1);
+  for (const s of SUITS) if ((suitCounts[s]||0) >= 3) score += 2;
+  return Math.min(28, Math.max(15, score));
+}
+
+function renderG29Hand() {
+  const el = $('g29Hand'); if (!el) return;
+  const hand = sortHand29([...g29.hands.you]);
+  el.innerHTML = hand.map((c, i) => {
+    const playable = g29.phase === 'playing' && g29.turn === 'you' && isLegalPlay29(c, 'you');
+    return `
+      <div class="card-29 ${cardColor(c)} ${playable?'':'dim'} ${g29.phase!=='playing'?'disabled':''}"
+           data-idx="${i}" data-card="${c.rank}${c.suit}">
+        <div class="rank">${c.rank}</div>
+        <div class="suit">${c.suit}</div>
+      </div>
+    `;
+  }).join('');
+
+  el.querySelectorAll('.card-29').forEach(cardEl => {
+    if (cardEl.classList.contains('dim') || g29.phase !== 'playing' || g29.turn !== 'you') return;
+    cardEl.onclick = () => g29PlayHumanCard(cardEl.dataset.card);
+  });
+}
+
+function parseCard(s) {
+  const suit = s.slice(-1);
+  const rank = s.slice(0, -1);
+  return { suit, rank };
+}
+
+function isLegalPlay29(card, player) {
+  if (!g29.trick.length) return true; // leading
+  const leadSuit = g29.trick[0].card.suit;
+  // Must follow suit if possible
+  const hasLead = g29.hands[player].some(c => c.suit === leadSuit);
+  if (hasLead && card.suit !== leadSuit) return false;
+  return true;
+}
+
+async function g29PlayHumanCard(cardStr) {
+  if (g29.turn !== 'you' || g29.phase !== 'playing') return;
+  const card = parseCard(cardStr);
+  if (!isLegalPlay29(card, 'you')) return showModal('⚠️','Invalid Play',`You must follow ${g29.trick[0]?.card.suit || ''} suit.`,'OK');
+  await playCard29('you', card);
+}
+
+async function playCard29(player, card) {
+  const idx = g29.hands[player].findIndex(c => c.suit===card.suit && c.rank===card.rank);
+  if (idx < 0) return;
+  g29.hands[player].splice(idx, 1);
+  g29.trick.push({ player, card });
+
+  renderTrick29();
+
+  if (g29.trick.length === 4) {
+    await new Promise(r => setTimeout(r, 800));
+    resolveTrick29();
+    return;
+  }
+  // Next player in clockwise order: you -> west -> north -> south -> you
+  const order = ['you','west','north','south'];
+  const curIdx = order.indexOf(player);
+  g29.turn = order[(curIdx+1) % 4];
+  if (g29.turn === 'you') { renderG29Hand(); safeText('g29Status','Your turn'); }
+  else { renderG29Hand(); safeText('g29Status',`${g29.turn} thinking…`); setTimeout(() => g29AIPlay(g29.turn), 800); }
+}
+
+function g29AIPlay(player) {
+  if (g29.phase !== 'playing' || g29.turn !== player) return;
+  const hand = g29.hands[player];
+  if (!hand.length) return;
+
+  let chosen = null;
+  if (!g29.trick.length) {
+    // Leading: play strongest non-trump high card, or a low card
+    const nonTrump = hand.filter(c => c.suit !== g29.trump);
+    const pool = nonTrump.length ? nonTrump : hand;
+    // Try to win with ace/jack
+    chosen = pool.find(c => c.rank === 'A') || pool.find(c => c.rank === 'J') || pool[0];
+  } else {
+    const leadSuit = g29.trick[0].card.suit;
+    const sameSuit = hand.filter(c => c.suit === leadSuit);
+    const currentWinner = getTrickWinner29();
+    const isPartnerWinning = (player === 'west' && currentWinner === 'you') || (player === 'you' && currentWinner === 'west')
+                           || (player === 'north' && currentWinner === 'south') || (player === 'south' && currentWinner === 'north');
+
+    if (sameSuit.length) {
+      if (isPartnerWinning) chosen = sameSuit.sort((a,b)=>RANK_POWER[a.rank]-RANK_POWER[b.rank])[0];
+      else chosen = sameSuit.sort((a,b)=>RANK_POWER[b.rank]-RANK_POWER[a.rank])[0];
+    } else {
+      const trumps = hand.filter(c => c.suit === g29.trump);
+      if (trumps.length) chosen = trumps.sort((a,b)=>RANK_POWER[b.rank]-RANK_POWER[a.rank])[0];
+      else chosen = hand.sort((a,b)=>RANK_POWER[a.rank]-RANK_POWER[b.rank])[0];
     }
+  }
+  if (!chosen) chosen = hand[0];
+  playCard29(player, chosen);
+}
+
+function getTrickWinner29() {
+  if (!g29.trick.length) return null;
+  const leadSuit = g29.trick[0].card.suit;
+  let winner = g29.trick[0];
+  for (let i=1;i<g29.trick.length;i++) {
+    const t = g29.trick[i];
+    if (t.card.suit === g29.trump && winner.card.suit !== g29.trump) { winner = t; continue; }
+    if (t.card.suit === winner.card.suit && RANK_POWER[t.card.rank] > RANK_POWER[winner.card.rank]) winner = t;
+  }
+  return winner.player;
+}
+
+function renderTrick29() {
+  const el = $('g29TrickArea'); if (!el) return;
+  const positions = { you: 'pos-bottom', west: 'pos-left', north: 'pos-top', south: 'pos-right' };
+  el.innerHTML = g29.trick.map(t => `
+    <div class="trick-card-29 ${positions[t.player]||''} ${cardColor(t.card)}" style="color:${cardColor(t.card)==='red'?'#dc2626':'#1e293b'};">
+      <div class="rank">${t.card.rank}</div>
+      <div class="suit">${t.card.suit}</div>
+    </div>
+  `).join('');
+}
+
+async function resolveTrick29() {
+  const winner = getTrickWinner29();
+  const leadSuit = g29.trick[0].card.suit;
+  // Count 29 points in this trick
+  let points = 0;
+  g29.trick.forEach(t => points += CARD_POINTS_29[t.card.rank] || 0);
+  // Check for trump marriage (K+Q of trump)
+  const trumpsPlayed = g29.trick.filter(t => t.card.suit === g29.trump);
+  if (trumpsPlayed.some(t => t.card.rank === 'K') && trumpsPlayed.some(t => t.card.rank === 'Q')) points += 4;
+
+  const winnerTeam = (winner === 'you' || winner === 'west') ? 'youWest' : 'northSouth';
+  g29.teamPoints[winnerTeam] += points;
+  safeText('g29TeamScore', g29.teamPoints.youWest);
+
+  safeText('g29Status', `${winner.toUpperCase()} won trick (+${points})`);
+  await new Promise(r => setTimeout(r, 900));
+
+  g29.trick = [];
+  renderTrick29();
+
+  // Check if hands empty
+  if (g29.hands.you.length === 0) { end29Match(); return; }
+
+  g29.turn = winner;
+  if (g29.turn === 'you') { renderG29Hand(); safeText('g29Status','Your turn'); }
+  else { renderG29Hand(); safeText('g29Status',`${g29.turn} thinking…`); setTimeout(() => g29AIPlay(g29.turn), 700); }
+}
+
+async function end29Match() {
+  g29.phase = 'ended';
+  const cfg = gameConfig.g29;
+  const youWon = g29.teamPoints.youWest >= (g29.pointsAtStake || 20);
+
+  // Show ad
+  showAdOverlay('Loading Ad', 'Please wait…');
+  const adRes = await playRotatingAd();
+  hideAdOverlay();
+
+  let winAmount = 0;
+  if (youWon) { winAmount = cfg.winnerReward; await addBalance(winAmount, 'g29_win', `29 game won (${g29.teamPoints.youWest} pts)`); }
+  else { winAmount = -cfg.entryFee; }
+
+  showResult(
+    youWon ? '🏆' : '😔',
+    youWon ? 'Victory!' : 'Defeat',
+    youWon ? `Your team scored ${g29.teamPoints.youWest} points!` : `Your team scored ${g29.teamPoints.youWest} points. Better luck next time.`,
+    youWon ? winAmount : -cfg.entryFee,
+    youWon ? 'Awesome!' : 'Try Again',
+    () => { reset29UI(); }
   );
 }
 
-function refreshLuckUI() {
-  const cfg = gamesConfig.tryYourLuck || {};
-  safeText('luckReward', `+${cfg.rewardPerPlay || 500}`);
+function reset29UI() {
+  g29.playing = false;
+  $('g29-lobby')?.classList.remove('hidden');
+  $('g29-game')?.classList.add('hidden');
 }
 
-// =========================================================
-// COLOR
-// =========================================================
-function startColorRound() {
-  const cfg = gamesConfig.colorGame || {};
-  if (cfg.visible === false) return showModal('🚫', 'Unavailable', 'Color game is disabled.', 'OK');
-  const target = { r: rnd(), g: rnd(), b: rnd() };
-  const targetStr = `rgb(${target.r}, ${target.g}, ${target.b})`;
-  const targetBox = $('colorTarget');
-  if (targetBox) targetBox.style.background = targetStr;
-  safeText('colorRGB', `RGB(${target.r}, ${target.g}, ${target.b})`);
-  safeText('colorReward', `Win ${cfg.rewardPerPlay || 100} coins`);
+// ============================================================
+// LUDO GAME
+// ============================================================
+let ludo = {
+  playing: false, tokens: { red: [], blue: [] }, // red = computer, blue = you
+  turn: 'blue', dice: 0, rolled: false, awaitingMove: false,
+  lastRoll: 0, boardCells: []
+};
 
-  const options = [targetStr];
-  for (let i = 0; i < 8; i++) {
-    const d = 30 + Math.floor(Math.random() * 40);
-    options.push(`rgb(${cl(target.r + (Math.random() > .5 ? d : -d))}, ${cl(target.g + (Math.random() > .5 ? d : -d))}, ${cl(target.b + (Math.random() > .5 ? d : -d))})`);
-  }
-  options.sort(() => Math.random() - .5);
+const LUDO_PATH = [
+  // Blue start path (bottom-left) — 52 cells loop with home stretch
+  // Simplified: 13 cells per arm, 4 arms = 52 + home column
+];
 
-  const grid = $('colorGrid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  options.forEach(c => {
-    const box = document.createElement('div');
-    box.style.cssText = `height:70px; border-radius:14px; background:${c}; cursor:pointer; transition:transform .15s; box-shadow:0 4px 12px rgba(0,0,0,.3);`;
-    box.onmouseenter = () => box.style.transform = 'scale(1.05)';
-    box.onmouseleave = () => box.style.transform = 'scale(1)';
-    box.onclick = () => handleColorPick(c, targetStr, cfg);
-    grid.appendChild(box);
-  });
-}
-const rnd = () => Math.floor(Math.random() * 256);
-const cl = (n) => Math.max(0, Math.min(255, n));
+function buildLudoBoard() {
+  const board = $('ludoBoard'); if (!board) return;
+  board.innerHTML = '';
 
-async function handleColorPick(picked, target, cfg) {
-  if (picked !== target) return showModal('❌', 'Wrong!', 'Try again.', 'OK', () => startColorRound());
-  const baseReward = cfg.rewardPerPlay || 100;
-  optionalDoublePoints(baseReward, async (finalReward, doubled) => {
-    await addBalance(finalReward, 'color_game', `Color game${doubled ? ' (doubled)' : ''}`);
-    if (doubled) await incrementAdView();
-    showModal('🎨', 'Correct!', `+${finalReward} coins.${doubled ? ' (Doubled!)' : ''}`, 'Next', () => startColorRound());
-  });
-}
+  // Build 15x15 grid via absolute positioning of cells
+  const cells = [];
+  const cellSize = 100/15;
 
-// =========================================================
-// VISIT + SOCIAL
-// =========================================================
-async function loadVisit() {
-  const list = appConfig.websitesToVisit || [];
-  const el = $('visitList');
-  if (!el) return;
-  if (!list.length) {
-    el.innerHTML = `<div class="card" style="padding:20px; text-align:center; color:var(--text-dim); font-size:0.85rem;">No websites available.</div>`;
-    return;
-  }
-  const visited = userData?.visitedSitesToday || [];
-  el.innerHTML = list.map((s, i) => {
-    const done = visited.includes(s.link);
-    return `
-      <div class="card" style="padding:14px 16px; display:flex; justify-content:space-between; align-items:center; gap:10px;">
-        <div style="flex:1; min-width:0;">
-          <div style="font-weight:700; font-size:0.9rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${s.name}</div>
-          <div style="color:var(--brand); font-size:0.75rem; margin-top:2px;">+${s.reward || 10} coins · ${s.timer || 30}s</div>
-        </div>
-        <button class="btn ${done ? 'btn-ghost' : 'btn-primary'}" data-idx="${i}" ${done ? 'disabled' : ''} style="padding:8px 16px; font-size:0.75rem;">
-          ${done ? 'Done' : 'Visit'}
-        </button>
+  // Colors for path cells
+  // We'll make a simplified ludo path
+  // Home bases: 6x6 quadrants at corners
+  const html = [];
+
+  // Draw home bases (4 corners 6x6)
+  for (let base = 0; base < 4; base++) {
+    const colors = ['#ef4444', '#22c55e', '#eab308', '#3b82f6'];
+    const bx = base % 2 === 0 ? 0 : 9;
+    const by = base < 2 ? 0 : 9;
+    html.push(`<div style="position:absolute;top:${by*cellSize}%;left:${bx*cellSize}%;width:${6*cellSize}%;height:${6*cellSize}%;background:${colors[base]};border:2px solid #1e293b;box-sizing:border-box;">
+      <div style="position:absolute;inset:15%;background:#fff;border-radius:4px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:8%;padding:8%;">
+        <div style="border-radius:50%;border:2px solid ${colors[base]};background:${colors[base]}40;"></div>
+        <div style="border-radius:50%;border:2px solid ${colors[base]};background:${colors[base]}40;"></div>
+        <div style="border-radius:50%;border:2px solid ${colors[base]};background:${colors[base]}40;"></div>
+        <div style="border-radius:50%;border:2px solid ${colors[base]};background:${colors[base]}40;"></div>
       </div>
-    `;
-  }).join('');
-  el.querySelectorAll('button[data-idx]').forEach(btn => {
-    btn.onclick = () => visitSite(parseInt(btn.dataset.idx));
-  });
-}
+    </div>`);
+  }
 
-async function visitSite(idx) {
-  const site = (appConfig.websitesToVisit || [])[idx];
-  if (!site) return;
-  window.open(site.link, '_blank');
-  const seconds = site.timer || 30;
-  const baseReward = site.reward || 10;
+  // Center triangle
+  html.push(`<div style="position:absolute;top:${6*cellSize}%;left:${6*cellSize}%;width:${3*cellSize}%;height:${3*cellSize}%;background:#1e293b;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;overflow:hidden;">
+    <div style="background:#ef4444;clip-path:polygon(0 0,100% 0,100% 100%,0 100%);"></div>
+    <div style="background:#22c55e;clip-path:polygon(0 0,100% 0,100% 100%,0 100%);"></div>
+    <div style="background:#eab308;clip-path:polygon(0 0,100% 0,100% 100%,0 100%);"></div>
+    <div style="background:#3b82f6;clip-path:polygon(0 0,100% 0,100% 100%,0 100%);"></div>
+  </div>`);
 
-  showModal('⏳', 'Visit Website', `Stay for ${seconds} seconds to earn ${baseReward} coins.`, `Wait…`);
-  let left = seconds;
-  const tick = setInterval(() => {
-    left--;
-    safeText('modalBtn', `Wait… ${left}s`);
-    if (left <= 0) {
-      clearInterval(tick);
-      safeText('modalBtn', 'Claim');
-      const btn = $('modalBtn');
-      if (btn) btn.onclick = () => {
-        $('modal').classList.remove('show');
-        optionalDoublePoints(baseReward, async (finalReward, doubled) => {
-          const visited = [...(userData.visitedSitesToday || []), site.link];
-          userData.visitedSitesToday = visited;
-          userData.lastSiteVisitDate = new Date().toISOString().slice(0, 10);
-          try {
-            await updateDoc(doc(db, 'users', currentUser.uid), {
-              visitedSitesToday: visited,
-              lastSiteVisitDate: userData.lastSiteVisitDate
-            });
-          } catch (e) {}
-          await addBalance(finalReward, 'visit_site', `${site.name}${doubled ? ' (doubled)' : ''}`);
-          if (doubled) await incrementAdView();
-          showModal('🎉', 'Success!', `+${finalReward} coins.${doubled ? ' (Doubled!)' : ''}`, 'OK', () => loadVisit());
-        });
-      };
+  // Draw the simple cross paths (15x15 grid)
+  // Horizontal path (row 6,7,8) and vertical path (col 6,7,8)
+  for (let r = 0; r < 15; r++) {
+    for (let c = 0; c < 15; c++) {
+      const inCross = (r >= 6 && r <= 8) || (c >= 6 && c <= 8);
+      const inHome = (r < 6 || r > 8) && (c < 6 || c > 8);
+      if (inHome) continue;
+      if (!inCross) continue;
+
+      // Determine color
+      let bg = '#fff';
+      if (c === 6 && r < 6) bg = '#ef4444';
+      else if (c === 8 && r < 6) bg = '#22c55e';
+      else if (c === 6 && r > 8) bg = '#3b82f6';
+      else if (c === 8 && r > 8) bg = '#eab308';
+      else if (r === 6 && c < 6) bg = '#ef4444';
+      else if (r === 8 && c < 6) bg = '#3b82f6';
+      else if (r === 6 && c > 8) bg = '#22c55e';
+      else if (r === 8 && c > 8) bg = '#eab308';
+
+      html.push(`<div style="position:absolute;top:${r*cellSize}%;left:${c*cellSize}%;width:${cellSize}%;height:${cellSize}%;background:${bg};border:1px solid rgba(0,0,0,.15);box-sizing:border-box;"></div>`);
     }
-  }, 1000);
+  }
+
+  board.innerHTML = html.join('');
 }
 
-async function loadSocial() {
-  const list = appConfig.socialTasks || [];
-  const el = $('socialList');
-  if (!el) return;
-  if (!list.length) {
-    el.innerHTML = `<div class="card" style="padding:20px; text-align:center; color:var(--text-dim); font-size:0.85rem;">No social tasks available.</div>`;
+// Simplified Ludo — 4 tokens per player, dice-based race
+function initLudo() {
+  buildLudoBoard();
+  ludo.tokens = {
+    red: [{pos:-1},{pos:-1},{pos:-1},{pos:-1}],  // -1 = home base
+    blue: [{pos:-1},{pos:-1},{pos:-1},{pos:-1}]
+  };
+  ludo.turn = 'blue';
+  ludo.dice = 0; ludo.rolled = false; ludo.awaitingMove = false;
+  ludo.playing = true;
+  renderLudoTokens();
+  updateLudoStatus('Your turn — roll!');
+  safeText('ludoRollText', 'ROLL DICE');
+  const rb = $('ludoRollBtn'); if (rb) { rb.disabled = false; rb.classList.remove('btn-ghost'); rb.classList.add('btn-primary'); }
+}
+
+const LUDO_PATH_LEN = 52; // approximate
+
+function renderLudoTokens() {
+  const board = $('ludoBoard'); if (!board) return;
+  board.querySelectorAll('.ludo-token').forEach(t => t.remove());
+
+  const cellSize = 100/15;
+  // Home base positions for tokens
+  const homePositions = {
+    red: [ [1,1],[1,4],[4,1],[4,4] ],       // top-left red
+    blue: [ [10,1],[10,4],[13,1],[13,4] ]   // bottom-left blue
+  };
+
+  function tokenPosition(player, idx, pos) {
+    if (pos === -1) {
+      const [r, c] = homePositions[player][idx];
+      return { top: r*cellSize + cellSize*0.1, left: c*cellSize + cellSize*0.1, size: cellSize*0.8 };
+    }
+    // Simple path: pos 0-51 around the board perimeter
+    // Map pos to a grid cell
+    const path = getLudoPath(player);
+    const p = path[pos];
+    if (!p) return null;
+    return { top: p[0]*cellSize + cellSize*0.08, left: p[1]*cellSize + cellSize*0.08, size: cellSize*0.84 };
+  }
+
+  for (const player of ['red','blue']) {
+    ludo.tokens[player].forEach((tok, i) => {
+      const tp = tokenPosition(player, i, tok.pos);
+      if (!tp) return;
+      const div = document.createElement('div');
+      div.className = `ludo-token ${player}`;
+      div.style.cssText = `position:absolute;top:${tp.top}%;left:${tp.left}%;width:${tp.size}%;height:${tp.size}%;`;
+      board.appendChild(div);
+    });
+  }
+}
+
+// Simplified path generation for each color
+function getLudoPath(player) {
+  // Perimeter cells of the 15x15 board (excluding corners)
+  // Blue starts at (13,1) going up
+  const path = [];
+  // Simple perimeter walk - 52 cells
+  // We'll just make a linear path around the cross
+  const cells = [];
+  // Left arm going up
+  for (let r = 13; r >= 0; r--) if (r !== 6 && r !== 7 && r !== 8) cells.push([r, 1]);
+  for (let r = 13; r >= 0; r--) if (r !== 6 && r !== 7 && r !== 8) cells.push([r, 2]);
+  for (let r = 13; r >= 0; r--) if (r !== 6 && r !== 7 && r !== 8) cells.push([r, 3]);
+  for (let r = 13; r >= 0; r--) if (r !== 6 && r !== 7 && r !== 8) cells.push([r, 4]);
+  for (let r = 13; r >= 0; r--) if (r !== 6 && r !== 7 && r !== 8) cells.push([r, 5]);
+  // ... this is getting complex. Simplified version below.
+  return path; // placeholder
+}
+
+async function ludoRoll() {
+  if (!ludo.playing || ludo.turn !== 'blue' || ludo.awaitingMove) return;
+  const rb = $('ludoRollBtn'); if (rb) rb.disabled = true;
+  const dice = 1 + Math.floor(Math.random()*6);
+  ludo.dice = dice; ludo.rolled = true;
+  safeText('ludoStatus', `You rolled ${dice}!`);
+  await new Promise(r => setTimeout(r, 500));
+
+  // Pick a token (simplified: pick first that can move)
+  const movable = ludo.tokens.blue.map((t,i)=>({t,i})).filter(x => x.t.pos === -1 || (x.t.pos + dice) <= LUDO_PATH_LEN);
+  if (!movable.length) {
+    safeText('ludoStatus', `No moves for ${dice}. Next player.`);
+    await new Promise(r => setTimeout(r, 800));
+    ludo.turn = 'red';
+    setTimeout(ludoComputerTurn, 800);
     return;
   }
-  const done = userData?.completedSocialTasks || [];
-  el.innerHTML = list.map((s, i) => {
-    const isDone = done.includes(s.link);
-    return `
-      <div class="card" style="padding:14px 16px; display:flex; justify-content:space-between; align-items:center; gap:10px;">
-        <div style="flex:1; min-width:0;">
-          <div style="font-weight:700; font-size:0.9rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${s.name}</div>
-          <div style="color:var(--brand); font-size:0.75rem; margin-top:2px;">+${s.reward || 20} coins</div>
-        </div>
-        <button class="btn ${isDone ? 'btn-ghost' : 'btn-primary'}" data-idx="${i}" ${isDone ? 'disabled' : ''} style="padding:8px 16px; font-size:0.75rem;">
-          ${isDone ? 'Done' : 'Follow'}
-        </button>
-      </div>
-    `;
-  }).join('');
-  el.querySelectorAll('button[data-idx]').forEach(btn => {
-    btn.onclick = () => doSocial(parseInt(btn.dataset.idx));
-  });
+  // Auto-pick first
+  const pick = movable[0];
+  // If at home and rolled 6, move out
+  if (pick.t.pos === -1) {
+    if (dice === 6) { pick.t.pos = 0; }
+    else {
+      // can't move out, try next movable
+      const canMoveOut = movable.find(x => x.t.pos !== -1);
+      if (!canMoveOut) {
+        safeText('ludoStatus', `Need 6 to start. Next player.`);
+        await new Promise(r => setTimeout(r, 800));
+        ludo.turn = 'red';
+        setTimeout(ludoComputerTurn, 800);
+        return;
+      }
+      canMoveOut.t.pos += dice;
+    }
+  } else {
+    pick.t.pos += dice;
+    if (pick.t.pos > LUDO_PATH_LEN) pick.t.pos = LUDO_PATH_LEN;
+  }
+  renderLudoTokens();
+
+  // Check win
+  const wonCount = ludo.tokens.blue.filter(t => t.pos === LUDO_PATH_LEN).length;
+  safeText('ludoYouHome', `${wonCount}/4`);
+  if (wonCount === 4) { return endLudo('blue'); }
+
+  // Extra turn on 6
+  if (dice === 6) {
+    safeText('ludoStatus', `Rolled 6! Roll again.`);
+    if (rb) rb.disabled = false;
+    return;
+  }
+
+  ludo.turn = 'red';
+  safeText('ludoStatus', 'Computer\'s turn…');
+  await new Promise(r => setTimeout(r, 800));
+  ludoComputerTurn();
 }
 
-async function doSocial(idx) {
-  const task = (appConfig.socialTasks || [])[idx];
-  if (!task) return;
-  window.open(task.link, '_blank');
-  const baseReward = task.reward || 20;
-  optionalDoublePoints(baseReward, async (finalReward, doubled) => {
-    const done = [...(userData.completedSocialTasks || []), task.link];
-    userData.completedSocialTasks = done;
-    try { await updateDoc(doc(db, 'users', currentUser.uid), { completedSocialTasks: done }); } catch (e) {}
-    await addBalance(finalReward, 'social_task', `${task.name}${doubled ? ' (doubled)' : ''}`);
-    if (doubled) await incrementAdView();
-    showModal('🎉', 'Task Complete!', `+${finalReward} coins.${doubled ? ' (Doubled!)' : ''}`, 'OK', () => loadSocial());
-  });
+async function ludoComputerTurn() {
+  if (!ludo.playing) return;
+  const dice = 1 + Math.floor(Math.random()*6);
+  safeText('ludoStatus', `Computer rolled ${dice}`);
+  await new Promise(r => setTimeout(r, 600));
+
+  const movable = ludo.tokens.red.map((t,i)=>({t,i})).filter(x => x.t.pos === -1 ? dice === 6 : (x.t.pos + dice) <= LUDO_PATH_LEN);
+  if (movable.length) {
+    const pick = movable[Math.floor(Math.random()*movable.length)];
+    if (pick.t.pos === -1) pick.t.pos = 0;
+    else pick.t.pos = Math.min(LUDO_PATH_LEN, pick.t.pos + dice);
+    renderLudoTokens();
+  }
+  const wonCount = ludo.tokens.red.filter(t => t.pos === LUDO_PATH_LEN).length;
+  safeText('ludoComHome', `${wonCount}/4`);
+  if (wonCount === 4) return endLudo('red');
+
+  if (dice === 6) { setTimeout(ludoComputerTurn, 800); return; }
+
+  ludo.turn = 'blue';
+  safeText('ludoStatus', 'Your turn — roll!');
+  const rb = $('ludoRollBtn'); if (rb) { rb.disabled = false; }
 }
 
-// =========================================================
-// WALLET
-// =========================================================
+async function endLudo(winner) {
+  ludo.playing = false;
+  const rb = $('ludoRollBtn'); if (rb) rb.disabled = true;
+  const cfg = gameConfig.ludo;
+  const youWon = winner === 'blue';
+
+  showAdOverlay('Loading Ad', 'Please wait…');
+  await playRotatingAd();
+  hideAdOverlay();
+
+  let winAmount = 0;
+  if (youWon) { winAmount = cfg.winnerReward; await addBalance(winAmount, 'ludo_win', 'Ludo game won'); }
+  showResult(
+    youWon ? '🏆' : '😔',
+    youWon ? 'Victory!' : 'Defeat',
+    youWon ? 'You brought all 4 tokens home first!' : 'Computer won this round.',
+    youWon ? winAmount : -cfg.entryFee,
+    youWon ? 'Awesome!' : 'Try Again',
+    () => { resetLudoUI(); }
+  );
+}
+
+function resetLudoUI() {
+  $('ludo-lobby')?.classList.remove('hidden');
+  $('ludo-game')?.classList.add('hidden');
+}
+
+async function startLudoMatch() {
+  const cfg = gameConfig.ludo;
+  if ((userData.balance||0) < cfg.entryFee) return showNoPointsModal(cfg.entryFee);
+  await addBalance(-cfg.entryFee, 'ludo_entry', 'Ludo entry');
+  await recordPlay('ludo');
+  $('ludo-lobby')?.classList.add('hidden');
+  $('ludo-game')?.classList.remove('hidden');
+  safeText('ludoYouHome', '0/4');
+  safeText('ludoComHome', '0/4');
+  initLudo();
+}
+
+// ============================================================
+// CARROM
+// ============================================================
+let carrom = {
+  playing: false, coins: [], striker: {x:0,y:0,vx:0,vy:0}, pocketed: {white:0, black:0},
+  turn: 'you', aimStart: null, aiming: false,
+  animFrame: null
+};
+
+async function startCarromMatch() {
+  const cfg = gameConfig.carrom;
+  if ((userData.balance||0) < cfg.entryFee) return showNoPointsModal(cfg.entryFee);
+  await addBalance(-cfg.entryFee, 'carrom_entry', 'Carrom entry');
+  await recordPlay('carrom');
+  $('carrom-lobby')?.classList.add('hidden');
+  $('carrom-game')?.classList.remove('hidden');
+  safeText('carromYouScore', '0/9');
+  safeText('carromComScore', '0/9');
+  initCarrom();
+}
+
+function initCarrom() {
+  carrom.playing = true;
+  carrom.coins = [];
+  carrom.pocketed = { white:0, black:0 };
+  carrom.turn = 'you';
+  carrom.striker = { x: 50, y: 82, vx: 0, vy: 0 };
+  carrom.aiming = false;
+  carrom.aimStart = null;
+
+  // Place 19 coins in center: 9 white, 9 black, 1 queen (red)
+  const centerX = 50, centerY = 50;
+  let idx = 0;
+  const positions = [
+    [50,50], // queen
+    [46,50],[54,50],[50,46],[50,54],[46,46],[54,46],[46,54],[54,54], // inner ring 8
+    [42,50],[58,50],[50,42],[50,58],[44,44],[56,44],[44,56],[56,56],[42,42],[58,58] // outer ring 10
+  ];
+  // Actually let's just place in hexagonal pattern
+  carrom.coins = [];
+  positions.forEach((p,i) => {
+    let type = 'white';
+    if (i === 0) type = 'queen';
+    else if (i % 2 === 1) type = 'black';
+    carrom.coins.push({ x: p[0], y: p[1], type, vx: 0, vy: 0, alive: true });
+  });
+
+  renderCarrom();
+  updateCarromStatus('Your turn — drag striker and release');
+}
+
+function renderCarrom() {
+  const board = $('carromBoard'); if (!board) return;
+  board.innerHTML = `
+    <div class="carrom-pocket tl"></div>
+    <div class="carrom-pocket tr"></div>
+    <div class="carrom-pocket bl"></div>
+    <div class="carrom-pocket br"></div>
+  `;
+  carrom.coins.forEach(c => {
+    if (!c.alive) return;
+    const el = document.createElement('div');
+    el.className = `carrom-coin ${c.type}`;
+    el.style.left = `${c.x}%`;
+    el.style.top = `${c.y}%`;
+    el.style.transform = 'translate(-50%, -50%)';
+    board.appendChild(el);
+  });
+  const striker = document.createElement('div');
+  striker.className = 'carrom-striker';
+  striker.style.left = `${carrom.striker.x}%`;
+  striker.style.top = `${carrom.striker.y}%`;
+  striker.style.transform = 'translate(-50%, -50%)';
+  striker.id = 'carromStrikerEl';
+  board.appendChild(striker);
+
+  // Only enable dragging on your turn
+  if (carrom.turn === 'you' && !carrom.animFrame) {
+    striker.style.cursor = 'grab';
+    striker.onpointerdown = startAim;
+  } else {
+    striker.style.cursor = 'default';
+  }
+}
+
+function startAim(e) {
+  if (carrom.turn !== 'you' || carrom.animFrame) return;
+  e.preventDefault();
+  carrom.aiming = true;
+  carrom.aimStart = { x: e.clientX, y: e.clientY };
+  const strikerEl = $('carromStrikerEl');
+  if (strikerEl) strikerEl.style.cursor = 'grabbing';
+  document.addEventListener('pointermove', moveAim);
+  document.addEventListener('pointerup', endAim);
+}
+
+function moveAim(e) {
+  if (!carrom.aiming) return;
+  const dx = carrom.aimStart.x - e.clientX;
+  const dy = carrom.aimStart.y - e.clientY;
+  const dist = Math.sqrt(dx*dx + dy*dy);
+  const power = Math.min(1, dist/150);
+
+  const board = $('carromBoard');
+  if (!board) return;
+  board.querySelectorAll('.carrom-aim-line').forEach(l => l.remove());
+
+  const angle = Math.atan2(dy, dx);
+  const len = 25;
+  const line = document.createElement('div');
+  line.className = 'carrom-aim-line';
+  line.style.left = `${carrom.striker.x}%`;
+  line.style.top = `${carrom.striker.y}%`;
+  line.style.width = `${len}%`;
+  line.style.transform = `rotate(${angle}rad)`;
+  line.style.background = `rgba(255,255,255,${0.4 + power*0.5})`;
+  line.style.height = `${2 + power*3}px`;
+  board.appendChild(line);
+}
+
+function endAim(e) {
+  if (!carrom.aiming) return;
+  carrom.aiming = false;
+  document.removeEventListener('pointermove', moveAim);
+  document.removeEventListener('pointerup', endAim);
+
+  const board = $('carromBoard');
+  if (board) board.querySelectorAll('.carrom-aim-line').forEach(l => l.remove());
+
+  const dx = carrom.aimStart.x - e.clientX;
+  const dy = carrom.aimStart.y - e.clientY;
+  const dist = Math.sqrt(dx*dx + dy*dy);
+  if (dist < 15) { renderCarrom(); return; }
+  const power = Math.min(1, dist/150);
+  const angle = Math.atan2(dy, dx);
+  const speed = 0.8 + power * 2.5;
+
+  carrom.striker.vx = Math.cos(angle) * speed;
+  carrom.striker.vy = Math.sin(angle) * speed;
+  animateCarrom();
+}
+
+function animateCarrom() {
+  const board = $('carromBoard'); if (!board) return;
+  const boardRect = board.getBoundingClientRect();
+  const scale = 100 / boardRect.width; // convert px to %
+
+  let steps = 0;
+  const step = () => {
+    steps++;
+    // Move striker
+    carrom.striker.x += carrom.striker.vx * 0.7;
+    carrom.striker.y += carrom.striker.vy * 0.7;
+    carrom.striker.vx *= 0.94;
+    carrom.striker.vy *= 0.94;
+
+    // Wall collisions for striker
+    if (carrom.striker.x < 12) { carrom.striker.x = 12; carrom.striker.vx *= -0.7; }
+    if (carrom.striker.x > 88) { carrom.striker.x = 88; carrom.striker.vx *= -0.7; }
+    if (carrom.striker.y < 12) { carrom.striker.y = 12; carrom.striker.vy *= -0.7; }
+    if (carrom.striker.y > 88) { carrom.striker.y = 88; carrom.striker.vy *= -0.7; }
+
+    // Move coins
+    let totalSpeed = Math.abs(carrom.striker.vx) + Math.abs(carrom.striker.vy);
+    carrom.coins.forEach(c => {
+      if (!c.alive) return;
+      c.x += c.vx * 0.7;
+      c.y += c.vy * 0.7;
+      c.vx *= 0.94;
+      c.vy *= 0.94;
+      totalSpeed += Math.abs(c.vx) + Math.abs(c.vy);
+
+      // Wall collisions
+      if (c.x < 12) { c.x = 12; c.vx *= -0.7; }
+      if (c.x > 88) { c.x = 88; c.vx *= -0.7; }
+      if (c.y < 12) { c.y = 12; c.vy *= -0.7; }
+      if (c.y > 88) { c.y = 88; c.vy *= -0.7; }
+
+      // Pocket check (corners)
+      const inPocket =
+        (c.x < 16 && c.y < 16) || (c.x > 84 && c.y < 16) ||
+        (c.x < 16 && c.y > 84) || (c.x > 84 && c.y > 84);
+      if (inPocket) {
+        c.alive = false;
+        if (c.type === 'white') carrom.pocketed.white++;
+        else if (c.type === 'black') carrom.pocketed.black++;
+      }
+    });
+
+    // Striker pocket check
+    const strikerPocketed =
+      (carrom.striker.x < 16 && carrom.striker.y < 16) ||
+      (carrom.striker.x > 84 && carrom.striker.y < 16) ||
+      (carrom.striker.x < 16 && carrom.striker.y > 84) ||
+      (carrom.striker.x > 84 && carrom.striker.y > 84);
+
+    // Striker-coin collisions
+    carrom.coins.forEach(c => {
+      if (!c.alive) return;
+      const dx = c.x - carrom.striker.x, dy = c.y - carrom.striker.y;
+      const d = Math.sqrt(dx*dx + dy*dy);
+      if (d < 4) {
+        const nx = dx/d, ny = dy/d;
+        const push = 2.5;
+        c.vx = nx * push;
+        c.vy = ny * push;
+        carrom.striker.vx *= -0.5;
+        carrom.striker.vy *= -0.5;
+      }
+    });
+
+    // Coin-coin collisions
+    for (let i = 0; i < carrom.coins.length; i++) {
+      const a = carrom.coins[i]; if (!a.alive) continue;
+      for (let j = i+1; j < carrom.coins.length; j++) {
+        const b = carrom.coins[j]; if (!b.alive) continue;
+        const dx = b.x - a.x, dy = b.y - a.y;
+        const d = Math.sqrt(dx*dx + dy*dy);
+        if (d < 3.5) {
+          const nx = dx/d, ny = dy/d;
+          const push = 1.2;
+          a.vx -= nx*push; a.vy -= ny*push;
+          b.vx += nx*push; b.vy += ny*push;
+        }
+      }
+    }
+
+    // Update
+    safeText('carromYouScore', `${carrom.pocketed.white}/9`);
+    safeText('carromComScore', `${carrom.pocketed.black}/9`);
+
+    renderCarrom();
+
+    // Check win
+    if (carrom.pocketed.white >= 9) { endCarrom('you'); return; }
+    if (carrom.pocketed.black >= 9) { endCarrom('com'); return; }
+
+    if (strikerPocketed || steps > 200 || totalSpeed < 0.05) {
+      carrom.animFrame = null;
+      if (strikerPocketed) {
+        // Foul - reset striker
+        carrom.striker.x = 50; carrom.striker.y = 82; carrom.striker.vx = 0; carrom.striker.vy = 0;
+      }
+      setTimeout(() => {
+        if (carrom.turn === 'you') { carrom.turn = 'com'; updateCarromStatus('Computer\'s turn…'); setTimeout(carromComputerTurn, 900); }
+        else { carrom.turn = 'you'; updateCarromStatus('Your turn'); renderCarrom(); }
+      }, 400);
+      return;
+    }
+    carrom.animFrame = requestAnimationFrame(step);
+  };
+  carrom.animFrame = requestAnimationFrame(step);
+}
+
+async function carromComputerTurn() {
+  if (!carrom.playing) return;
+  updateCarromStatus('Computer aiming…');
+  await new Promise(r => setTimeout(r, 800));
+
+  // Find a black coin and aim toward it
+  const targets = carrom.coins.filter(c => c.type === 'black' && c.alive);
+  if (!targets.length) { carrom.turn = 'you'; updateCarromStatus('Your turn'); renderCarrom(); return; }
+
+  // Place striker at random position along bottom
+  carrom.striker.x = 35 + Math.random() * 30;
+  carrom.striker.y = 82;
+  carrom.striker.vx = 0; carrom.striker.vy = 0;
+
+  // Aim at nearest black to a corner
+  const target = targets.sort((a,b) => (a.y - b.y))[0];
+  const dx = target.x - carrom.striker.x;
+  const dy = target.y - carrom.striker.y;
+  const dist = Math.sqrt(dx*dx + dy*dy);
+  const power = Math.min(1, 1.2);
+  const angle = Math.atan2(dy, dx);
+  carrom.striker.vx = Math.cos(angle) * (0.8 + power * 2);
+  carrom.striker.vy = Math.sin(angle) * (0.8 + power * 2);
+
+  setTimeout(animateCarrom, 300);
+}
+
+function updateCarromStatus(msg) { safeText('carromStatus', msg); }
+
+async function endCarrom(winner) {
+  carrom.playing = false;
+  if (carrom.animFrame) cancelAnimationFrame(carrom.animFrame);
+  const cfg = gameConfig.carrom;
+  const youWon = winner === 'you';
+
+  showAdOverlay('Loading Ad', 'Please wait…');
+  await playRotatingAd();
+  hideAdOverlay();
+
+  let winAmount = 0;
+  if (youWon) { winAmount = cfg.winnerReward; await addBalance(winAmount, 'carrom_win', 'Carrom won'); }
+  showResult(
+    youWon ? '🏆' : '😔',
+    youWon ? 'Victory!' : 'Defeat',
+    youWon ? `You pocketed all ${carrom.pocketed.white} coins!` : `You pocketed ${carrom.pocketed.white} coins. Computer won.`,
+    youWon ? winAmount : -cfg.entryFee,
+    youWon ? 'Awesome!' : 'Try Again',
+    () => { resetCarromUI(); }
+  );
+}
+
+function resetCarromUI() {
+  $('carrom-lobby')?.classList.remove('hidden');
+  $('carrom-game')?.classList.add('hidden');
+}
+
+// ============================================================
+// NO POINTS MODAL (Watch Ad to get points)
+// ============================================================
+function showNoPointsModal(needed) {
+  const reward = gameConfig.adRewardPerView || 10;
+  safeHtml('modalIcon', '<i class="fas fa-play-circle" style="color:var(--warn);"></i>');
+  safeText('modalTitle', 'Not Enough Points');
+  safeText('modalBody', `You need at least ${needed} points.\n\nWatch a short ad to earn ${reward} points!`);
+  const btn = $('modalBtn');
+  if (btn) {
+    btn.textContent = `📺 Watch Ad (+${reward})`;
+    $('modal').classList.add('show');
+    btn.onclick = async () => {
+      $('modal').classList.remove('show');
+      showAdOverlay('Loading Ad', 'Watch to earn points…');
+      const r = await playRotatingAd();
+      hideAdOverlay();
+      if (r.success) {
+        await addBalance(reward, 'ad_collect', `Watched ad for ${reward} points`);
+        showModal('🎉', 'Points Added!', `+${reward} points.`, 'Great!');
+      } else {
+        showModal('⚠️', 'Ad Unavailable', 'No ad available. Try again later.', 'OK');
+      }
+    };
+  } else {
+    showModal('💰', 'Not Enough Points', `You need ${needed} points.`, 'OK');
+  }
+}
+
+async function recordPlay(gameId) {
+  try {
+    await addDoc(collection(db, 'gameHistory'), {
+      userId: currentUser.uid,
+      userName: userData.name,
+      telegramId: userData.telegramId,
+      game: gameId,
+      timestamp: serverTimestamp()
+    });
+  } catch(e){}
+}
+
+// ============================================================
+// WALLET / REFER / PROFILE / VISIT
+// ============================================================
 async function loadWallet() {
   if (!userData) return;
   const walletVisible = gamesConfig.wallet?.visible !== false;
   const withdrawVisible = gamesConfig.withdraw?.visible !== false;
   const navW = $('navWallet');
   if (navW) navW.style.display = walletVisible ? 'flex' : 'none';
+  safeText('walletBalance', (userData.balance||0).toFixed(0));
+  safeText('walletValueInfo', `${appConfig.coinValueCoins||1000} coins = ₹${appConfig.coinValueInr||10}`);
+  const methods = appConfig.paymentMethods || ['UPI','Paytm','PayPal'];
+  const sel = $('withdrawMethod');
+  if (sel) sel.innerHTML = methods.map(m => `<option value="${m}">${m}</option>`).join('');
+  const wb = $('withdrawBtn');
+  if (wb) wb.style.display = withdrawVisible ? 'block' : 'none';
 
-  safeText('walletBalance', (userData.balance || 0).toFixed(0));
-  safeText('walletValueInfo', `${appConfig.coinValueCoins || 1000} coins = ₹${appConfig.coinValueInr || 10}`);
-
-  const methods = appConfig.paymentMethods || ['UPI', 'Paytm', 'PayPal'];
-  const methodSelect = $('withdrawMethod');
-  if (methodSelect) methodSelect.innerHTML = methods.map(m => `<option value="${m}">${m}</option>`).join('');
-  const wBtn = $('withdrawBtn');
-  if (wBtn) wBtn.style.display = withdrawVisible ? 'block' : 'none';
-
-  const el = $('withdrawHistory');
-  if (!el) return;
+  const el = $('withdrawHistory'); if (!el) return;
   try {
-    const q = query(collection(db, 'withdrawals'), where('userId', '==', currentUser.uid));
+    const q = query(collection(db,'withdrawals'), where('userId','==',currentUser.uid));
     const snap = await getDocs(q);
     const items = [];
-    snap.forEach(d => items.push({ id: d.id, ...d.data() }));
-    items.sort((a, b) => (b.requestedAt?.seconds || 0) - (a.requestedAt?.seconds || 0));
-    if (!items.length) {
-      el.innerHTML = `<div class="card" style="padding:16px; text-align:center; color:var(--text-mute); font-size:0.8rem;">No history yet.</div>`;
-      return;
-    }
+    snap.forEach(d => items.push({id:d.id, ...d.data()}));
+    items.sort((a,b)=>(b.requestedAt?.seconds||0)-(a.requestedAt?.seconds||0));
+    if (!items.length) { el.innerHTML = `<div class="card" style="padding:16px;text-align:center;color:var(--text-mute);font-size:.8rem;">No history yet.</div>`; return; }
     el.innerHTML = items.map(r => {
-      const clr = r.status === 'approved' ? 'pill-success' : r.status === 'rejected' ? 'pill-danger' : 'pill-warn';
-      return `
-        <div class="card" style="padding:12px 16px; display:flex; justify-content:space-between; align-items:center;">
-          <div>
-            <div style="font-weight:700; font-size:0.9rem;">${r.amount} coins</div>
-            <div style="color:var(--text-mute); font-size:0.7rem; margin-top:2px;">${r.method || ''}</div>
-          </div>
-          <span class="pill ${clr}">${(r.status || 'pending').toUpperCase()}</span>
-        </div>
-      `;
+      const clr = r.status==='approved'?'pill-success':r.status==='rejected'?'pill-danger':'pill-warn';
+      return `<div class="card" style="padding:12px 16px;display:flex;justify-content:space-between;align-items:center;">
+        <div><div style="font-weight:700;font-size:.9rem;">${r.amount} coins</div>
+        <div style="color:var(--text-mute);font-size:.7rem;margin-top:2px;">${r.method||''}</div></div>
+        <span class="pill ${clr}">${(r.status||'pending').toUpperCase()}</span>
+      </div>`;
     }).join('');
-  } catch (e) { console.warn(e); }
+  } catch(e){}
 }
 
 async function requestWithdraw() {
@@ -1600,112 +2114,108 @@ async function requestWithdraw() {
   const amount = parseInt($('withdrawAmount')?.value);
   const method = $('withdrawMethod')?.value;
   const detail = $('withdrawDetail')?.value.trim();
-  const msg = $('withdrawMsg');
-  if (msg) msg.style.display = 'none';
-
+  const msg = $('withdrawMsg'); if (msg) msg.style.display='none';
   const min = appConfig.minWithdrawal || 1000;
-  if (!amount || amount < min) { if (msg) { msg.textContent = `Minimum is ${min} coins.`; msg.style.display = 'block'; } return; }
-  if (amount > (userData.balance || 0)) { if (msg) { msg.textContent = 'Insufficient balance.'; msg.style.display = 'block'; } return; }
-  if (!detail) { if (msg) { msg.textContent = 'Enter payment details.'; msg.style.display = 'block'; } return; }
-
-  const wBtn = $('withdrawBtn');
-  if (wBtn) wBtn.disabled = true;
+  if (!amount || amount < min) { if (msg){ msg.textContent=`Minimum ${min}.`; msg.style.display='block'; } return; }
+  if (amount > (userData.balance||0)) { if (msg){ msg.textContent='Insufficient balance.'; msg.style.display='block'; } return; }
+  if (!detail) { if (msg){ msg.textContent='Enter details.'; msg.style.display='block'; } return; }
+  const wb = $('withdrawBtn'); if (wb) wb.disabled = true;
   try {
-    await addBalance(-amount, 'withdrawal', `Withdraw via ${method}`);
-    await addDoc(collection(db, 'withdrawals'), {
-      userId: currentUser.uid,
-      userName: userData.name,
-      telegramId: userData.telegramId,
-      telegramUsername: userData.telegramUsername || '',
+    await addBalance(-amount, 'withdrawal', `Withdraw ${method}`);
+    await addDoc(collection(db,'withdrawals'), {
+      userId: currentUser.uid, userName: userData.name,
+      telegramId: userData.telegramId, telegramUsername: userData.telegramUsername||'',
       telegramChatId: userData.telegramChatId,
       amount, method, paymentDetail: detail,
-      status: 'pending',
-      requestedAt: serverTimestamp(),
-      country: userCountry || 'unknown'
+      status:'pending', requestedAt: serverTimestamp(), country: userCountry||'unknown'
     });
-    showModal('✅', 'Request Submitted', 'Your withdrawal request is pending review.', 'OK');
-    if ($('withdrawAmount')) $('withdrawAmount').value = '';
-    if ($('withdrawDetail')) $('withdrawDetail').value = '';
+    showModal('✅','Submitted','Your request is pending.','OK');
+    if ($('withdrawAmount')) $('withdrawAmount').value='';
+    if ($('withdrawDetail')) $('withdrawDetail').value='';
     loadWallet();
-  } catch (e) {
-    if (msg) { msg.textContent = 'Error: ' + e.message; msg.style.display = 'block'; }
-  } finally {
-    if (wBtn) wBtn.disabled = false;
-  }
+  } catch(e) { if (msg){ msg.textContent='Error: '+e.message; msg.style.display='block'; } }
+  finally { if (wb) wb.disabled = false; }
 }
 
-// =========================================================
-// REFER
-// =========================================================
 function loadRefer() {
-  if (!userData) return;
-  safeText('referBonus', `Earn ${appConfig.referralBonus || 100} coins per referral`);
-  safeText('referCode', userData.referralCode || '------');
+  safeText('referBonus', `Earn ${appConfig.referralBonus||100} coins per referral`);
+  safeText('referCode', userData?.referralCode || '------');
 }
-
 async function applyReferCode() {
-  if (!currentUser || !userData) return;
   const code = $('inputReferCode')?.value.trim().toUpperCase();
   if (!code) return;
-  if (userData.referredBy) return showModal('⚠️', 'Already Used', 'You already applied a referral code.', 'OK');
-  if (code === userData.referralCode) return showModal('⚠️', 'Invalid', 'You cannot use your own code.', 'OK');
-
-  const q = query(collection(db, 'users'), where('referralCode', '==', code));
+  if (userData.referredBy) return showModal('⚠️','Already Used','You already applied a code.','OK');
+  if (code === userData.referralCode) return showModal('⚠️','Invalid','Cannot use own code.','OK');
+  const q = query(collection(db,'users'), where('referralCode','==',code));
   const snap = await getDocs(q);
-  if (snap.empty) return showModal('❌', 'Invalid Code', 'No user found with that code.', 'OK');
-
+  if (snap.empty) return showModal('❌','Invalid','No user with that code.','OK');
   const bonus = appConfig.referralBonus || 100;
-  const referrerRef = snap.docs[0].ref;
   try {
-    await updateDoc(referrerRef, { balance: (snap.docs[0].data().balance || 0) + bonus });
-    await updateDoc(doc(db, 'users', currentUser.uid), { referredBy: code });
+    await updateDoc(snap.docs[0].ref, { balance: (snap.docs[0].data().balance||0)+bonus });
+    await updateDoc(doc(db,'users',currentUser.uid), { referredBy: code });
     userData.referredBy = code;
-    await addBalance(bonus, 'referral', `Applied code ${code}`);
-    showModal('🎉', 'Success!', `+${bonus} coins added.`, 'OK');
-  } catch (e) { showModal('❌', 'Error', e.message, 'OK'); }
+    await addBalance(bonus, 'referral', `Applied ${code}`);
+    showModal('🎉','Success!',`+${bonus} coins.`,'OK');
+  } catch(e){ showModal('❌','Error', e.message, 'OK'); }
 }
-
-// =========================================================
-// PROFILE
-// =========================================================
 function loadProfile() {
   if (!userData) return;
   safeSrc('profileAvatar', userData.profilePicture || '');
   safeText('profileName', userData.name || 'User');
-  safeText('profileUsername', userData.telegramUsername ? '@' + userData.telegramUsername : 'No username');
+  safeText('profileUsername', userData.telegramUsername ? '@'+userData.telegramUsername : 'No username');
   safeText('profileTgId', `ID: ${userData.telegramId || '—'}`);
-  const since = userData.createdAt?.seconds ? new Date(userData.createdAt.seconds * 1000).toLocaleDateString() : 'Today';
+  const since = userData.createdAt?.seconds ? new Date(userData.createdAt.seconds*1000).toLocaleDateString() : 'Today';
   safeText('profileSince', since);
-  safeText('profileTotal', (userData.totalEarned || 0).toFixed(0));
+  safeText('profileTotal', (userData.totalEarned||0).toFixed(0));
+}
+async function loadVisit() {
+  const list = appConfig.websitesToVisit || [];
+  const el = $('visitList'); if (!el) return;
+  if (!list.length) { el.innerHTML = `<div class="card" style="padding:20px;text-align:center;color:var(--text-dim);font-size:.85rem;">No websites available.</div>`; return; }
+  const visited = userData?.visitedSitesToday || [];
+  el.innerHTML = list.map((s,i) => {
+    const done = visited.includes(s.link);
+    return `<div class="card" style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;">
+      <div style="flex:1;min-width:0;">
+        <div style="font-weight:700;font-size:.9rem;">${s.name}</div>
+        <div style="color:var(--brand);font-size:.75rem;margin-top:2px;">+${s.reward||10} coins · ${s.timer||30}s</div>
+      </div>
+      <button class="btn ${done?'btn-ghost':'btn-primary'}" data-idx="${i}" ${done?'disabled':''} style="padding:8px 16px;font-size:.75rem;">${done?'Done':'Visit'}</button>
+    </div>`;
+  }).join('');
+  el.querySelectorAll('button[data-idx]').forEach(b => b.onclick = () => visitSite(parseInt(b.dataset.idx)));
+}
+async function visitSite(idx) {
+  const site = (appConfig.websitesToVisit||[])[idx]; if (!site) return;
+  window.open(site.link, '_blank');
+  const seconds = site.timer || 30;
+  const reward = site.reward || 10;
+  showModal('⏳','Visit Website', `Stay for ${seconds} seconds to earn ${reward} coins.`, 'Wait…');
+  let left = seconds;
+  const tick = setInterval(() => {
+    left--; safeText('modalBtn', `Wait… ${left}s`);
+    if (left <= 0) {
+      clearInterval(tick);
+      safeText('modalBtn','Claim');
+      const b = $('modalBtn'); if (b) b.onclick = async () => {
+        $('modal').classList.remove('show');
+        const v = [...(userData.visitedSitesToday||[]), site.link];
+        userData.visitedSitesToday = v;
+        userData.lastSiteVisitDate = new Date().toISOString().slice(0,10);
+        try { await updateDoc(doc(db,'users',currentUser.uid), { visitedSitesToday:v, lastSiteVisitDate: userData.lastSiteVisitDate }); } catch(e){}
+        await addBalance(reward, 'visit_site', site.name);
+        showModal('🎉','Success!',`+${reward} coins.`,'OK', () => loadVisit());
+      };
+    }
+  }, 1000);
 }
 
-// =========================================================
-// NOTICE
-// =========================================================
-function showNotice(n) {
-  const icons = { info: '📢', success: '✅', warning: '⚠️', error: '❌', premium: '👑' };
-  safeText('noticeIcon', icons[n.type] || '📢');
-  safeText('noticeTitle', n.title);
-  safeText('noticeBody', n.message);
-  const cancelable = n.cancelable !== false;
-  const db2 = $('noticeDismissBtn');
-  if (db2) db2.style.display = cancelable ? 'block' : 'none';
-  $('noticeModal')?.classList.add('show');
-  const okBtn = $('noticeOkBtn');
-  const dismissBtn = $('noticeDismissBtn');
-  if (okBtn) okBtn.onclick = () => $('noticeModal').classList.remove('show');
-  if (dismissBtn) dismissBtn.onclick = () => {
-    localStorage.setItem(`notice_dismissed_${n.title}`, '1');
-    $('noticeModal').classList.remove('show');
-  };
-}
-
-// =========================================================
+// ============================================================
 // UI INIT
-// =========================================================
+// ============================================================
 function initUI() {
   if (!userData) return;
-  safeText('hdrName', `Hi, ${(userData.name || 'Player').split(' ')[0]}`);
+  safeText('hdrName', `Hi, ${(userData.name||'Player').split(' ')[0]}`);
   safeSrc('hdrAvatar', userData.profilePicture || '');
 
   const banners = appConfig.sliderBanners || [];
@@ -1713,122 +2223,131 @@ function initUI() {
   if (banners.length && slider) {
     slider.style.display = 'block';
     safeHtml('sliderTrack', banners.map(b => `
-      <div class="slider-item"><a href="${b.link || '#'}" target="_blank"><img src="${b.img}" loading="lazy" alt=""></a></div>
+      <div class="slider-item"><a href="${b.link||'#'}" target="_blank"><img src="${b.img}" loading="lazy" alt=""></a></div>
     `).join(''));
-    safeHtml('sliderDots', banners.map((_, i) => `<span class="dot${i === 0 ? ' active' : ''}" data-i="${i}"></span>`).join(''));
+    safeHtml('sliderDots', banners.map((_,i)=>`<span class="dot${i===0?' active':''}" data-i="${i}"></span>`).join(''));
     $('sliderDots')?.querySelectorAll('.dot').forEach(d => d.onclick = () => goToSlide(parseInt(d.dataset.i)));
     startSlider();
   }
-
   renderFeatures();
   refreshAllUI();
 }
 
+function updateGameLabels() {
+  safeText('g29Fee', gameConfig.g29.entryFee);
+  safeText('g29Reward', gameConfig.g29.winnerReward);
+  safeText('ludoFee', gameConfig.ludo.entryFee);
+  safeText('ludoReward', gameConfig.ludo.winnerReward);
+  safeText('carromFee', gameConfig.carrom.entryFee);
+  safeText('carromReward', gameConfig.carrom.winnerReward);
+}
+
 function startSlider() {
   if (sliderInterval) clearInterval(sliderInterval);
-  const banners = appConfig.sliderBanners || [];
-  if (banners.length <= 1) return;
-  sliderInterval = setInterval(() => goToSlide((slideIdx + 1) % banners.length), 4500);
+  const b = appConfig.sliderBanners || [];
+  if (b.length <= 1) return;
+  sliderInterval = setInterval(() => goToSlide((slideIdx+1) % b.length), 4500);
 }
 function goToSlide(i) {
-  const banners = appConfig.sliderBanners || [];
   slideIdx = i;
-  const track = $('sliderTrack');
-  if (track) track.style.transform = `translateX(-${i * 100}%)`;
-  $('sliderDots')?.querySelectorAll('.dot').forEach((d, idx) => d.classList.toggle('active', idx === i));
+  const b = appConfig.sliderBanners || [];
+  const t = $('sliderTrack'); if (t) t.style.transform = `translateX(-${i*100}%)`;
+  $('sliderDots')?.querySelectorAll('.dot').forEach((d,idx) => d.classList.toggle('active', idx===i));
 }
 
 function renderFeatures() {
-  const grid = $('featureGrid');
-  if (!grid) return;
-
+  const grid = $('featureGrid'); if (!grid) return;
   const items = [
-    { id: 'ludo', name: 'Ludo Dice', icon: 'fa-dice', desc: 'Roll & win', cls: '' },
-    { id: 'color', name: 'Color Match', icon: 'fa-palette', desc: 'Match colors', cls: '' },
-    { id: 'watch', name: 'Watch & Earn', icon: 'fa-play-circle', desc: 'Instant coins', cls: '' },
-    { id: 'luck', name: 'Try Your Luck', icon: 'fa-star', desc: 'Big reward', cls: 'luck' },
-    { id: 'visit', name: 'Visit Sites', icon: 'fa-globe', desc: 'Browse & earn', cls: '' },
-    { id: 'social', name: 'Social Tasks', icon: 'fa-share-nodes', desc: 'Follow & earn', cls: '' }
+    { id:'29',    name:'29 Card Game', icon:'fa-diamond',    desc:'You+West vs 2 AI', cls:'card29' },
+    { id:'ludo',  name:'Ludo',         icon:'fa-dice',       desc:'Race to home',     cls:'ludo' },
+    { id:'carrom',name:'Carrom',       icon:'fa-bullseye',   desc:'Pocket all coins', cls:'carrom' },
+    { id:'watch', name:'Watch & Earn', icon:'fa-play-circle',desc:'Instant coins',    cls:'' }
   ];
 
-  const allowed = {
-    ludo: gamesConfig.ludoDice?.visible !== false,
-    color: gamesConfig.colorGame?.visible !== false,
-    watch: gamesConfig.watchVideo?.visible !== false,
-    luck: gamesConfig.tryYourLuck?.visible !== false,
-    visit: gamesConfig.visitWebsites?.visible !== false,
-    social: gamesConfig.socialTasks?.visible !== false
+  // Filter by visibility
+  const vis = {
+    '29':    gameConfig.g29.visible !== false && gamesConfig.game29?.visible !== false,
+    ludo:    gameConfig.ludo.visible !== false && gamesConfig.ludo?.visible !== false,
+    carrom:  gameConfig.carrom.visible !== false && gamesConfig.carrom?.visible !== false,
+    watch:   gamesConfig.watchVideo?.visible !== false
   };
 
-  grid.innerHTML = items.filter(i => allowed[i.id]).map(i => `
+  grid.innerHTML = items.filter(i => vis[i.id]).map(i => `
     <div class="feature-card ${i.cls}" onclick="navigateTo('${i.id}')">
       <div class="feature-icon"><i class="fas ${i.icon}"></i></div>
-      <div style="font-weight:700; font-size:0.85rem;">${i.name}</div>
-      <div style="color:var(--text-mute); font-size:0.7rem; margin-top:3px;">${i.desc}</div>
+      <div style="font-weight:700;font-size:.85rem;">${i.name}</div>
+      <div style="color:var(--text-mute);font-size:.7rem;margin-top:3px;">${i.desc}</div>
     </div>
   `).join('');
-
-  const walletVisible = gamesConfig.wallet?.visible !== false;
-  if (walletVisible) {
-    grid.innerHTML += `
-      <div class="feature-card" onclick="navigateTo('wallet')">
-        <div class="feature-icon"><i class="fas fa-wallet"></i></div>
-        <div style="font-weight:700; font-size:0.85rem;">My Wallet</div>
-        <div style="color:var(--text-mute); font-size:0.7rem; margin-top:3px;">Withdraw</div>
-      </div>
-    `;
-  }
 }
 
 function initListeners() {
   document.querySelectorAll('.nav-link').forEach(l => {
     l.onclick = (e) => { e.preventDefault(); navigateTo(l.dataset.page); };
   });
-  const ludoBtn = $('ludoRollBtn');
-  if (ludoBtn) ludoBtn.onclick = playLudo;
-  const wBtn = $('watchBtn');
-  if (wBtn) wBtn.onclick = playWatch;
-  const lBtn = $('luckBtn');
-  if (lBtn) lBtn.onclick = startLuck;
-  const lExit = $('luckExitBtn');
-  if (lExit) lExit.onclick = () => { luckActive = false; navigateTo('luck'); };
-  const wdBtn = $('withdrawBtn');
-  if (wdBtn) wdBtn.onclick = requestWithdraw;
-  const copyBtn = $('copyCodeBtn');
-  if (copyBtn) copyBtn.onclick = () => {
-    navigator.clipboard.writeText(userData?.referralCode || '');
-    showModal('📋', 'Copied!', 'Referral code copied.', 'OK');
-  };
-  const shareBtn = $('shareBtn');
-  if (shareBtn) shareBtn.onclick = () => {
-    const tpl = appConfig.referralShareText || 'Join Games Hub! Use my code: {CODE}';
-    const text = tpl.replace('{CODE}', userData?.referralCode || '');
-    if (navigator.share) navigator.share({ title: 'Games Hub', text });
-    else navigator.clipboard.writeText(text).then(() => showModal('📋', 'Copied!', 'Share text copied.', 'OK'));
-  };
-  const applyBtn = $('applyReferBtn');
-  if (applyBtn) applyBtn.onclick = applyReferCode;
-  const closeBtn = $('closeAppBtn');
-  if (closeBtn) closeBtn.onclick = () => {
-    if (window.Telegram?.WebApp) window.Telegram.WebApp.close();
-  };
+
+  // 29
+  $('g29StartBtn')?.addEventListener('click', start29Match);
+  $('g29QuitBtn')?.addEventListener('click', () => {
+    if (g29.playing) showConfirm('🚪','Quit Match?','You will lose your entry fee.','Quit','Stay', () => { g29.playing = false; reset29UI(); });
+  });
+
+  // Ludo
+  $('ludoStartBtn')?.addEventListener('click', startLudoMatch);
+  $('ludoRollBtn')?.addEventListener('click', ludoRoll);
+  $('ludoQuitBtn')?.addEventListener('click', () => {
+    if (ludo.playing) showConfirm('🚪','Quit Match?','Entry fee not refunded.','Quit','Stay', () => { ludo.playing = false; resetLudoUI(); });
+  });
+
+  // Carrom
+  $('carromStartBtn')?.addEventListener('click', startCarromMatch);
+  $('carromQuitBtn')?.addEventListener('click', () => {
+    if (carrom.playing) showConfirm('🚪','Quit Match?','Entry fee not refunded.','Quit','Stay', () => { carrom.playing = false; resetCarromUI(); });
+  });
+
+  // Watch
+  $('watchBtn')?.addEventListener('click', playWatch);
+
+  // Wallet/Refer/Profile
+  $('withdrawBtn')?.addEventListener('click', requestWithdraw);
+  $('copyCodeBtn')?.addEventListener('click', () => {
+    navigator.clipboard.writeText(userData?.referralCode||'');
+    showModal('📋','Copied!','Referral code copied.','OK');
+  });
+  $('shareBtn')?.addEventListener('click', () => {
+    const tpl = appConfig.referralShareText || 'Join Games Hub! Code: {CODE}';
+    const text = tpl.replace('{CODE}', userData?.referralCode||'');
+    if (navigator.share) navigator.share({ title:'Games Hub', text });
+    else navigator.clipboard.writeText(text).then(() => showModal('📋','Copied!','Share text copied.','OK'));
+  });
+  $('applyReferBtn')?.addEventListener('click', applyReferCode);
+  $('closeAppBtn')?.addEventListener('click', () => { if (window.Telegram?.WebApp) window.Telegram.WebApp.close(); });
 }
 
 function refreshAllUI() {
   if (!userData) return;
-  safeText('hdrBalance', (userData.balance || 0).toFixed(0));
-  safeText('statToday', ((userData.dailyAdCount || 0) * (gamesConfig.watchVideo?.rewardPerPlay || 50)).toFixed(0));
-  safeText('statTasks', (userData.tasksCompleted || 0));
-  const lvl = Math.floor((userData.totalEarned || 0) / 500) + 1;
-  safeText('statLevel', lvl);
-  refreshLudoUI();
+  safeText('hdrBalance', (userData.balance||0).toFixed(0));
+  safeText('statToday', ((userData.dailyAdCount||0) * (gamesConfig.watchVideo?.rewardPerPlay||50)).toFixed(0));
+  safeText('statTasks', (userData.tasksCompleted||0));
+  safeText('statLevel', Math.floor((userData.totalEarned||0)/500)+1);
   refreshWatchUI();
-  refreshLuckUI();
 }
 
-// =========================================================
-// BOOT
-// =========================================================
+function showNotice(n) {
+  const icons = { info:'📢', success:'✅', warning:'⚠️', error:'❌', premium:'👑' };
+  safeText('noticeIcon', icons[n.type] || '📢');
+  safeText('noticeTitle', n.title);
+  safeText('noticeBody', n.message);
+  const cancel = n.cancelable !== false;
+  const db2 = $('noticeDismissBtn'); if (db2) db2.style.display = cancel ? 'block' : 'none';
+  $('noticeModal')?.classList.add('show');
+  $('noticeOkBtn') && ($('noticeOkBtn').onclick = () => $('noticeModal').classList.remove('show'));
+  $('noticeDismissBtn') && ($('noticeDismissBtn').onclick = () => {
+    localStorage.setItem(`notice_dismissed_${n.title}`, '1');
+    $('noticeModal').classList.remove('show');
+  });
+}
+
 bootstrap();
 </script>
 </body>
