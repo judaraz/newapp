@@ -10,17 +10,17 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <!-- AdsGram SDK -->
-<script src="https://sad.adsgram.ai/js/sad.min.js" defer></script>
+<script src="https://sad.adsgram.ai/js/sad.min.js"></script>
 
 <!-- Gigapub SDK -->
-<script src="https://ad.gigapub.tech/script?id=1794" defer></script>
+<script src="https://ad.gigapub.tech/script?id=1794"></script>
 
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<script src="https://unpkg.com/lucide@latest" defer></script>
+<script src="https://unpkg.com/lucide@latest"></script>
 
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
@@ -33,11 +33,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* === BRAND PALETTE — Games Hub === */
 :root {
-  --brand: #00e5a0;        /* mint green */
-  --brand-2: #00b8d4;      /* cyan */
-  --brand-3: #7c3aed;      /* violet */
+  --brand: #00e5a0;
+  --brand-2: #00b8d4;
+  --brand-3: #7c3aed;
   --bg-card: rgba(20, 27, 51, 0.85);
   --bg-elev: rgba(30, 40, 70, 0.7);
   --border: rgba(0, 229, 160, 0.15);
@@ -93,6 +92,7 @@ body {
   border: none;
   position: relative;
   overflow: hidden;
+  font-family: inherit;
 }
 .btn:active { transform: scale(0.97); }
 .btn-primary {
@@ -100,7 +100,6 @@ body {
   color: #0a0e1a;
   box-shadow: 0 6px 20px rgba(0, 229, 160, 0.35);
 }
-.btn-primary:hover { box-shadow: 0 8px 25px rgba(0, 229, 160, 0.5); }
 .btn-primary[disabled] {
   background: #334155;
   color: #64748b;
@@ -111,6 +110,11 @@ body {
   background: rgba(255,255,255,0.05);
   color: #eef2f8;
   border: 1px solid rgba(255,255,255,0.1);
+}
+.btn-success {
+  background: linear-gradient(135deg, var(--success), #16a34a);
+  color: white;
+  box-shadow: 0 6px 20px rgba(34,197,94,0.35);
 }
 
 .main-page { display: none; min-height: 100vh; }
@@ -133,7 +137,6 @@ body {
 .float { animation: float 3s ease-in-out infinite; }
 .pulse-soft { animation: pulse 2.5s ease-in-out infinite; }
 
-/* Bottom nav */
 .bottom-nav {
   background: rgba(10, 14, 26, 0.92);
   backdrop-filter: blur(16px);
@@ -161,7 +164,6 @@ body {
   background: linear-gradient(135deg, var(--brand), var(--brand-2));
 }
 
-/* Feature cards */
 .feature-card {
   background: linear-gradient(160deg, rgba(0,229,160,0.08), rgba(124,58,237,0.05));
   border: 1px solid var(--border);
@@ -195,7 +197,6 @@ body {
   box-shadow: 0 6px 16px rgba(245,158,11,0.3);
 }
 
-/* Loader */
 .spinner {
   width: 24px; height: 24px;
   border: 3px solid rgba(0,229,160,0.15);
@@ -205,7 +206,6 @@ body {
 }
 .spinner-lg { width: 60px; height: 60px; border-width: 4px; }
 
-/* Status pills */
 .pill {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 4px 10px; border-radius: 20px;
@@ -216,7 +216,6 @@ body {
 .pill-danger  { background: rgba(239,68,68,0.15); color: #f87171; }
 .pill-info    { background: rgba(59,130,246,0.15); color: #60a5fa; }
 
-/* Ad loading overlay */
 .ad-overlay {
   position: fixed; inset: 0;
   background: rgba(10,14,26,0.97);
@@ -238,7 +237,6 @@ body {
   animation: slideUp 0.3s ease;
 }
 
-/* Modal */
 .modal {
   position: fixed; inset: 0;
   background: rgba(10,14,26,0.92);
@@ -261,7 +259,6 @@ body {
   position: relative;
 }
 
-/* Slider */
 .slider {
   overflow: hidden; position: relative;
   border-radius: 18px;
@@ -298,7 +295,6 @@ body {
   border-radius: 3px;
 }
 
-/* Ludo board */
 .ludo-board {
   width: 240px; height: 240px;
   margin: 0 auto;
@@ -348,7 +344,6 @@ body {
   transition: transform 0.2s ease;
 }
 
-/* Coin balance */
 .coin-pill {
   background: linear-gradient(135deg, rgba(0,229,160,0.15), rgba(0,184,212,0.1));
   border: 1px solid rgba(0,229,160,0.3);
@@ -356,7 +351,6 @@ body {
   padding: 6px 14px;
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
@@ -364,7 +358,6 @@ body {
   border-radius: 3px;
 }
 
-/* Utility */
 .hidden { display: none !important; }
 </style>
 </head>
@@ -376,10 +369,8 @@ body {
     <div style="display:flex; justify-content:center; margin-bottom:20px;">
       <div class="spinner spinner-lg"></div>
     </div>
-    <h3 id="adOverlayTitle" class="brand-gradient" style="font-size:1.4rem; font-weight:800; margin-bottom:8px;">Loading Ad</h3>
+    <h3 id="adOverlayTitle" class="brand-gradient" style="font-size:1.4rem; font-weight:800; margin-bottom:8px;">Loading</h3>
     <p id="adOverlayMsg" style="color:var(--text-dim); font-size:0.85rem; line-height:1.5;">Please wait…</p>
-    <p id="adOverlayProvider" style="color:var(--brand); font-size:0.7rem; font-weight:700; margin-top:14px; letter-spacing:0.5px;">PROVIDER</p>
-    <button id="adCancelBtn" class="btn btn-ghost" style="margin-top:18px; padding:8px 20px; font-size:0.75rem; display:none;">Cancel</button>
   </div>
 </div>
 
@@ -393,6 +384,19 @@ body {
   </div>
 </div>
 
+<!-- ============ CONFIRM MODAL (yes/no) ============ -->
+<div id="confirmModal" class="modal">
+  <div class="modal-card">
+    <div id="confirmIcon" style="font-size:3rem; margin-bottom:14px;">✨</div>
+    <h3 id="confirmTitle" class="brand-gradient" style="font-size:1.3rem; font-weight:800; margin-bottom:10px;">Title</h3>
+    <p id="confirmBody" style="color:var(--text-dim); font-size:0.85rem; line-height:1.5; margin-bottom:22px;">Message</p>
+    <div style="display:flex; gap:10px;">
+      <button id="confirmNoBtn" class="btn btn-ghost" style="flex:1; padding:14px; font-size:0.9rem;">No, Thanks</button>
+      <button id="confirmYesBtn" class="btn btn-primary" style="flex:1; padding:14px; font-size:0.9rem;">Yes, Double!</button>
+    </div>
+  </div>
+</div>
+
 <!-- ============ COUNTRY BLOCK ============ -->
 <div id="countryBlock" class="modal">
   <div class="modal-card">
@@ -400,6 +404,20 @@ body {
     <h3 class="brand-gradient" style="font-size:1.5rem; font-weight:800; margin-bottom:10px;">Access Restricted</h3>
     <p id="countryBlockMsg" style="color:var(--text-dim); font-size:0.9rem; line-height:1.5; margin-bottom:20px;">Not available in your country.</p>
     <button onclick="location.reload()" class="btn btn-ghost" style="padding:12px 32px; width:100%;">Retry</button>
+  </div>
+</div>
+
+<!-- ============ APP NOTICE ============ -->
+<div id="noticeModal" class="modal">
+  <div class="modal-card">
+    <div id="noticeIcon" style="font-size:3rem; margin-bottom:14px;">📢</div>
+    <h3 id="noticeTitle" class="brand-gradient" style="font-size:1.35rem; font-weight:800; margin-bottom:10px;">Notice</h3>
+    <p id="noticeBody" style="color:var(--text-dim); font-size:0.9rem; line-height:1.6; margin-bottom:20px;">Message</p>
+    <div style="display:flex; gap:10px;">
+      <button id="noticeDismissBtn" class="btn btn-ghost" style="flex:1; padding:12px; font-size:0.85rem;">Don't Show</button>
+      <button id="noticeOkBtn" class="btn btn-primary" style="flex:1; padding:12px; font-size:0.85rem;">OK</button>
+    </div>
+    <div id="noticeTimer" style="color:var(--brand); font-size:0.75rem; margin-top:14px; font-weight:700;"></div>
   </div>
 </div>
 
@@ -412,16 +430,27 @@ body {
   </div>
 </div>
 
-<!-- ============ MAIN APP ============ -->
-<div id="app" class="main-page active">
+<!-- ============ ACCESS DENIED (non-Telegram) ============ -->
+<div id="accessDenied" class="modal">
+  <div class="modal-card">
+    <div style="font-size:3.5rem; margin-bottom:14px;">🔒</div>
+    <h3 class="brand-gradient" style="font-size:1.5rem; font-weight:800; margin-bottom:10px;">Telegram Required</h3>
+    <p style="color:var(--text-dim); font-size:0.9rem; line-height:1.5; margin-bottom:20px;">
+      Please open Games Hub inside Telegram to use the app.
+    </p>
+    <a href="https://t.me" class="btn btn-primary" style="padding:12px 32px; width:100%; text-decoration:none; display:inline-block; text-align:center;">Open Telegram</a>
+  </div>
+</div>
 
-  <!-- HEADER -->
-  <header style="padding:16px 18px; display:flex; align-items:center; justify-content:space-between; background:rgba(10,14,26,0.85); backdrop-filter:blur(14px); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:50;">
+<!-- ============ MAIN APP ============ -->
+<div id="app" class="main-page">
+
+  <header style="padding:14px 18px; display:flex; align-items:center; justify-content:space-between; background:rgba(10,14,26,0.85); backdrop-filter:blur(14px); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:50;">
     <div style="display:flex; align-items:center; gap:12px;">
-      <img id="hdrAvatar" src="" style="width:44px; height:44px; border-radius:50%; object-fit:cover; border:2px solid var(--brand);">
+      <img id="hdrAvatar" src="" style="width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid var(--brand);">
       <div>
-        <div id="hdrName" class="brand-gradient" style="font-weight:800; font-size:1rem; line-height:1.1;">Hi there</div>
-        <div style="color:var(--text-mute); font-size:0.65rem; margin-top:2px;">Welcome to Games Hub</div>
+        <div id="hdrName" class="brand-gradient" style="font-weight:800; font-size:0.95rem; line-height:1.1;">Hi</div>
+        <div style="color:var(--text-mute); font-size:0.62rem; margin-top:2px;">Games Hub</div>
       </div>
     </div>
     <div class="coin-pill" style="display:flex; align-items:center; gap:6px;">
@@ -432,7 +461,6 @@ body {
 
   <main style="flex:1; padding-bottom:80px;">
 
-    <!-- BACK BUTTON -->
     <div id="backBar" class="hidden" style="padding:14px 18px;">
       <button onclick="navigateTo('home')" class="btn btn-ghost" style="padding:8px 16px; font-size:0.8rem;">
         <i class="fas fa-arrow-left" style="margin-right:6px;"></i> Back
@@ -441,8 +469,6 @@ body {
 
     <!-- ============ HOME ============ -->
     <div id="page-home" class="sub-page active" style="padding:16px 18px;">
-
-      <!-- Welcome -->
       <div class="card" style="padding:18px; margin-bottom:18px; position:relative; overflow:hidden;">
         <div style="position:absolute; top:-30px; right:-30px; width:100px; height:100px; background:radial-gradient(circle, rgba(0,229,160,0.2), transparent 70%); border-radius:50%;"></div>
         <h1 class="brand-gradient" style="font-size:1.5rem; font-weight:800; margin-bottom:6px;">Games Hub</h1>
@@ -453,17 +479,14 @@ body {
         </div>
       </div>
 
-      <!-- Slider -->
       <div id="slider" class="slider" style="margin-bottom:20px; display:none;">
         <div class="slider-track" id="sliderTrack"></div>
         <div class="slider-dots" id="sliderDots"></div>
       </div>
 
-      <!-- Features -->
       <h2 style="font-size:0.95rem; font-weight:700; margin-bottom:12px; color:var(--text-dim); letter-spacing:0.5px;">EARN REWARDS</h2>
       <div id="featureGrid" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:22px;"></div>
 
-      <!-- Stats -->
       <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
         <div class="card-elev" style="padding:12px; text-align:center;">
           <i class="fas fa-fire" style="color:var(--warn); font-size:1rem; margin-bottom:6px;"></i>
@@ -491,7 +514,6 @@ body {
       <div class="card" style="padding:22px 18px; text-align:center; margin-bottom:16px;">
         <div style="color:var(--text-mute); font-size:0.7rem; margin-bottom:4px;">ENTRY FEE</div>
         <div id="ludoCost" class="brand-gradient" style="font-size:1.8rem; font-weight:800;">10</div>
-        <div style="color:var(--text-mute); font-size:0.65rem; margin-top:4px;">Points will be refunded if ad fails</div>
 
         <div class="ludo-board" style="margin-top:22px;">
           <div class="quad q1"></div>
@@ -509,16 +531,6 @@ body {
         <div id="ludoTimer" style="color:var(--brand); font-size:0.8rem; margin-top:10px; font-weight:700;"></div>
         <div id="ludoMultiplier" style="color:var(--text-mute); font-size:0.7rem; margin-top:8px;">Dice × multiplier</div>
         <div id="ludoPlayCount" style="color:var(--text-mute); font-size:0.65rem; margin-top:4px;"></div>
-      </div>
-
-      <div class="card-elev" style="padding:16px;">
-        <h3 style="color:var(--brand); font-weight:700; font-size:0.85rem; margin-bottom:10px;"><i class="fas fa-info-circle"></i> How it works</h3>
-        <ul style="color:var(--text-dim); font-size:0.75rem; line-height:1.8; list-style:none;">
-          <li>1. Tap <b style="color:var(--brand);">ROLL DICE</b> (fee deducted)</li>
-          <li>2. Watch an ad to unlock your win</li>
-          <li>3. Points added instantly after ad</li>
-          <li>4. Ad failure = automatic refund</li>
-        </ul>
       </div>
     </div>
 
@@ -538,7 +550,7 @@ body {
       <div id="colorGrid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;"></div>
     </div>
 
-    <!-- ============ WATCH & EARN ============ -->
+    <!-- ============ WATCH ============ -->
     <div id="page-watch" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.6rem; font-weight:800; text-align:center; margin-bottom:6px;">📺 Watch & Earn</h2>
       <p style="text-align:center; color:var(--text-dim); font-size:0.8rem; margin-bottom:20px;">Watch a short ad, get instant coins</p>
@@ -557,18 +569,12 @@ body {
         </button>
         <div id="watchTimer" style="color:var(--brand); font-size:0.8rem; margin-top:10px; font-weight:700;"></div>
       </div>
-
-      <div class="card-elev" style="padding:16px;">
-        <p style="color:var(--text-dim); font-size:0.75rem; line-height:1.7;">
-          <i class="fas fa-info-circle" style="color:var(--brand);"></i> Coins are added to your balance <b>immediately</b> after the ad finishes.
-        </p>
-      </div>
     </div>
 
-    <!-- ============ TRY LUCK ============ -->
+    <!-- ============ LUCK ============ -->
     <div id="page-luck" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.6rem; font-weight:800; text-align:center; margin-bottom:6px;">🍀 Try Your Luck</h2>
-      <p style="text-align:center; color:var(--text-dim); font-size:0.8rem; margin-bottom:20px;">Chain multiple ads for a big reward</p>
+      <p style="text-align:center; color:var(--text-dim); font-size:0.8rem; margin-bottom:20px;">Chain ads for a big reward</p>
 
       <div class="card" style="padding:24px 20px; margin-bottom:16px; text-align:center;">
         <div class="feature-icon" style="width:70px; height:70px; font-size:1.8rem; margin:0 auto 14px; background:linear-gradient(135deg,#f59e0b,#ef4444);">
@@ -582,34 +588,23 @@ body {
           <i class="fas fa-play" style="margin-right:8px;"></i> START
         </button>
       </div>
-
-      <div class="card-elev" style="padding:16px;">
-        <h3 style="color:var(--brand); font-weight:700; font-size:0.85rem; margin-bottom:8px;">How it works</h3>
-        <ul style="color:var(--text-dim); font-size:0.75rem; line-height:1.8; list-style:none;">
-          <li>• Ads play one after another</li>
-          <li>• Each successful ad counts</li>
-          <li>• Claim full reward at end</li>
-        </ul>
-      </div>
     </div>
 
-    <!-- ============ LUCK RUNNER (modal-like page) ============ -->
+    <!-- ============ LUCK RUN ============ -->
     <div id="page-luck-run" class="sub-page" style="padding:16px 18px;">
       <div class="card" style="padding:26px 20px; text-align:center;">
         <div class="feature-icon" style="width:70px; height:70px; font-size:1.8rem; margin:0 auto 14px; background:linear-gradient(135deg,#f59e0b,#ef4444);">
           <i class="fas fa-star"></i>
         </div>
-        <h3 class="brand-gradient" style="font-size:1.4rem; font-weight:800; margin-bottom:4px;">Running Ads…</h3>
+        <h3 class="brand-gradient" style="font-size:1.3rem; font-weight:800; margin-bottom:4px;">Loading…</h3>
         <p id="luckStatus" style="color:var(--text-dim); font-size:0.8rem; margin-bottom:16px;">Please wait</p>
 
         <div style="background:rgba(255,255,255,0.06); border-radius:10px; height:8px; overflow:hidden; margin-bottom:8px;">
           <div id="luckProgressBar" style="height:100%; width:0%; background:linear-gradient(90deg,var(--brand),var(--brand-2)); transition:width 0.4s;"></div>
         </div>
-        <div id="luckProgressText" style="color:var(--text-mute); font-size:0.7rem; margin-bottom:16px;">0/0 ads</div>
+        <div id="luckProgressText" style="color:var(--text-mute); font-size:0.7rem; margin-bottom:16px;">0/0</div>
 
-        <div id="luckProviderList" style="display:flex; flex-direction:column; gap:6px; margin-bottom:18px;"></div>
-
-        <button id="luckClaimBtn" class="btn btn-primary hidden" style="width:100%; padding:14px; font-size:0.95rem;">
+        <button id="luckClaimBtn" class="btn btn-success hidden" style="width:100%; padding:14px; font-size:0.95rem;">
           <i class="fas fa-gift" style="margin-right:6px;"></i> CLAIM
         </button>
         <button id="luckExitBtn" class="btn btn-ghost" style="width:100%; padding:10px; font-size:0.8rem; margin-top:10px;">Exit</button>
@@ -643,7 +638,7 @@ body {
         </div>
         <div id="walletValueInfo" style="color:var(--text-mute); font-size:0.7rem;"></div>
 
-        <hr style="border-color:rgba(255,255,255,0.06); margin:18px 0;">
+        <hr style="border:none; border-top:1px solid rgba(255,255,255,0.06); margin:18px 0;">
 
         <input id="withdrawAmount" type="number" placeholder="Amount (coins)" class="input-field" style="width:100%; padding:14px; border-radius:12px; font-size:0.95rem; margin-bottom:10px;">
         <select id="withdrawMethod" class="input-field" style="width:100%; padding:14px; border-radius:12px; font-size:0.95rem; margin-bottom:10px;"></select>
@@ -692,7 +687,8 @@ body {
       <div class="card" style="padding:26px; text-align:center;">
         <img id="profileAvatar" src="" style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid var(--brand); margin-bottom:14px;">
         <h3 id="profileName" class="brand-gradient" style="font-size:1.25rem; font-weight:800;">User</h3>
-        <p id="profileEmail" style="color:var(--text-mute); font-size:0.75rem; margin-top:4px;">—</p>
+        <p id="profileUsername" style="color:var(--text-mute); font-size:0.78rem; margin-top:4px;">@—</p>
+        <p id="profileTgId" style="color:var(--text-mute); font-size:0.68rem; margin-top:2px;">ID: —</p>
 
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:20px;">
           <div class="card-elev" style="padding:12px;">
@@ -713,7 +709,6 @@ body {
 
   </main>
 
-  <!-- BOTTOM NAV -->
   <nav class="bottom-nav" style="position:sticky; bottom:0; display:grid; grid-template-columns:repeat(4,1fr); z-index:40;">
     <a href="#" class="nav-link active" data-page="home">
       <i class="fas fa-home" style="font-size:1.15rem;"></i>
@@ -723,7 +718,7 @@ body {
       <i class="fas fa-user-friends" style="font-size:1.15rem;"></i>
       <span style="font-size:0.6rem; margin-top:3px;">Refer</span>
     </a>
-    <a href="#" class="nav-link" data-page="wallet">
+    <a href="#" class="nav-link" data-page="wallet" id="navWallet">
       <i class="fas fa-wallet" style="font-size:1.15rem;"></i>
       <span style="font-size:0.6rem; margin-top:3px;">Wallet</span>
     </a>
@@ -735,9 +730,9 @@ body {
 </div>
 
 <script type="module">
-// ======================================================
+// =========================================================
 // GAMES HUB — MAIN APP
-// ======================================================
+// =========================================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, serverTimestamp, query, where, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
@@ -749,25 +744,23 @@ const firebaseConfig = {
   messagingSenderId: "29119912449",
   appId: "1:29119912449:web:e0c68c1994ff0a71603e00"
 };
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const fbApp = initializeApp(firebaseConfig);
+const db = getFirestore(fbApp);
 
-// ======================================================
+// =========================================================
 // STATE
-// ======================================================
+// =========================================================
 let currentUser = null;
 let userData = null;
 let appConfig = {};
 let gamesConfig = {};
 let adConfig = {
   gigapub: { enabled: true, order: 1 },
-  adsgramInterstitial: { enabled: true, order: 2 },
-  adsgramReward: { enabled: true, order: 3 }
+  adsgramReward: { enabled: true, order: 2 },
+  adsgramInterstitial: { enabled: true, order: 3 }
 };
-let userCountry = null;
+let userCountry = '';
 let tgUser = null;
-let isTelegram = false;
-let sliderInterval = null;
 
 // Ad controllers
 let adsgramRewardCtrl = null;
@@ -775,39 +768,26 @@ let adsgramInterstitialCtrl = null;
 let adsgramReady = false;
 let gigapubReady = false;
 
-// Ludo state
+// Ludo/Watch cooldowns
 let ludoBusy = false;
 let ludoDisabledUntil = 0;
 let ludoTimerInterval = null;
-
-// Watch state
 let watchBusy = false;
 let watchDisabledUntil = 0;
 let watchTimerInterval = null;
-
-// Luck state
 let luckActive = false;
-let luckResults = [];
 
-// ======================================================
+// Slider
+let sliderInterval = null;
+let slideIdx = 0;
+
+// =========================================================
 // UI HELPERS
-// ======================================================
+// =========================================================
 const $ = (id) => document.getElementById(id);
 
-function showLoader(show) {
-  $('appLoader').style.display = show ? 'flex' : 'none';
-}
-
-function showAdOverlay(title, msg, provider) {
-  $('adOverlayTitle').textContent = title || 'Loading Ad';
-  $('adOverlayMsg').textContent = msg || 'Please wait…';
-  $('adOverlayProvider').textContent = (provider || '').toUpperCase();
-  $('adOverlay').classList.add('show');
-}
-
-function hideAdOverlay() {
-  $('adOverlay').classList.remove('show');
-}
+function showLoader(show) { $('appLoader').style.display = show ? 'flex' : 'none'; }
+function hideAdOverlay() { $('adOverlay').classList.remove('show'); }
 
 function showModal(icon, title, body, btnText = 'OK', onClose = null) {
   $('modalIcon').textContent = icon;
@@ -815,10 +795,18 @@ function showModal(icon, title, body, btnText = 'OK', onClose = null) {
   $('modalBody').textContent = body;
   $('modalBtn').textContent = btnText;
   $('modal').classList.add('show');
-  $('modalBtn').onclick = () => {
-    $('modal').classList.remove('show');
-    if (onClose) onClose();
-  };
+  $('modalBtn').onclick = () => { $('modal').classList.remove('show'); if (onClose) onClose(); };
+}
+
+function showConfirm(icon, title, body, yesText, noText, onYes, onNo) {
+  $('confirmIcon').textContent = icon;
+  $('confirmTitle').textContent = title;
+  $('confirmBody').textContent = body;
+  $('confirmYesBtn').textContent = yesText;
+  $('confirmNoBtn').textContent = noText;
+  $('confirmModal').classList.add('show');
+  $('confirmYesBtn').onclick = () => { $('confirmModal').classList.remove('show'); onYes && onYes(); };
+  $('confirmNoBtn').onclick = () => { $('confirmModal').classList.remove('show'); onNo && onNo(); };
 }
 
 function navigateTo(page) {
@@ -829,7 +817,6 @@ function navigateTo(page) {
   $('backBar').classList.toggle('hidden', page === 'home');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  // Lazy loaders
   if (page === 'wallet') loadWallet();
   if (page === 'refer') loadRefer();
   if (page === 'profile') loadProfile();
@@ -842,27 +829,38 @@ function navigateTo(page) {
 }
 window.navigateTo = navigateTo;
 
-// ======================================================
-// TELEGRAM / USER BOOTSTRAP
-// ======================================================
+// =========================================================
+// BOOTSTRAP
+// =========================================================
 async function bootstrap() {
   try {
-    if (window.Telegram?.WebApp) {
-      isTelegram = true;
-      const tg = window.Telegram.WebApp;
-      tg.ready();
-      tg.expand();
-      tg.setHeaderColor('#0a0e1a');
-      tg.setBackgroundColor('#0a0e1a');
-      tgUser = tg.initDataUnsafe?.user || null;
+    // Must be in Telegram
+    if (!window.Telegram?.WebApp) {
+      showLoader(false);
+      $('accessDenied').classList.add('show');
+      return;
     }
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+    tg.setHeaderColor('#0a0e1a');
+    tg.setBackgroundColor('#0a0e1a');
+    tgUser = tg.initDataUnsafe?.user || null;
+
+    if (!tgUser) {
+      showLoader(false);
+      $('accessDenied').classList.add('show');
+      return;
+    }
+
     userCountry = await detectCountry();
 
-    // Load config in parallel
-    const [mainSnap, gamesSnap, adsSnap] = await Promise.all([
+    // Fetch configs in parallel
+    const [mainSnap, gamesSnap, adsSnap, noticeSnap] = await Promise.all([
       getDoc(doc(db, 'config', 'main')),
       getDoc(doc(db, 'config', 'games')),
-      getDoc(doc(db, 'config', 'ads'))
+      getDoc(doc(db, 'config', 'ads')),
+      getDoc(doc(db, 'config', 'appNotice'))
     ]);
 
     appConfig = mainSnap.exists() ? mainSnap.data() : {};
@@ -871,12 +869,12 @@ async function bootstrap() {
       const a = adsSnap.data();
       adConfig = {
         gigapub: { enabled: a.gigapub?.enabled !== false, order: a.gigapub?.order || 1 },
-        adsgramInterstitial: { enabled: a.adsgramInterstitial?.enabled !== false, order: a.adsgramInterstitial?.order || 2 },
-        adsgramReward: { enabled: a.adsgramReward?.enabled !== false, order: a.adsgramReward?.order || 3 }
+        adsgramReward: { enabled: a.adsgramReward?.enabled !== false, order: a.adsgramReward?.order || 2 },
+        adsgramInterstitial: { enabled: a.adsgramInterstitial?.enabled !== false, order: a.adsgramInterstitial?.order || 3 }
       };
     }
 
-    // Check country
+    // Country block
     if (appConfig.allowedCountries?.length && userCountry && !appConfig.allowedCountries.includes(userCountry)) {
       $('countryBlockMsg').textContent = appConfig.blockedCountryMessage || 'Not available in your country.';
       $('countryBlock').classList.add('show');
@@ -884,37 +882,51 @@ async function bootstrap() {
       return;
     }
 
-    // Create/load user
+    // Create or load user (Telegram only)
     await initUser();
 
-    // Init AdsGram after main config
+    // Init AdsGram
     initAdsGram();
 
-    // Init UI
+    // UI
     initUI();
     initListeners();
     refreshAllUI();
 
+    // Notice
+    if (noticeSnap.exists()) {
+      const n = noticeSnap.data();
+      if (n.enabled && n.title && n.message) {
+        const dismissedKey = `notice_dismissed_${n.title}`;
+        if (!localStorage.getItem(dismissedKey)) {
+          setTimeout(() => showNotice(n), 800);
+        }
+      }
+    }
+
     // Live updates
     onSnapshot(doc(db, 'config', 'games'), (s) => {
-      if (s.exists()) { gamesConfig = s.data(); refreshAllUI(); }
+      if (s.exists()) { gamesConfig = s.data(); refreshAllUI(); renderFeatures(); }
     });
     onSnapshot(doc(db, 'config', 'ads'), (s) => {
       if (s.exists()) {
         const a = s.data();
         adConfig = {
           gigapub: { enabled: a.gigapub?.enabled !== false, order: a.gigapub?.order || 1 },
-          adsgramInterstitial: { enabled: a.adsgramInterstitial?.enabled !== false, order: a.adsgramInterstitial?.order || 2 },
-          adsgramReward: { enabled: a.adsgramReward?.enabled !== false, order: a.adsgramReward?.order || 3 }
+          adsgramReward: { enabled: a.adsgramReward?.enabled !== false, order: a.adsgramReward?.order || 2 },
+          adsgramInterstitial: { enabled: a.adsgramInterstitial?.enabled !== false, order: a.adsgramInterstitial?.order || 3 }
         };
       }
+    });
+    onSnapshot(doc(db, 'config', 'main'), (s) => {
+      if (s.exists()) { appConfig = { ...appConfig, ...s.data() }; refreshAllUI(); }
     });
 
     showLoader(false);
   } catch (err) {
     console.error('Bootstrap error:', err);
     showLoader(false);
-    showModal('⚠️', 'Connection Error', 'Could not load app data. Please reopen.', 'Retry', () => location.reload());
+    showModal('⚠️', 'Error', 'Could not load app. Please reopen.', 'Retry', () => location.reload());
   }
 }
 
@@ -922,48 +934,75 @@ async function detectCountry() {
   try {
     const lang = navigator.language || '';
     if (lang.includes('-')) return lang.split('-')[1].toLowerCase();
-    // IP-based fallback
     const r = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(4000) });
     const j = await r.json();
     return (j.country_code || '').toLowerCase();
   } catch { return ''; }
 }
 
+// =========================================================
+// USER — Telegram only
+// =========================================================
 async function initUser() {
-  let uid, name, email, pic;
-  if (tgUser) {
-    uid = `tg_${tgUser.id}`;
-    name = tgUser.first_name || tgUser.username || 'Player';
-    email = `${tgUser.id}@telegram.miniapp`;
-    pic = tgUser.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=00e5a0&color=0a0e1a&bold=true`;
-  } else {
-    uid = 'guest_' + (localStorage.getItem('gh_guest_id') || (() => {
-      const id = Math.random().toString(36).slice(2, 12);
-      localStorage.setItem('gh_guest_id', id);
-      return id;
-    })());
-    name = 'Guest Player';
-    email = `${uid}@guest.local`;
-    pic = `https://ui-avatars.com/api/?name=G&background=00e5a0&color=0a0e1a&bold=true`;
-  }
+  const uid = `tg_${tgUser.id}`;
+  const firstName = tgUser.first_name || '';
+  const lastName = tgUser.last_name || '';
+  const username = tgUser.username || '';
+  const fullName = [firstName, lastName].filter(Boolean).join(' ') || username || 'Player';
+  const pic = tgUser.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=00e5a0&color=0a0e1a&bold=true`;
 
   const ref = doc(db, 'users', uid);
   const snap = await getDoc(ref);
+
   if (snap.exists()) {
     userData = snap.data();
-    currentUser = { uid, name: userData.name, email: userData.email };
-    await updateDoc(ref, { lastLogin: serverTimestamp(), isActive: true });
+    // Update Telegram data on every login
+    await updateDoc(ref, {
+      telegramId: tgUser.id,
+      telegramUsername: username,
+      telegramFirstName: firstName,
+      telegramLastName: lastName,
+      telegramChatId: tgUser.id,
+      telegramLanguageCode: tgUser.language_code || '',
+      telegramIsPremium: !!tgUser.is_premium,
+      profilePicture: pic,
+      name: fullName,
+      lastLogin: serverTimestamp(),
+      lastSeen: serverTimestamp(),
+      isActive: true,
+      country: userCountry || userData.country || 'unknown'
+    });
+    userData.telegramId = tgUser.id;
+    userData.telegramUsername = username;
+    userData.telegramFirstName = firstName;
+    userData.telegramLastName = lastName;
+    userData.telegramChatId = tgUser.id;
+    userData.name = fullName;
+    userData.profilePicture = pic;
   } else {
     const code = Math.random().toString(36).slice(2, 8).toUpperCase();
     userData = {
-      uid, name, email,
+      uid,
+      telegramId: tgUser.id,
+      telegramUsername: username,
+      telegramFirstName: firstName,
+      telegramLastName: lastName,
+      telegramChatId: tgUser.id,
+      telegramLanguageCode: tgUser.language_code || '',
+      telegramIsPremium: !!tgUser.is_premium,
+      name: fullName,
+      email: `${tgUser.id}@telegram.miniapp`,
       profilePicture: pic,
       balance: 50,
       referralCode: code,
       referredBy: null,
       createdAt: serverTimestamp(),
+      lastLogin: serverTimestamp(),
+      lastSeen: serverTimestamp(),
       isBlocked: false,
+      isActive: true,
       dailyAdCount: 0,
+      totalAdViews: 0,
       lastAdWatchDate: '1970-01-01',
       visitedSitesToday: [],
       lastSiteVisitDate: '1970-01-01',
@@ -974,18 +1013,25 @@ async function initUser() {
       tasksCompleted: 0,
       ludoGamesPlayed: 0,
       ludoTotalWon: 0,
-      userType: tgUser ? 'telegram' : 'guest'
+      userType: 'telegram'
     };
     await setDoc(ref, userData);
-    currentUser = { uid, name, email };
+  }
+  currentUser = { uid, name: userData.name };
+
+  // Blocked check
+  if (userData.isBlocked) {
+    showLoader(false);
+    showModal('🚫', 'Account Blocked', 'Your account has been blocked by admin. Contact support.', 'Close', () => {
+      if (window.Telegram?.WebApp) window.Telegram.WebApp.close();
+    });
   }
 }
 
-// ======================================================
-// ADSGRAM + GIGAPUB — ROTATION SYSTEM
-// ======================================================
+// =========================================================
+// ADSGRAM INIT
+// =========================================================
 function initAdsGram() {
-  // Wait for SDK
   const tryInit = (attempts = 0) => {
     if (typeof window.Adsgram !== 'undefined') {
       try {
@@ -997,14 +1043,13 @@ function initAdsGram() {
         console.log('✅ AdsGram ready');
       } catch (e) {
         console.warn('AdsGram init error:', e);
-        if (attempts < 5) setTimeout(() => tryInit(attempts + 1), 1000);
+        if (attempts < 5) setTimeout(() => tryInit(attempts + 1), 800);
       }
     } else if (attempts < 10) {
-      setTimeout(() => tryInit(attempts + 1), 500);
+      setTimeout(() => tryInit(attempts + 1), 400);
     }
   };
   tryInit();
-  // Gigapub is loaded via script tag, set flag after DOMContentLoaded
   if (document.readyState === 'complete' || document.readyState === 'interactive') {
     gigapubReady = typeof window.showGiga === 'function';
   } else {
@@ -1014,125 +1059,130 @@ function initAdsGram() {
   }
 }
 
-/**
- * Play one ad of the given type.
- * Returns { success: bool, provider: string }
- */
-async function playAd(type) {
-  // type: 'gigapub' | 'adsgramInterstitial' | 'adsgramReward'
-  if (type === 'gigapub') {
-    if (!gigapubReady || typeof window.showGiga !== 'function') {
-      return { success: false, provider: 'Gigapub', reason: 'not_ready' };
-    }
-    try {
-      showAdOverlay('Loading Ad', 'Please wait…', 'Gigapub');
-      await Promise.race([
-        window.showGiga(),
-        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 20000))
-      ]);
-      hideAdOverlay();
-      return { success: true, provider: 'Gigapub' };
-    } catch (e) {
-      hideAdOverlay();
-      return { success: false, provider: 'Gigapub', reason: e.message };
-    }
+// =========================================================
+// AD PLAYERS — silent, no provider name shown to user
+// =========================================================
+async function playGigapubAd() {
+  if (!gigapubReady || typeof window.showGiga !== 'function') {
+    return { success: false, reason: 'not_ready' };
   }
-
-  if (type === 'adsgramInterstitial') {
-    if (!adsgramReady || !adsgramInterstitialCtrl) {
-      return { success: false, provider: 'AdsGram Interstitial', reason: 'not_ready' };
-    }
-    try {
-      showAdOverlay('Loading Ad', 'Please wait…', 'AdsGram');
-      const res = await Promise.race([
-        adsgramInterstitialCtrl.show(),
-        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 20000))
-      ]);
-      hideAdOverlay();
-      return { success: !!res?.done, provider: 'AdsGram Interstitial' };
-    } catch (e) {
-      hideAdOverlay();
-      return { success: false, provider: 'AdsGram Interstitial', reason: e.message };
-    }
+  try {
+    await Promise.race([
+      window.showGiga(),
+      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 15000))
+    ]);
+    return { success: true };
+  } catch (e) {
+    return { success: false, reason: e.message };
   }
+}
 
-  if (type === 'adsgramReward') {
-    if (!adsgramReady || !adsgramRewardCtrl) {
-      return { success: false, provider: 'AdsGram Reward', reason: 'not_ready' };
-    }
-    try {
-      showAdOverlay('Loading Ad', 'Please wait…', 'AdsGram');
-      const res = await Promise.race([
-        adsgramRewardCtrl.show(),
-        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 20000))
-      ]);
-      hideAdOverlay();
-      return { success: !!res?.done, provider: 'AdsGram Reward' };
-    } catch (e) {
-      hideAdOverlay();
-      return { success: false, provider: 'AdsGram Reward', reason: e.message };
-    }
+async function playAdsGramReward() {
+  if (!adsgramReady || !adsgramRewardCtrl) return { success: false, reason: 'not_ready' };
+  try {
+    const res = await Promise.race([
+      adsgramRewardCtrl.show(),
+      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 15000))
+    ]);
+    return { success: !!res?.done };
+  } catch (e) {
+    return { success: false, reason: e.message };
   }
+}
 
-  return { success: false, provider: type, reason: 'unknown_type' };
+async function playAdsGramInterstitial() {
+  if (!adsgramReady || !adsgramInterstitialCtrl) return { success: false, reason: 'not_ready' };
+  try {
+    const res = await Promise.race([
+      adsgramInterstitialCtrl.show(),
+      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 15000))
+    ]);
+    return { success: !!res?.done };
+  } catch (e) {
+    return { success: false, reason: e.message };
+  }
 }
 
 /**
- * Play ads in admin-configured order. Stops on first success.
- * Returns { success, provider, tried }
+ * Try each enabled network in admin-configured order.
+ * Silent — no overlay, no provider names.
  */
 async function playRotatingAd() {
   const enabled = [
-    { key: 'gigapub', label: 'Gigapub', ...adConfig.gigapub },
-    { key: 'adsgramReward', label: 'AdsGram Reward', ...adConfig.adsgramReward },
-    { key: 'adsgramInterstitial', label: 'AdsGram Interstitial', ...adConfig.adsgramInterstitial }
-  ]
-    .filter(a => a.enabled)
-    .sort((a, b) => (a.order || 99) - (b.order || 99));
+    { key: 'gigapub', ...adConfig.gigapub },
+    { key: 'adsgramReward', ...adConfig.adsgramReward },
+    { key: 'adsgramInterstitial', ...adConfig.adsgramInterstitial }
+  ].filter(a => a.enabled).sort((a, b) => (a.order || 99) - (b.order || 99));
 
-  if (!enabled.length) {
-    return { success: false, provider: 'none', tried: [], reason: 'all_disabled' };
-  }
+  if (!enabled.length) return { success: false };
 
-  const tried = [];
   for (const ad of enabled) {
-    const r = await playAd(ad.key);
-    tried.push({ provider: ad.label, ...r });
-    if (r.success) {
-      return { success: true, provider: ad.label, tried };
-    }
-    // small gap between attempts
-    await new Promise(r => setTimeout(r, 400));
+    let r;
+    if (ad.key === 'gigapub') r = await playGigapubAd();
+    else if (ad.key === 'adsgramReward') r = await playAdsGramReward();
+    else if (ad.key === 'adsgramInterstitial') r = await playAdsGramInterstitial();
+    if (r.success) return { success: true };
   }
-  return { success: false, provider: 'none', tried, reason: 'all_failed' };
+  return { success: false };
 }
 
 /**
- * Play ALL enabled ads sequentially (used by Try Your Luck).
+ * Play every enabled network once (for Try Your Luck).
  */
-async function playAllAdsSequential(onProgress) {
+async function playAllAds(onProgress) {
   const enabled = [
-    { key: 'gigapub', label: 'Gigapub', ...adConfig.gigapub },
-    { key: 'adsgramReward', label: 'AdsGram Reward', ...adConfig.adsgramReward },
-    { key: 'adsgramInterstitial', label: 'AdsGram Interstitial', ...adConfig.adsgramInterstitial }
-  ]
-    .filter(a => a.enabled)
-    .sort((a, b) => (a.order || 99) - (b.order || 99));
+    { key: 'gigapub', ...adConfig.gigapub },
+    { key: 'adsgramReward', ...adConfig.adsgramReward },
+    { key: 'adsgramInterstitial', ...adConfig.adsgramInterstitial }
+  ].filter(a => a.enabled).sort((a, b) => (a.order || 99) - (b.order || 99));
 
   const results = [];
   for (let i = 0; i < enabled.length; i++) {
     const ad = enabled[i];
-    if (onProgress) onProgress(i, enabled.length, ad.label);
-    const r = await playAd(ad.key);
-    results.push({ provider: ad.label, ...r });
-    await new Promise(r => setTimeout(r, 600));
+    if (onProgress) onProgress(i, enabled.length);
+    let r;
+    if (ad.key === 'gigapub') r = await playGigapubAd();
+    else if (ad.key === 'adsgramReward') r = await playAdsGramReward();
+    else if (ad.key === 'adsgramInterstitial') r = await playAdsGramInterstitial();
+    results.push({ success: !!r.success });
+    await new Promise(r => setTimeout(r, 400));
   }
   return results;
 }
 
-// ======================================================
-// BALANCE / POINTS
-// ======================================================
+/**
+ * OPTIONAL AD FLOW: Show confirm dialog "Double your points?"
+ * Yes → play ad. If ad succeeds, double. If fails, base.
+ * No → base, no ad.
+ */
+async function optionalDoublePoints(basePoints, onFinal) {
+  showConfirm(
+    '✨',
+    'Double Your Points!',
+    `Watch a short ad to double your reward?\n\nBase reward: ${basePoints} points`,
+    'Yes, Double!',
+    'No, Thanks',
+    async () => {
+      // YES — play ads
+      const adRes = await playRotatingAd();
+      if (adRes.success) {
+        onFinal(basePoints * 2, true);
+      } else {
+        // Ad failed → give base
+        onFinal(basePoints, false);
+        showModal('ℹ️', 'Ad Unavailable', `Could not load ad. Base reward of ${basePoints} points given instead.`, 'OK');
+      }
+    },
+    () => {
+      // NO — just base, no ad
+      onFinal(basePoints, false);
+    }
+  );
+}
+
+// =========================================================
+// BALANCE
+// =========================================================
 async function addBalance(amount, source, note) {
   if (!currentUser || !amount) return;
   const newBal = parseFloat(((userData.balance || 0) + amount).toFixed(2));
@@ -1151,19 +1201,33 @@ async function addBalance(amount, source, note) {
     await addDoc(collection(db, 'pointHistory'), {
       userId: currentUser.uid,
       userName: userData.name,
+      telegramId: userData.telegramId,
+      telegramUsername: userData.telegramUsername || '',
       taskType: source,
       points: amount,
       details: note,
       timestamp: serverTimestamp(),
       country: userCountry || 'unknown'
     });
-  } catch (e) { console.warn('addBalance sync err', e); }
+  } catch (e) { console.warn('addBalance err', e); }
   refreshAllUI();
 }
 
-// ======================================================
+async function incrementAdView() {
+  userData.totalAdViews = (userData.totalAdViews || 0) + 1;
+  userData.dailyAdCount = (userData.dailyAdCount || 0) + 1;
+  try {
+    await updateDoc(doc(db, 'users', currentUser.uid), {
+      totalAdViews: userData.totalAdViews,
+      dailyAdCount: userData.dailyAdCount,
+      lastAdWatchDate: new Date().toISOString().slice(0, 10)
+    });
+  } catch (e) {}
+}
+
+// =========================================================
 // LUDO
-// ======================================================
+// =========================================================
 async function playLudo() {
   if (ludoBusy) return;
   const cfg = gamesConfig.ludoDice || {};
@@ -1172,18 +1236,18 @@ async function playLudo() {
   const mult = cfg.winMultiplier || 10;
 
   if ((userData.balance || 0) < cost) {
-    return showModal('💰', 'Not Enough Points', `You need at least ${cost} points.`, 'OK');
+    return showModal('💰', 'Not Enough Points', `You need at least ${cost} points to play.`, 'OK');
   }
 
   ludoBusy = true;
   $('ludoRollBtn').disabled = true;
 
-  // Deduct cost
+  // Deduct entry fee
   await addBalance(-cost, 'ludo_entry', 'Ludo dice entry fee');
 
   // Animate dice
   const diceEl = $('ludoDice');
-  const spins = 14;
+  const spins = 12;
   let spinCount = 0;
   const spinInt = setInterval(() => {
     diceEl.textContent = 1 + Math.floor(Math.random() * 6);
@@ -1191,42 +1255,31 @@ async function playLudo() {
     if (spinCount >= spins) clearInterval(spinInt);
   }, 70);
 
-  await new Promise(r => setTimeout(r, spins * 70 + 250));
+  await new Promise(r => setTimeout(r, spins * 70 + 200));
 
-  // Weighted result (favors lower numbers, matches original design)
+  // Weighted result
   const rand = Math.random() * 100;
   let dice;
   if (rand < 80) dice = 1 + Math.floor(Math.random() * 3);
   else if (rand < 97) dice = 4 + Math.floor(Math.random() * 2);
   else dice = 6;
-
   diceEl.textContent = dice;
-  const winPoints = dice * mult;
 
-  // Play rotating ad
-  showAdOverlay('Unlocking Reward', 'Watch a short ad to claim your win…', 'Ads');
-  const adRes = await playRotatingAd();
-  hideAdOverlay();
+  const baseWin = dice * mult;
 
-  if (!adRes.success) {
-    // Refund
-    await addBalance(cost, 'ludo_refund', 'Ludo refund — no ad available');
+  // Optional double
+  optionalDoublePoints(baseWin, async (finalWin, doubled) => {
+    await addBalance(finalWin, 'ludo_win', `Dice ${dice} × ${mult}${doubled ? ' (doubled)' : ''}`);
+    if (doubled) await incrementAdView();
+
+    const cooldown = 15 + Math.floor(Math.random() * 16);
+    ludoDisabledUntil = Date.now() + cooldown * 1000;
+    startLudoCooldown();
+
     ludoBusy = false;
-    $('ludoRollBtn').disabled = false;
-    return showModal('⚠️', 'Ad Unavailable', `No ad could be shown. ${cost} points refunded.`, 'OK');
-  }
-
-  // Add win
-  await addBalance(winPoints, 'ludo_win', `Dice ${dice} × ${mult} (via ${adRes.provider})`);
-
-  // Cooldown
-  const cooldown = 15 + Math.floor(Math.random() * 16);
-  ludoDisabledUntil = Date.now() + cooldown * 1000;
-  startLudoCooldown();
-
-  ludoBusy = false;
-  showModal('🎲', `You rolled ${dice}!`, `+${winPoints} points added to your balance.\n\nAd by ${adRes.provider}`, 'Awesome!');
-  refreshLudoUI();
+    showModal('🎲', `You rolled ${dice}!`, `+${finalWin} points added.${doubled ? ' (Doubled!)' : ''}`, 'Awesome!');
+    refreshLudoUI();
+  });
 }
 
 function startLudoCooldown() {
@@ -1235,7 +1288,6 @@ function startLudoCooldown() {
   const text = $('ludoRollText');
   const timer = $('ludoTimer');
   btn.disabled = true;
-
   ludoTimerInterval = setInterval(() => {
     const left = Math.ceil((ludoDisabledUntil - Date.now()) / 1000);
     if (left <= 0) {
@@ -1261,37 +1313,30 @@ function refreshLudoUI() {
   if (ludoDisabledUntil > Date.now()) startLudoCooldown();
 }
 
-// ======================================================
+// =========================================================
 // WATCH & EARN
-// ======================================================
+// =========================================================
 async function playWatch() {
   if (watchBusy) return;
   const cfg = gamesConfig.watchVideo || {};
   if (cfg.visible === false) return showModal('🚫', 'Unavailable', 'Watch & Earn is disabled.', 'OK');
-  const reward = cfg.rewardPerPlay || 50;
+  const baseReward = cfg.rewardPerPlay || 50;
 
   watchBusy = true;
   $('watchBtn').disabled = true;
 
-  showAdOverlay('Loading Ad', 'Watch the ad to earn coins…', 'Ads');
-  const adRes = await playRotatingAd();
-  hideAdOverlay();
+  optionalDoublePoints(baseReward, async (finalReward, doubled) => {
+    await addBalance(finalReward, 'watch_earn', `Watch & Earn${doubled ? ' (doubled)' : ''}`);
+    if (doubled) await incrementAdView();
 
-  if (!adRes.success) {
+    const cooldown = 10 + Math.floor(Math.random() * 11);
+    watchDisabledUntil = Date.now() + cooldown * 1000;
+    startWatchCooldown();
+
     watchBusy = false;
-    $('watchBtn').disabled = false;
-    return showModal('⚠️', 'Ad Unavailable', 'No ad could be shown. Please try again later.', 'OK');
-  }
-
-  await addBalance(reward, 'watch_earn', `Watched ad via ${adRes.provider}`);
-
-  const cooldown = 10 + Math.floor(Math.random() * 11);
-  watchDisabledUntil = Date.now() + cooldown * 1000;
-  startWatchCooldown();
-
-  watchBusy = false;
-  showModal('🎉', 'Coins Added!', `+${reward} coins credited.\n\nAd by ${adRes.provider}`, 'Continue');
-  refreshWatchUI();
+    showModal('🎉', 'Coins Added!', `+${finalReward} coins.${doubled ? ' (Doubled!)' : ''}`, 'Continue');
+    refreshWatchUI();
+  });
 }
 
 function startWatchCooldown() {
@@ -1321,59 +1366,64 @@ function refreshWatchUI() {
   if (watchDisabledUntil > Date.now()) startWatchCooldown();
 }
 
-// ======================================================
-// TRY YOUR LUCK
-// ======================================================
+// =========================================================
+// TRY YOUR LUCK — optional double at the end
+// =========================================================
 async function startLuck() {
   if (luckActive) return;
   const cfg = gamesConfig.tryYourLuck || {};
   if (cfg.visible === false) return showModal('🚫', 'Unavailable', 'This game is disabled.', 'OK');
 
   luckActive = true;
-  luckResults = [];
   navigateTo('luck-run');
-  $('luckStatus').textContent = 'Starting…';
+  $('luckStatus').textContent = 'Preparing…';
   $('luckClaimBtn').classList.add('hidden');
   $('luckProgressBar').style.width = '0%';
-  $('luckProgressText').textContent = '0/0 ads';
-  $('luckProviderList').innerHTML = '';
+  $('luckProgressText').textContent = '0/0';
 
-  const results = await playAllAdsSequential((idx, total, label) => {
-    $('luckStatus').textContent = `Playing ${label}…`;
-    $('luckProgressBar').style.width = `${(idx / total) * 100}%`;
-    $('luckProgressText').textContent = `${idx}/${total} ads`;
-  });
+  // Ask user first (optional ads)
+  showConfirm(
+    '✨',
+    'Try Your Luck!',
+    `Watch multiple short ads to boost your reward?\n\nBase reward: ${cfg.rewardPerPlay || 500} points`,
+    'Yes, Start!',
+    'No, Thanks',
+    async () => {
+      const results = await playAllAds((i, total) => {
+        $('luckStatus').textContent = `Playing ${i + 1} of ${total}…`;
+        $('luckProgressBar').style.width = `${(i / total) * 100}%`;
+        $('luckProgressText').textContent = `${i}/${total}`;
+      });
 
-  luckResults = results;
-  const successes = results.filter(r => r.success);
-  $('luckProgressBar').style.width = '100%';
-  $('luckProgressText').textContent = `${successes.length}/${results.length} ads`;
+      const successes = results.filter(r => r.success).length;
+      $('luckProgressBar').style.width = '100%';
+      $('luckProgressText').textContent = `${successes}/${results.length}`;
 
-  // Render provider results
-  $('luckProviderList').innerHTML = results.map(r => `
-    <div class="card-elev" style="padding:8px 12px; display:flex; justify-content:space-between; align-items:center; font-size:0.75rem;">
-      <span style="color:var(--text-dim);">${r.provider}</span>
-      <span class="pill ${r.success ? 'pill-success' : 'pill-danger'}">${r.success ? '✓ Done' : '✗ Failed'}</span>
-    </div>
-  `).join('');
+      if (!successes) {
+        $('luckStatus').textContent = 'No ads available right now.';
+        luckActive = false;
+        setTimeout(() => {
+          showModal('ℹ️', 'No Ads', 'No ads could be shown. Please try again later.', 'OK', () => navigateTo('home'));
+        }, 600);
+        return;
+      }
 
-  if (!successes.length) {
-    $('luckStatus').textContent = 'No ads were available.';
-    luckActive = false;
-    setTimeout(() => showModal('⚠️', 'Ad Unavailable', 'No ads could be shown. Please try again later.', 'OK', () => navigateTo('home')), 800);
-    return;
-  }
-
-  const cfg2 = gamesConfig.tryYourLuck || {};
-  const reward = cfg2.rewardPerPlay || 500;
-  $('luckStatus').textContent = `Great! Claim your ${reward} points.`;
-  $('luckClaimBtn').classList.remove('hidden');
-  $('luckClaimBtn').onclick = async () => {
-    $('luckClaimBtn').disabled = true;
-    await addBalance(reward, 'try_luck', `${successes.length} ads watched`);
-    luckActive = false;
-    showModal('🎉', 'Points Claimed!', `+${reward} points added to your balance.`, 'Great!', () => navigateTo('home'));
-  };
+      const reward = cfg.rewardPerPlay || 500;
+      $('luckStatus').textContent = `Ready! Claim your reward.`;
+      $('luckClaimBtn').classList.remove('hidden');
+      $('luckClaimBtn').onclick = async () => {
+        $('luckClaimBtn').disabled = true;
+        await addBalance(reward, 'try_luck', `${successes} ads watched`);
+        await incrementAdView();
+        luckActive = false;
+        showModal('🎉', 'Points Claimed!', `+${reward} points added.`, 'Great!', () => navigateTo('home'));
+      };
+    },
+    () => {
+      luckActive = false;
+      navigateTo('luck');
+    }
+  );
 }
 
 function refreshLuckUI() {
@@ -1381,13 +1431,13 @@ function refreshLuckUI() {
   $('luckReward').textContent = `+${cfg.rewardPerPlay || 500}`;
 }
 
-// ======================================================
-// COLOR GAME
-// ======================================================
+// =========================================================
+// COLOR GAME — optional double
+// =========================================================
 function startColorRound() {
   const cfg = gamesConfig.colorGame || {};
   if (cfg.visible === false) return showModal('🚫', 'Unavailable', 'Color game is disabled.', 'OK');
-  const target = { r: rand(), g: rand(), b: rand() };
+  const target = { r: rnd(), g: rnd(), b: rnd() };
   const targetStr = `rgb(${target.r}, ${target.g}, ${target.b})`;
   $('colorTarget').style.background = targetStr;
   $('colorRGB').textContent = `RGB(${target.r}, ${target.g}, ${target.b})`;
@@ -1396,7 +1446,7 @@ function startColorRound() {
   const options = [targetStr];
   for (let i = 0; i < 8; i++) {
     const d = 30 + Math.floor(Math.random() * 40);
-    options.push(`rgb(${clamp(target.r + (Math.random() > .5 ? d : -d))}, ${clamp(target.g + (Math.random() > .5 ? d : -d))}, ${clamp(target.b + (Math.random() > .5 ? d : -d))})`);
+    options.push(`rgb(${cl(target.r + (Math.random() > .5 ? d : -d))}, ${cl(target.g + (Math.random() > .5 ? d : -d))}, ${cl(target.b + (Math.random() > .5 ? d : -d))})`);
   }
   options.sort(() => Math.random() - .5);
 
@@ -1411,27 +1461,24 @@ function startColorRound() {
     grid.appendChild(box);
   });
 }
-const rand = () => Math.floor(Math.random() * 256);
-const clamp = (n) => Math.max(0, Math.min(255, n));
+const rnd = () => Math.floor(Math.random() * 256);
+const cl = (n) => Math.max(0, Math.min(255, n));
 
 async function handleColorPick(picked, target, cfg) {
   if (picked !== target) {
     return showModal('❌', 'Wrong!', 'Try again.', 'OK', () => startColorRound());
   }
-  showAdOverlay('Unlocking Reward', 'Watch a short ad to claim…', 'Ads');
-  const adRes = await playRotatingAd();
-  hideAdOverlay();
-  if (!adRes.success) {
-    return showModal('⚠️', 'Ad Unavailable', 'No ad could be shown. Please retry.', 'OK', () => startColorRound());
-  }
-  const reward = cfg.rewardPerPlay || 100;
-  await addBalance(reward, 'color_game', `Color game via ${adRes.provider}`);
-  showModal('🎨', 'Correct!', `+${reward} coins added.\n\nAd by ${adRes.provider}`, 'Next', () => startColorRound());
+  const baseReward = cfg.rewardPerPlay || 100;
+  optionalDoublePoints(baseReward, async (finalReward, doubled) => {
+    await addBalance(finalReward, 'color_game', `Color game${doubled ? ' (doubled)' : ''}`);
+    if (doubled) await incrementAdView();
+    showModal('🎨', 'Correct!', `+${finalReward} coins.${doubled ? ' (Doubled!)' : ''}`, 'Next', () => startColorRound());
+  });
 }
 
-// ======================================================
-// VISIT + SOCIAL
-// ======================================================
+// =========================================================
+// VISIT + SOCIAL — optional double
+// =========================================================
 async function loadVisit() {
   const list = appConfig.websitesToVisit || [];
   const el = $('visitList');
@@ -1463,34 +1510,32 @@ async function loadVisit() {
 async function visitSite(idx) {
   const site = (appConfig.websitesToVisit || [])[idx];
   if (!site) return;
-  showAdOverlay('Loading Ad', 'Watch a short ad before visiting…', 'Ads');
-  const adRes = await playRotatingAd();
-  hideAdOverlay();
-  if (!adRes.success) return showModal('⚠️', 'Ad Unavailable', 'Please try again later.', 'OK');
-
   window.open(site.link, '_blank');
-
-  // Countdown
   const seconds = site.timer || 30;
-  showModal('⏳', 'Visit Website', `Stay on the page for ${seconds} seconds to earn ${site.reward} coins.`, `I'm ready (${seconds}s)`);
+  const baseReward = site.reward || 10;
+
+  showModal('⏳', 'Visit Website', `Stay on the page for ${seconds} seconds to earn ${baseReward} coins.`, `Wait…`);
   let left = seconds;
   const tick = setInterval(() => {
     left--;
-    $('modalBtn').textContent = `Please wait… (${left}s)`;
+    $('modalBtn').textContent = `Wait… ${left}s`;
     if (left <= 0) {
       clearInterval(tick);
       $('modalBtn').textContent = 'Claim';
-      $('modalBtn').onclick = async () => {
+      $('modalBtn').onclick = () => {
         $('modal').classList.remove('show');
-        const visited = [...(userData.visitedSitesToday || []), site.link];
-        userData.visitedSitesToday = visited;
-        userData.lastSiteVisitDate = new Date().toISOString().slice(0, 10);
-        await updateDoc(doc(db, 'users', currentUser.uid), {
-          visitedSitesToday: visited,
-          lastSiteVisitDate: userData.lastSiteVisitDate
+        optionalDoublePoints(baseReward, async (finalReward, doubled) => {
+          const visited = [...(userData.visitedSitesToday || []), site.link];
+          userData.visitedSitesToday = visited;
+          userData.lastSiteVisitDate = new Date().toISOString().slice(0, 10);
+          await updateDoc(doc(db, 'users', currentUser.uid), {
+            visitedSitesToday: visited,
+            lastSiteVisitDate: userData.lastSiteVisitDate
+          });
+          await addBalance(finalReward, 'visit_site', `${site.name}${doubled ? ' (doubled)' : ''}`);
+          if (doubled) await incrementAdView();
+          showModal('🎉', 'Success!', `+${finalReward} coins added.${doubled ? ' (Doubled!)' : ''}`, 'OK', () => loadVisit());
         });
-        await addBalance(site.reward || 10, 'visit_site', site.name);
-        showModal('🎉', 'Success!', `+${site.reward || 10} coins added.`, 'OK', () => loadVisit());
       };
     }
   }, 1000);
@@ -1527,27 +1572,35 @@ async function loadSocial() {
 async function doSocial(idx) {
   const task = (appConfig.socialTasks || [])[idx];
   if (!task) return;
-  showAdOverlay('Loading Ad', 'Watch a short ad to unlock…', 'Ads');
-  const adRes = await playRotatingAd();
-  hideAdOverlay();
-  if (!adRes.success) return showModal('⚠️', 'Ad Unavailable', 'Please try again later.', 'OK');
-
   window.open(task.link, '_blank');
-  const done = [...(userData.completedSocialTasks || []), task.link];
-  userData.completedSocialTasks = done;
-  await updateDoc(doc(db, 'users', currentUser.uid), { completedSocialTasks: done });
-  await addBalance(task.reward || 20, 'social_task', task.name);
-  showModal('🎉', 'Task Complete!', `+${task.reward || 20} coins added.`, 'OK', () => loadSocial());
+  const baseReward = task.reward || 20;
+  optionalDoublePoints(baseReward, async (finalReward, doubled) => {
+    const done = [...(userData.completedSocialTasks || []), task.link];
+    userData.completedSocialTasks = done;
+    await updateDoc(doc(db, 'users', currentUser.uid), { completedSocialTasks: done });
+    await addBalance(finalReward, 'social_task', `${task.name}${doubled ? ' (doubled)' : ''}`);
+    if (doubled) await incrementAdView();
+    showModal('🎉', 'Task Complete!', `+${finalReward} coins.${doubled ? ' (Doubled!)' : ''}`, 'OK', () => loadSocial());
+  });
 }
 
-// ======================================================
-// WALLET / REFER / PROFILE
-// ======================================================
+// =========================================================
+// WALLET
+// =========================================================
 async function loadWallet() {
+  // Wallet visibility
+  const walletVisible = gamesConfig.wallet?.visible !== false;
+  const withdrawVisible = gamesConfig.withdraw?.visible !== false;
+  $('navWallet').style.display = walletVisible ? 'flex' : 'none';
+  if (!walletVisible && $('page-wallet').classList.contains('active')) navigateTo('home');
+
   $('walletBalance').textContent = (userData.balance || 0).toFixed(0);
   $('walletValueInfo').textContent = `${appConfig.coinValueCoins || 1000} coins = ₹${appConfig.coinValueInr || 10}`;
+
   const methods = appConfig.paymentMethods || ['UPI', 'Paytm', 'PayPal'];
   $('withdrawMethod').innerHTML = methods.map(m => `<option value="${m}">${m}</option>`).join('');
+
+  $('withdrawBtn').style.display = withdrawVisible ? 'block' : 'none';
 
   const el = $('withdrawHistory');
   try {
@@ -1593,6 +1646,9 @@ async function requestWithdraw() {
     await addDoc(collection(db, 'withdrawals'), {
       userId: currentUser.uid,
       userName: userData.name,
+      telegramId: userData.telegramId,
+      telegramUsername: userData.telegramUsername || '',
+      telegramChatId: userData.telegramChatId,
       amount, method, paymentDetail: detail,
       status: 'pending',
       requestedAt: serverTimestamp(),
@@ -1610,6 +1666,9 @@ async function requestWithdraw() {
   }
 }
 
+// =========================================================
+// REFER
+// =========================================================
 function loadRefer() {
   $('referBonus').textContent = `Earn ${appConfig.referralBonus || 100} coins per referral`;
   $('referCode').textContent = userData.referralCode || '------';
@@ -1634,24 +1693,46 @@ async function applyReferCode() {
   showModal('🎉', 'Success!', `+${bonus} coins added from referral.`, 'OK');
 }
 
+// =========================================================
+// PROFILE
+// =========================================================
 function loadProfile() {
   $('profileAvatar').src = userData.profilePicture || '';
   $('profileName').textContent = userData.name;
-  $('profileEmail').textContent = userData.email;
+  $('profileUsername').textContent = userData.telegramUsername ? '@' + userData.telegramUsername : 'No username';
+  $('profileTgId').textContent = `ID: ${userData.telegramId || '—'}`;
   const since = userData.createdAt?.seconds ? new Date(userData.createdAt.seconds * 1000).toLocaleDateString() : 'Today';
   $('profileSince').textContent = since;
   $('profileTotal').textContent = (userData.totalEarned || 0).toFixed(0);
 }
 
-// ======================================================
-// UI INITIALIZATION
-// ======================================================
-function initUI() {
-  // Header
-  $('hdrName').textContent = `Hi, ${userData.name}`;
-  $('hdrAvatar').src = userData.profilePicture || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.name)}&background=00e5a0&color=0a0e1a&bold=true`;
+// =========================================================
+// NOTICE
+// =========================================================
+function showNotice(n) {
+  const icons = { info: '📢', success: '✅', warning: '⚠️', error: '❌', premium: '👑' };
+  $('noticeIcon').textContent = icons[n.type] || '📢';
+  $('noticeTitle').textContent = n.title;
+  $('noticeBody').textContent = n.message;
 
-  // Slider
+  const cancelable = n.cancelable !== false;
+  $('noticeDismissBtn').style.display = cancelable ? 'block' : 'none';
+
+  $('noticeModal').classList.add('show');
+  $('noticeOkBtn').onclick = () => $('noticeModal').classList.remove('show');
+  $('noticeDismissBtn').onclick = () => {
+    localStorage.setItem(`notice_dismissed_${n.title}`, '1');
+    $('noticeModal').classList.remove('show');
+  };
+}
+
+// =========================================================
+// UI
+// =========================================================
+function initUI() {
+  $('hdrName').textContent = `Hi, ${userData.name.split(' ')[0]}`;
+  $('hdrAvatar').src = userData.profilePicture || '';
+
   const banners = appConfig.sliderBanners || [];
   if (banners.length) {
     $('slider').style.display = 'block';
@@ -1659,22 +1740,14 @@ function initUI() {
       <div class="slider-item"><a href="${b.link || '#'}" target="_blank"><img src="${b.img}" loading="lazy" alt=""></a></div>
     `).join('');
     $('sliderDots').innerHTML = banners.map((_, i) => `<span class="dot${i === 0 ? ' active' : ''}" data-i="${i}"></span>`).join('');
-    $('sliderDots').querySelectorAll('.dot').forEach(d => {
-      d.onclick = () => goToSlide(parseInt(d.dataset.i));
-    });
+    $('sliderDots').querySelectorAll('.dot').forEach(d => d.onclick = () => goToSlide(parseInt(d.dataset.i)));
     startSlider();
   }
 
-  // Feature grid
   renderFeatures();
-
-  // Statics
-  $('walletValueInfo').textContent = `${appConfig.coinValueCoins || 1000} coins = ₹${appConfig.coinValueInr || 10}`;
-
   refreshAllUI();
 }
 
-let slideIdx = 0;
 function startSlider() {
   if (sliderInterval) clearInterval(sliderInterval);
   const banners = appConfig.sliderBanners || [];
@@ -1715,14 +1788,17 @@ function renderFeatures() {
     </div>
   `).join('');
 
-  // Wallet card also
-  $('featureGrid').innerHTML += `
-    <div class="feature-card" onclick="navigateTo('wallet')">
-      <div class="feature-icon"><i class="fas fa-wallet"></i></div>
-      <div style="font-weight:700; font-size:0.85rem;">My Wallet</div>
-      <div style="color:var(--text-mute); font-size:0.7rem; margin-top:3px;">Withdraw</div>
-    </div>
-  `;
+  // Wallet visible?
+  const walletVisible = gamesConfig.wallet?.visible !== false;
+  if (walletVisible) {
+    $('featureGrid').innerHTML += `
+      <div class="feature-card" onclick="navigateTo('wallet')">
+        <div class="feature-icon"><i class="fas fa-wallet"></i></div>
+        <div style="font-weight:700; font-size:0.85rem;">My Wallet</div>
+        <div style="color:var(--text-mute); font-size:0.7rem; margin-top:3px;">Withdraw</div>
+      </div>
+    `;
+  }
 }
 
 function initListeners() {
@@ -1739,14 +1815,14 @@ function initListeners() {
     showModal('📋', 'Copied!', 'Referral code copied to clipboard.', 'OK');
   };
   $('shareBtn').onclick = () => {
-    const text = `Join Games Hub and earn rewards! Use my code: ${userData.referralCode}`;
+    const tpl = appConfig.referralShareText || 'Join Games Hub and earn rewards! Use my code: {CODE}';
+    const text = tpl.replace('{CODE}', userData.referralCode || '');
     if (navigator.share) navigator.share({ title: 'Games Hub', text });
     else navigator.clipboard.writeText(text).then(() => showModal('📋', 'Copied!', 'Share text copied.', 'OK'));
   };
   $('applyReferBtn').onclick = applyReferCode;
   $('closeAppBtn').onclick = () => {
     if (window.Telegram?.WebApp) window.Telegram.WebApp.close();
-    else showModal('👋', 'Bye!', 'You can close this tab.', 'OK');
   };
 }
 
@@ -1761,9 +1837,9 @@ function refreshAllUI() {
   refreshLuckUI();
 }
 
-// ======================================================
+// =========================================================
 // BOOT
-// ======================================================
+// =========================================================
 bootstrap();
 </script>
 </body>
