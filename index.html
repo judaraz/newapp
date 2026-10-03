@@ -18,18 +18,16 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body {
-  font-family:'Poppins', system-ui, sans-serif;
-  background: radial-gradient(ellipse at top, #141b33 0%, #0a0e1a 70%);
-  color:#eef2f8; min-height:100vh; overflow-x:hidden;
-  -webkit-font-smoothing:antialiased;
-  user-select:none;
+  font-family:'Poppins',system-ui,sans-serif;
+  background:radial-gradient(ellipse at top,#141b33 0%,#0a0e1a 70%);
+  color:#eef2f8;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;user-select:none;
 }
-:root {
-  --brand:#00e5a0; --brand-2:#00b8d4; --brand-3:#7c3aed;
-  --bg-card:rgba(20,27,51,.85); --bg-elev:rgba(30,40,70,.7);
+:root{
+  --brand:#00e5a0;--brand-2:#00b8d4;--brand-3:#7c3aed;
+  --bg-card:rgba(20,27,51,.85);--bg-elev:rgba(30,40,70,.7);
   --border:rgba(0,229,160,.15);
-  --text-dim:#94a3b8; --text-mute:#64748b;
-  --success:#22c55e; --danger:#ef4444; --warn:#f59e0b;
+  --text-dim:#94a3b8;--text-mute:#64748b;
+  --success:#22c55e;--danger:#ef4444;--warn:#f59e0b;
 }
 .brand-gradient{background:linear-gradient(135deg,var(--brand),var(--brand-2) 50%,var(--brand-3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .card{background:var(--bg-card);backdrop-filter:blur(12px);border:1px solid var(--border);box-shadow:0 8px 32px rgba(0,0,0,.35);border-radius:20px;}
@@ -52,6 +50,7 @@ body {
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.6;}}
 @keyframes slideUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
 @keyframes glowPulse{0%,100%{box-shadow:0 0 20px rgba(0,229,160,.4);}50%{box-shadow:0 0 35px rgba(0,229,160,.8);}}
+@keyframes diceRoll{0%{transform:rotate(0deg) scale(1);}50%{transform:rotate(180deg) scale(1.15);}100%{transform:rotate(360deg) scale(1);}}
 .pulse-soft{animation:pulse 2.5s ease-in-out infinite;}
 .glow-pulse{animation:glowPulse 2s ease-in-out infinite;}
 .bottom-nav{background:rgba(10,14,26,.92);backdrop-filter:blur(16px);border-top:1px solid var(--border);padding-bottom:env(safe-area-inset-bottom,0);}
@@ -69,6 +68,7 @@ body {
 .feature-card.ludo .feature-icon{background:linear-gradient(135deg,#06b6d4,#3b82f6);}
 .feature-card.luck{background:linear-gradient(160deg,rgba(245,158,11,.08),rgba(239,68,68,.05));border-color:rgba(245,158,11,.2);}
 .feature-card.luck .feature-icon{background:linear-gradient(135deg,#f59e0b,#ef4444);}
+.feature-card.ludoDiceCard{background:linear-gradient(160deg,rgba(0,229,160,.08),rgba(0,184,212,.05));border-color:rgba(0,229,160,.2);}
 .spinner{width:24px;height:24px;border:3px solid rgba(0,229,160,.15);border-top-color:var(--brand);border-radius:50%;animation:spin .9s linear infinite;}
 .spinner-lg{width:60px;height:60px;border-width:4px;}
 .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:.65rem;font-weight:700;}
@@ -95,343 +95,71 @@ body {
 ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--brand),var(--brand-2));border-radius:3px;}
 .hidden{display:none !important;}
 
-/* ============= 29 CARD GAME ============= */
-.game-table-29 {
-  position: relative;
-  background: radial-gradient(ellipse at center, #2d5a3d 0%, #1a3d28 100%);
-  border-radius: 20px;
-  border: 8px solid #3d2817;
-  box-shadow: inset 0 0 60px rgba(0,0,0,.5), 0 20px 50px rgba(0,0,0,.6);
-  aspect-ratio: 1/1.1;
-  margin: 0 auto;
-  max-width: 400px;
-  position: relative;
-  overflow: hidden;
-}
-.game-table-29::before {
-  content:'';
-  position:absolute;inset:20px;
-  border:2px dashed rgba(255,255,255,.08);
-  border-radius:12px;
-  pointer-events:none;
-}
-.player-seat-29 {
-  position: absolute;
-  text-align: center;
-}
-.player-seat-29.top { top: 6px; left: 50%; transform: translateX(-50%); }
-.player-seat-29.left { top: 50%; left: 6px; transform: translateY(-50%); }
-.player-seat-29.right { top: 50%; right: 6px; transform: translateY(-50%); }
-.player-seat-29.bottom { bottom: 6px; left: 50%; transform: translateX(-50%); }
+/* LUDO */
+.ludo-board-game{position:relative;aspect-ratio:1;max-width:400px;margin:0 auto;background:#fff;border-radius:14px;border:6px solid #1e293b;box-shadow:0 15px 40px rgba(0,0,0,.5);overflow:hidden;}
+.ludo-dice-area{display:flex;justify-content:center;align-items:center;gap:14px;margin-top:14px;}
+.ludo-dice{width:70px;height:70px;background:linear-gradient(145deg,#fff,#e2e8f0);border-radius:14px;border:3px solid #1e293b;display:flex;align-items:center;justify-content:center;font-size:2.3rem;font-weight:900;color:#1e293b;box-shadow:0 8px 20px rgba(0,0,0,.4),inset 0 -4px 8px rgba(0,0,0,.1);transition:transform .2s;}
+.ludo-dice.rolling{animation:diceRoll .5s ease-in-out infinite;}
+.ludo-roll-btn{flex:1;max-width:200px;padding:14px 18px;font-size:.95rem;}
+.ludo-token-el{position:absolute;border-radius:50%;border:2px solid rgba(255,255,255,.9);box-shadow:0 2px 6px rgba(0,0,0,.6);transition:top .3s,left .3s;z-index:5;}
+.ludo-token-el.red{background:radial-gradient(circle at 30% 30%,#ff8a8a,#b91c1c);}
+.ludo-token-el.blue{background:radial-gradient(circle at 30% 30%,#93c5fd,#1d4ed8);}
 
-.avatar-29 {
-  width: 46px; height: 46px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #475569, #334155);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.4rem;
-  border: 3px solid rgba(255,255,255,.15);
-  box-shadow: 0 4px 12px rgba(0,0,0,.4);
-  margin: 0 auto 4px;
-}
-.avatar-29.active {
-  border-color: var(--brand);
-  box-shadow: 0 0 20px rgba(0,229,160,.7);
-  animation: glowPulse 1.8s infinite;
-}
-.name-tag-29 {
-  background: rgba(0,0,0,.55);
-  padding: 3px 10px;
-  border-radius: 12px;
-  font-size: .65rem;
-  font-weight: 700;
-  color: white;
-  display: inline-block;
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(255,255,255,.1);
-  white-space: nowrap;
-}
-.trick-area-29 {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 180px; height: 180px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.trick-cards-29 {
-  position: relative;
-  width: 100%; height: 100%;
-}
-.trick-card-29 {
-  position: absolute;
-  width: 50px; height: 70px;
-  border-radius: 6px;
-  background: white;
-  border: 1px solid #cbd5e1;
-  box-shadow: 0 4px 10px rgba(0,0,0,.5);
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  font-weight: 800;
-  transition: all .3s;
-}
-.trick-card-29 .rank { font-size: 1.05rem; line-height: 1; }
-.trick-card-29 .suit { font-size: .9rem; line-height: 1; }
-.trick-card-29.pos-top { top: 0; left: 50%; transform: translateX(-50%); }
-.trick-card-29.pos-bottom { bottom: 0; left: 50%; transform: translateX(-50%); }
-.trick-card-29.pos-left { left: 0; top: 50%; transform: translateY(-50%); }
-.trick-card-29.pos-right { right: 0; top: 50%; transform: translateY(-50%); }
+/* 29 */
+.game-table-29{position:relative;background:radial-gradient(ellipse at center,#2d5a3d 0%,#1a3d28 100%);border-radius:20px;border:8px solid #3d2817;box-shadow:inset 0 0 60px rgba(0,0,0,.5),0 20px 50px rgba(0,0,0,.6);aspect-ratio:1/1.15;margin:0 auto;max-width:400px;overflow:hidden;}
+.game-table-29::before{content:'';position:absolute;inset:20px;border:2px dashed rgba(255,255,255,.08);border-radius:12px;pointer-events:none;}
+.player-seat-29{position:absolute;text-align:center;}
+.player-seat-29.top{top:6px;left:50%;transform:translateX(-50%);}
+.player-seat-29.left{top:50%;left:6px;transform:translateY(-50%);}
+.player-seat-29.right{top:50%;right:6px;transform:translateY(-50%);}
+.player-seat-29.bottom{bottom:6px;left:50%;transform:translateX(-50%);}
+.avatar-29{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#475569,#334155);display:flex;align-items:center;justify-content:center;font-size:1.3rem;border:3px solid rgba(255,255,255,.15);box-shadow:0 4px 12px rgba(0,0,0,.4);margin:0 auto 4px;}
+.avatar-29.active{border-color:var(--brand);box-shadow:0 0 20px rgba(0,229,160,.7);animation:glowPulse 1.8s infinite;}
+.name-tag-29{background:rgba(0,0,0,.55);padding:3px 10px;border-radius:12px;font-size:.6rem;font-weight:700;color:white;display:inline-block;backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.1);white-space:nowrap;}
+.trick-area-29{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:180px;height:180px;}
+.trick-card-29{position:absolute;width:48px;height:68px;border-radius:6px;background:white;border:1px solid #cbd5e1;box-shadow:0 4px 10px rgba(0,0,0,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;}
+.trick-card-29 .rank{font-size:1rem;line-height:1;}
+.trick-card-29 .suit{font-size:.85rem;line-height:1;}
+.trick-card-29.pos-top{top:0;left:50%;transform:translateX(-50%);}
+.trick-card-29.pos-bottom{bottom:0;left:50%;transform:translateX(-50%);}
+.trick-card-29.pos-left{left:0;top:50%;transform:translateY(-50%);}
+.trick-card-29.pos-right{right:0;top:50%;transform:translateY(-50%);}
+.hand-area-29{position:relative;margin-top:14px;display:flex;justify-content:center;gap:2px;flex-wrap:wrap;min-height:60px;}
+.card-29{width:40px;height:58px;border-radius:5px;background:white;border:1px solid #cbd5e1;box-shadow:0 3px 8px rgba(0,0,0,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s,box-shadow .15s;font-weight:800;flex-shrink:0;}
+.card-29:hover{transform:translateY(-8px);box-shadow:0 8px 16px rgba(0,0,0,.5);z-index:5;}
+.card-29 .rank{font-size:.95rem;line-height:1;}
+.card-29 .suit{font-size:.85rem;line-height:1;}
+.card-29.red{color:#dc2626;}
+.card-29.black{color:#1e293b;}
+.card-29.dim{opacity:.35;cursor:not-allowed;}
+.card-29.dim:hover{transform:none;}
+.trump-badge-29{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.6);padding:6px 12px;border-radius:12px;font-size:.7rem;font-weight:700;border:1px solid rgba(255,255,255,.15);text-align:center;color:white;}
+.trump-badge-29 .suit-big{font-size:1.3rem;display:block;line-height:1;}
+.score-area-29{position:absolute;top:12px;left:12px;background:rgba(0,0,0,.6);padding:6px 12px;border-radius:12px;font-size:.7rem;font-weight:700;border:1px solid rgba(255,255,255,.15);color:white;text-align:center;}
 
-.hand-area-29 {
-  position: absolute;
-  bottom: -70px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  justify-content: center;
-  gap: 2px;
-  width: 320px;
-  padding: 4px;
-  z-index: 20;
-}
-.card-29 {
-  width: 40px;
-  height: 58px;
-  border-radius: 5px;
-  background: white;
-  border: 1px solid #cbd5e1;
-  box-shadow: 0 3px 8px rgba(0,0,0,.4);
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  cursor: pointer;
-  transition: transform .15s, box-shadow .15s, margin-top .15s;
-  font-weight: 800;
-  flex-shrink: 0;
-  position: relative;
-}
-.card-29:hover { transform: translateY(-8px); box-shadow: 0 8px 16px rgba(0,0,0,.5); z-index: 5; }
-.card-29 .rank { font-size: .95rem; line-height: 1; }
-.card-29 .suit { font-size: .85rem; line-height: 1; }
-.card-29.red { color: #dc2626; }
-.card-29.black { color: #1e293b; }
-.card-29.dim { opacity: .35; cursor: not-allowed; }
-.card-29.dim:hover { transform: none; }
-.card-29.disabled { pointer-events: none; }
-.card-29.played { pointer-events: none; opacity: 0; }
+/* Carrom */
+.carrom-board{position:relative;aspect-ratio:1;max-width:400px;margin:0 auto;background:linear-gradient(135deg,#f5deb3 0%,#deb887 100%);border-radius:12px;border:12px solid #654321;box-shadow:inset 0 0 30px rgba(0,0,0,.3),0 15px 40px rgba(0,0,0,.5);overflow:hidden;}
+.carrom-board::before{content:'';position:absolute;inset:8%;border:2px solid rgba(0,0,0,.25);border-radius:4px;pointer-events:none;}
+.carrom-board::after{content:'';position:absolute;inset:26%;border:2px solid rgba(0,0,0,.25);border-radius:50%;pointer-events:none;}
+.carrom-pocket{position:absolute;width:11%;height:11%;background:radial-gradient(circle at 30% 30%,#444,#000);border-radius:50%;box-shadow:inset 0 4px 8px rgba(0,0,0,.9),0 2px 4px rgba(0,0,0,.4);z-index:3;}
+.carrom-pocket.tl{top:2%;left:2%;}
+.carrom-pocket.tr{top:2%;right:2%;}
+.carrom-pocket.bl{bottom:2%;left:2%;}
+.carrom-pocket.br{bottom:2%;right:2%;}
+.carrom-coin{position:absolute;width:7%;height:7%;border-radius:50%;box-shadow:0 2px 4px rgba(0,0,0,.5),inset 0 -2px 3px rgba(0,0,0,.2),inset 0 2px 3px rgba(255,255,255,.4);transition:transform .1s linear;z-index:4;}
+.carrom-coin.white{background:radial-gradient(circle at 35% 35%,#fff,#d1d5db 70%,#9ca3af);}
+.carrom-coin.black{background:radial-gradient(circle at 35% 35%,#6b7280,#1f2937 70%,#000);}
+.carrom-coin.queen{background:radial-gradient(circle at 35% 35%,#fca5a5,#dc2626 70%,#7f1d1d);}
+.carrom-striker{position:absolute;width:9%;height:9%;border-radius:50%;background:radial-gradient(circle at 30% 30%,#fff,#e5e7eb 60%,#94a3b8);box-shadow:0 2px 6px rgba(0,0,0,.6),inset 0 -2px 4px rgba(0,0,0,.15);border:2px solid #fff;z-index:5;transition:transform .12s ease-out;cursor:grab;}
+.carrom-aim-line{position:absolute;height:2px;background:rgba(255,255,255,.8);transform-origin:left center;pointer-events:none;z-index:6;border-radius:2px;box-shadow:0 0 8px rgba(255,255,255,.6);}
 
-.trump-badge-29 {
-  position: absolute;
-  top: 12px; right: 12px;
-  background: rgba(0,0,0,.6);
-  padding: 6px 12px;
-  border-radius: 12px;
-  font-size: .7rem;
-  font-weight: 700;
-  border: 1px solid rgba(255,255,255,.15);
-  backdrop-filter: blur(4px);
-  text-align: center;
-  color: white;
-}
-.trump-badge-29 .suit-big { font-size: 1.3rem; display: block; line-height: 1; }
+/* Color game tiles */
+.color-tile{height:70px;border-radius:14px;cursor:pointer;transition:transform .15s;box-shadow:0 4px 12px rgba(0,0,0,.3);}
 
-.score-area-29 {
-  position: absolute;
-  top: 12px; left: 12px;
-  background: rgba(0,0,0,.6);
-  padding: 6px 12px;
-  border-radius: 12px;
-  font-size: .7rem;
-  font-weight: 700;
-  border: 1px solid rgba(255,255,255,.15);
-  backdrop-filter: blur(4px);
-  color: white;
-  text-align: center;
-}
-
-/* ============= LUDO ============= */
-.ludo-board-game {
-  position: relative;
-  aspect-ratio: 1;
-  max-width: 400px;
-  margin: 0 auto;
-  background: #fff;
-  border-radius: 16px;
-  border: 6px solid #1e293b;
-  box-shadow: 0 15px 40px rgba(0,0,0,.5);
-  overflow: hidden;
-}
-.ludo-grid {
-  display: grid;
-  grid-template-columns: repeat(15, 1fr);
-  grid-template-rows: repeat(15, 1fr);
-  width: 100%;
-  height: 100%;
-}
-.ludo-cell {
-  border: 1px solid rgba(0,0,0,.15);
-  position: relative;
-}
-.ludo-cell.path-red { background: #ef4444; }
-.ludo-cell.path-green { background: #22c55e; }
-.ludo-cell.path-yellow { background: #eab308; }
-.ludo-cell.path-blue { background: #3b82f6; }
-.ludo-cell.path-white { background: #fff; }
-.ludo-home-base {
-  display: flex; align-items: center; justify-content: center;
-}
-.ludo-home-base-inner {
-  width: 60%; height: 60%;
-  border-radius: 8px;
-  background: rgba(255,255,255,.6);
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 8%;
-  padding: 8%;
-}
-.ludo-home-dot {
-  border-radius: 50%;
-  border: 2px solid rgba(0,0,0,.3);
-}
-.ludo-token {
-  position: absolute;
-  width: 78%;
-  height: 78%;
-  top: 11%; left: 11%;
-  border-radius: 50%;
-  border: 2px solid rgba(255,255,255,.85);
-  box-shadow: 0 2px 5px rgba(0,0,0,.5);
-  transition: top .3s, left .3s, transform .2s;
-  cursor: pointer;
-  z-index: 5;
-}
-.ludo-token.red { background: radial-gradient(circle at 30% 30%, #ff8a8a, #b91c1c); }
-.ludo-token.green { background: radial-gradient(circle at 30% 30%, #86efac, #15803d); }
-.ludo-token.yellow { background: radial-gradient(circle at 30% 30%, #fde68a, #a16207); }
-.ludo-token.blue { background: radial-gradient(circle at 30% 30%, #93c5fd, #1d4ed8); }
-.ludo-token.movable { animation: glowPulse 1.2s infinite; cursor: pointer; }
-.ludo-center-triangle {
-  position: absolute;
-  top: 40%; left: 40%;
-  width: 20%; height: 20%;
-  background: #1e293b;
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-  z-index: 2;
-}
-
-/* ============= CARROM ============= */
-.carrom-board {
-  position: relative;
-  aspect-ratio: 1;
-  max-width: 400px;
-  margin: 0 auto;
-  background: linear-gradient(135deg, #f5deb3 0%, #deb887 100%);
-  border-radius: 12px;
-  border: 12px solid #654321;
-  box-shadow: inset 0 0 30px rgba(0,0,0,.3), 0 15px 40px rgba(0,0,0,.5);
-  overflow: hidden;
-}
-.carrom-board::before {
-  content:'';
-  position: absolute;
-  inset: 8%;
-  border: 2px solid rgba(0,0,0,.25);
-  border-radius: 4px;
-  pointer-events: none;
-}
-.carrom-board::after {
-  content:'';
-  position: absolute;
-  inset: 26%;
-  border: 2px solid rgba(0,0,0,.25);
-  border-radius: 50%;
-  pointer-events: none;
-}
-.carrom-pocket {
-  position: absolute;
-  width: 11%;
-  height: 11%;
-  background: radial-gradient(circle at 30% 30%, #444, #000);
-  border-radius: 50%;
-  box-shadow: inset 0 4px 8px rgba(0,0,0,.9), 0 2px 4px rgba(0,0,0,.4);
-  z-index: 3;
-}
-.carrom-pocket.tl { top: 2%; left: 2%; }
-.carrom-pocket.tr { top: 2%; right: 2%; }
-.carrom-pocket.bl { bottom: 2%; left: 2%; }
-.carrom-pocket.br { bottom: 2%; right: 2%; }
-.carrom-coin {
-  position: absolute;
-  width: 7%;
-  height: 7%;
-  border-radius: 50%;
-  box-shadow: 0 2px 4px rgba(0,0,0,.5), inset 0 -2px 3px rgba(0,0,0,.2), inset 0 2px 3px rgba(255,255,255,.4);
-  transition: transform .4s cubic-bezier(.4,0,.2,1);
-  z-index: 4;
-}
-.carrom-coin.white { background: radial-gradient(circle at 35% 35%, #fff, #d1d5db 70%, #9ca3af); }
-.carrom-coin.black { background: radial-gradient(circle at 35% 35%, #6b7280, #1f2937 70%, #000); }
-.carrom-coin.queen { background: radial-gradient(circle at 35% 35%, #fca5a5, #dc2626 70%, #7f1d1d); }
-.carrom-striker {
-  position: absolute;
-  width: 9%;
-  height: 9%;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #fff, #e5e7eb 60%, #94a3b8);
-  box-shadow: 0 2px 6px rgba(0,0,0,.6), inset 0 -2px 4px rgba(0,0,0,.15);
-  border: 2px solid #fff;
-  z-index: 5;
-  transition: transform .12s ease-out;
-  cursor: grab;
-}
-.carrom-striker:active { cursor: grabbing; }
-.carrom-aim-line {
-  position: absolute;
-  height: 2px;
-  background: rgba(255,255,255,.8);
-  transform-origin: left center;
-  pointer-events: none;
-  z-index: 6;
-  border-radius: 2px;
-  box-shadow: 0 0 8px rgba(255,255,255,.6);
-}
-
-/* Watch ad for points */
-.collect-points-card {
-  background: linear-gradient(135deg, rgba(245,158,11,.15), rgba(239,68,68,.1));
-  border: 1px solid rgba(245,158,11,.35);
-  border-radius: 18px;
-  padding: 18px;
-  text-align: center;
-  margin-bottom: 16px;
-}
-
-/* Game result modal */
-.result-modal-card {
-  background: var(--bg-card);
-  border: 2px solid var(--border);
-  border-radius: 24px;
-  padding: 32px 26px;
-  max-width: 380px; width: 100%;
-  text-align: center;
-  animation: slideUp .3s ease;
-}
-.result-modal-card.win { border-color: rgba(34,197,94,.5); box-shadow: 0 25px 60px rgba(34,197,94,.3); }
-.result-modal-card.lose { border-color: rgba(239,68,68,.5); box-shadow: 0 25px 60px rgba(239,68,68,.3); }
-
-/* Seat indicator for 29 */
-.seat-badge {
-  display: inline-block;
-  background: var(--brand);
-  color: #0a0e1a;
-  font-size: .55rem;
-  padding: 1px 6px;
-  border-radius: 6px;
-  font-weight: 800;
-  margin-left: 4px;
-  vertical-align: middle;
-}
+/* Result modal */
+.result-modal-card{background:var(--bg-card);border:2px solid var(--border);border-radius:24px;padding:32px 26px;max-width:380px;width:100%;text-align:center;animation:slideUp .3s ease;}
+.result-modal-card.win{border-color:rgba(34,197,94,.5);box-shadow:0 25px 60px rgba(34,197,94,.3);}
+.result-modal-card.lose{border-color:rgba(239,68,68,.5);box-shadow:0 25px 60px rgba(239,68,68,.3);}
 </style>
 </head>
 <body class="max-w-md mx-auto">
@@ -439,9 +167,7 @@ body {
 <!-- AD OVERLAY -->
 <div id="adOverlay" class="ad-overlay">
   <div class="ad-overlay-card">
-    <div style="display:flex;justify-content:center;margin-bottom:20px;">
-      <div class="spinner spinner-lg"></div>
-    </div>
+    <div style="display:flex;justify-content:center;margin-bottom:20px;"><div class="spinner spinner-lg"></div></div>
     <h3 id="adOverlayTitle" class="brand-gradient" style="font-size:1.4rem;font-weight:800;margin-bottom:8px;">Loading</h3>
     <p id="adOverlayMsg" style="color:var(--text-dim);font-size:.85rem;">Please wait…</p>
   </div>
@@ -470,7 +196,7 @@ body {
   </div>
 </div>
 
-<!-- GAME RESULT MODAL -->
+<!-- RESULT MODAL -->
 <div id="resultModal" class="modal">
   <div id="resultModalCard" class="result-modal-card">
     <div id="resultIcon" style="font-size:4rem;margin-bottom:12px;">🏆</div>
@@ -543,21 +269,18 @@ body {
       <div class="card" style="padding:18px;margin-bottom:18px;position:relative;overflow:hidden;">
         <div style="position:absolute;top:-30px;right:-30px;width:100px;height:100px;background:radial-gradient(circle,rgba(0,229,160,.2),transparent 70%);border-radius:50%;"></div>
         <h1 class="brand-gradient" style="font-size:1.5rem;font-weight:800;margin-bottom:6px;">Games Hub</h1>
-        <p style="color:var(--text-dim);font-size:.8rem;line-height:1.5;">Play 29, Ludo, Carrom and more — win points!</p>
+        <p style="color:var(--text-dim);font-size:.8rem;line-height:1.5;">Play games, complete tasks and earn real rewards.</p>
         <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
           <span class="pill pill-success"><i class="fas fa-bolt"></i> Fast Payouts</span>
-          <span class="pill pill-info"><i class="fas fa-gamepad"></i> 6 Games</span>
+          <span class="pill pill-info"><i class="fas fa-shield-alt"></i> Secure</span>
         </div>
       </div>
-
       <div id="slider" class="slider" style="margin-bottom:20px;display:none;">
         <div class="slider-track" id="sliderTrack"></div>
         <div class="slider-dots" id="sliderDots"></div>
       </div>
-
       <h2 style="font-size:.95rem;font-weight:700;margin-bottom:12px;color:var(--text-dim);letter-spacing:.5px;">EARN REWARDS</h2>
       <div id="featureGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px;"></div>
-
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
         <div class="card-elev" style="padding:12px;text-align:center;">
           <i class="fas fa-fire" style="color:var(--warn);font-size:1rem;margin-bottom:6px;"></i>
@@ -577,67 +300,137 @@ body {
       </div>
     </div>
 
-    <!-- 29 GAME -->
+    <!-- LUDO DICE (simple) -->
+    <div id="page-ludoDice" class="sub-page" style="padding:16px 18px;">
+      <h2 class="brand-gradient" style="font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:4px;">🎲 Ludo Dice</h2>
+      <p style="text-align:center;color:var(--text-dim);font-size:.75rem;margin-bottom:14px;">Roll the dice, win points!</p>
+      <div class="card" style="padding:22px 18px;text-align:center;margin-bottom:16px;">
+        <div style="color:var(--text-mute);font-size:.7rem;margin-bottom:4px;">ENTRY FEE</div>
+        <div id="ludoDiceCost" class="brand-gradient" style="font-size:1.8rem;font-weight:800;">10</div>
+        <div style="margin:26px auto;">
+          <div class="ludo-dice" id="ludoDiceDisplay" style="margin:0 auto;">6</div>
+        </div>
+        <button id="ludoDiceRollBtn" class="btn btn-primary" style="width:100%;padding:16px;font-size:1.05rem;">
+          <i class="fas fa-dice" style="margin-right:8px;"></i>
+          <span id="ludoDiceRollText">ROLL DICE</span>
+        </button>
+        <div id="ludoDiceTimer" style="color:var(--brand);font-size:.8rem;margin-top:10px;font-weight:700;"></div>
+        <div id="ludoDiceMultiplier" style="color:var(--text-mute);font-size:.7rem;margin-top:8px;">Dice × multiplier</div>
+      </div>
+    </div>
+
+    <!-- COLOR -->
+    <div id="page-color" class="sub-page" style="padding:16px 18px;">
+      <h2 class="brand-gradient" style="font-size:1.6rem;font-weight:800;text-align:center;margin-bottom:6px;">🎨 Color Match</h2>
+      <p style="text-align:center;color:var(--text-dim);font-size:.8rem;margin-bottom:20px;">Find the matching color</p>
+      <div class="card" style="padding:20px;text-align:center;margin-bottom:16px;">
+        <div style="color:var(--text-mute);font-size:.7rem;margin-bottom:8px;">TARGET COLOR</div>
+        <div id="colorTarget" style="width:120px;height:70px;margin:0 auto 12px;border-radius:14px;border:3px solid white;box-shadow:0 8px 20px rgba(0,0,0,.4);"></div>
+        <div id="colorRGB" style="font-family:monospace;color:var(--brand);font-weight:700;font-size:.95rem;"></div>
+        <div id="colorReward" style="color:var(--text-mute);font-size:.7rem;margin-top:10px;"></div>
+      </div>
+      <div id="colorGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;"></div>
+    </div>
+
+    <!-- WATCH -->
+    <div id="page-watch" class="sub-page" style="padding:16px 18px;">
+      <h2 class="brand-gradient" style="font-size:1.6rem;font-weight:800;text-align:center;margin-bottom:6px;">📺 Watch & Earn</h2>
+      <p style="text-align:center;color:var(--text-dim);font-size:.8rem;margin-bottom:20px;">Watch a short ad, get instant coins</p>
+      <div class="card" style="padding:26px 20px;text-align:center;margin-bottom:16px;">
+        <div class="feature-icon" style="width:80px;height:80px;font-size:2rem;margin:0 auto 16px;border-radius:22px;"><i class="fas fa-play"></i></div>
+        <div id="watchReward" class="brand-gradient" style="font-size:2rem;font-weight:800;margin-bottom:6px;">+50</div>
+        <div style="color:var(--text-dim);font-size:.8rem;">coins per ad</div>
+        <button id="watchBtn" class="btn btn-primary" style="width:100%;padding:16px;font-size:1rem;margin-top:22px;">
+          <i class="fas fa-play-circle" style="margin-right:8px;"></i>
+          <span id="watchBtnText">WATCH NOW</span>
+        </button>
+        <div id="watchTimer" style="color:var(--brand);font-size:.8rem;margin-top:10px;font-weight:700;"></div>
+      </div>
+    </div>
+
+    <!-- LUCK -->
+    <div id="page-luck" class="sub-page" style="padding:16px 18px;">
+      <h2 class="brand-gradient" style="font-size:1.6rem;font-weight:800;text-align:center;margin-bottom:6px;">🍀 Try Your Luck</h2>
+      <p style="text-align:center;color:var(--text-dim);font-size:.8rem;margin-bottom:20px;">Chain ads for a big reward</p>
+      <div class="card" style="padding:24px 20px;margin-bottom:16px;text-align:center;">
+        <div class="feature-icon" style="width:70px;height:70px;font-size:1.8rem;margin:0 auto 14px;background:linear-gradient(135deg,#f59e0b,#ef4444);"><i class="fas fa-star"></i></div>
+        <div id="luckReward" class="brand-gradient" style="font-size:1.9rem;font-weight:800;">+500</div>
+        <div style="color:var(--text-dim);font-size:.75rem;margin-top:4px;">max points</div>
+        <button id="luckBtn" class="btn btn-primary pulse-soft" style="width:100%;padding:16px;font-size:1rem;margin-top:22px;">
+          <i class="fas fa-play" style="margin-right:8px;"></i> START
+        </button>
+      </div>
+    </div>
+
+    <!-- LUCK RUN -->
+    <div id="page-luck-run" class="sub-page" style="padding:16px 18px;">
+      <div class="card" style="padding:26px 20px;text-align:center;">
+        <div class="feature-icon" style="width:70px;height:70px;font-size:1.8rem;margin:0 auto 14px;background:linear-gradient(135deg,#f59e0b,#ef4444);"><i class="fas fa-star"></i></div>
+        <h3 class="brand-gradient" style="font-size:1.3rem;font-weight:800;margin-bottom:4px;">Loading…</h3>
+        <p id="luckStatus" style="color:var(--text-dim);font-size:.8rem;margin-bottom:16px;">Please wait</p>
+        <div style="background:rgba(255,255,255,.06);border-radius:10px;height:8px;overflow:hidden;margin-bottom:8px;">
+          <div id="luckProgressBar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--brand),var(--brand-2));transition:width .4s;"></div>
+        </div>
+        <div id="luckProgressText" style="color:var(--text-mute);font-size:.7rem;margin-bottom:16px;">0/0</div>
+        <button id="luckClaimBtn" class="btn btn-success hidden" style="width:100%;padding:14px;font-size:.95rem;">
+          <i class="fas fa-gift" style="margin-right:6px;"></i> CLAIM
+        </button>
+        <button id="luckExitBtn" class="btn btn-ghost" style="width:100%;padding:10px;font-size:.8rem;margin-top:10px;">Exit</button>
+      </div>
+    </div>
+
+    <!-- VISIT -->
+    <div id="page-visit" class="sub-page" style="padding:16px 18px;">
+      <h2 class="brand-gradient" style="font-size:1.6rem;font-weight:800;text-align:center;margin-bottom:6px;">🌐 Visit & Earn</h2>
+      <p style="text-align:center;color:var(--text-dim);font-size:.8rem;margin-bottom:20px;">Visit websites, get coins</p>
+      <div id="visitList" style="display:flex;flex-direction:column;gap:12px;"></div>
+    </div>
+
+    <!-- SOCIAL -->
+    <div id="page-social" class="sub-page" style="padding:16px 18px;">
+      <h2 class="brand-gradient" style="font-size:1.6rem;font-weight:800;text-align:center;margin-bottom:6px;">📱 Social Tasks</h2>
+      <p style="text-align:center;color:var(--text-dim);font-size:.8rem;margin-bottom:20px;">Follow & earn coins</p>
+      <div id="socialList" style="display:flex;flex-direction:column;gap:12px;"></div>
+    </div>
+
+    <!-- 29 CARD GAME -->
     <div id="page-29" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:4px;">🃏 29 Card Game</h2>
       <p style="text-align:center;color:var(--text-dim);font-size:.75rem;margin-bottom:14px;">
         You + West vs North + South · Entry <span id="g29Fee" style="color:var(--brand);font-weight:800;">100</span> · Winner <span id="g29Reward" style="color:var(--brand);font-weight:800;">180</span>
       </p>
-
       <div id="g29-lobby" class="card" style="padding:22px 18px;text-align:center;">
         <div style="font-size:3rem;margin-bottom:12px;">🃏</div>
         <p style="color:var(--text-dim);font-size:.85rem;margin-bottom:16px;">Play against 3 AI opponents</p>
         <button id="g29StartBtn" class="btn btn-primary" style="width:100%;padding:16px;font-size:1rem;">
           <i class="fas fa-play" style="margin-right:8px;"></i> START MATCH
         </button>
-        <p style="color:var(--text-mute);font-size:.68rem;margin-top:10px;">Win to earn points · Lose to lose entry</p>
       </div>
-
       <div id="g29-game" class="hidden">
-        <div class="score-area-29">
-          <div>YOU + WEST</div>
-          <div id="g29TeamScore" style="font-size:1.1rem;color:var(--brand);">0</div>
-        </div>
+        <div class="score-area-29"><div>YOU + WEST</div><div id="g29TeamScore" style="font-size:1.1rem;color:var(--brand);">0</div></div>
         <div class="trump-badge-29" id="g29TrumpBadge" style="display:none;">
           <div style="font-size:.6rem;opacity:.8;">TRUMP</div>
           <span class="suit-big" id="g29TrumpSuit">♠</span>
         </div>
         <div class="game-table-29" id="g29Table">
-          <div class="player-seat-29 top" id="g29SeatNorth">
-            <div class="avatar-29" id="g29AvatarNorth">🤖</div>
-            <div class="name-tag-29">North (AI)</div>
-          </div>
-          <div class="player-seat-29 left" id="g29SeatWest">
-            <div class="avatar-29" id="g29AvatarWest">🤖</div>
-            <div class="name-tag-29">West (AI)</div>
-          </div>
-          <div class="player-seat-29 right" id="g29SeatSouth">
-            <div class="avatar-29" id="g29AvatarSouth">🤖</div>
-            <div class="name-tag-29">South (AI)</div>
-          </div>
-          <div class="player-seat-29 bottom" id="g29SeatYou">
-            <div class="avatar-29 active" id="g29AvatarYou">🧑</div>
-            <div class="name-tag-29">You <span class="seat-badge">YOU</span></div>
-          </div>
-          <div class="trick-area-29">
-            <div class="trick-cards-29" id="g29TrickArea"></div>
-          </div>
+          <div class="player-seat-29 top"><div class="avatar-29" id="g29AvatarNorth">🤖</div><div class="name-tag-29">North</div></div>
+          <div class="player-seat-29 left"><div class="avatar-29" id="g29AvatarWest">🤖</div><div class="name-tag-29">West</div></div>
+          <div class="player-seat-29 right"><div class="avatar-29" id="g29AvatarSouth">🤖</div><div class="name-tag-29">South</div></div>
+          <div class="player-seat-29 bottom"><div class="avatar-29 active" id="g29AvatarYou">🧑</div><div class="name-tag-29">You</div></div>
+          <div class="trick-area-29"><div class="trick-cards-29" id="g29TrickArea"></div></div>
         </div>
-        <div style="position:relative;margin-top:10px;height:100px;">
-          <div class="hand-area-29" id="g29Hand"></div>
-        </div>
+        <div class="hand-area-29" id="g29Hand"></div>
         <div id="g29Status" style="text-align:center;color:var(--text-dim);font-size:.8rem;margin-top:8px;min-height:20px;">Preparing…</div>
         <button id="g29QuitBtn" class="btn btn-ghost" style="width:100%;padding:10px;font-size:.8rem;margin-top:10px;">Quit Match</button>
       </div>
     </div>
 
-    <!-- LUDO GAME -->
+    <!-- LUDO -->
     <div id="page-ludo" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:4px;">🎲 Ludo</h2>
       <p style="text-align:center;color:var(--text-dim);font-size:.75rem;margin-bottom:14px;">
         You vs Computer · Entry <span id="ludoFee" style="color:var(--brand);font-weight:800;">100</span> · Winner <span id="ludoReward" style="color:var(--brand);font-weight:800;">180</span>
       </p>
-
       <div id="ludo-lobby" class="card" style="padding:22px 18px;text-align:center;">
         <div style="font-size:3rem;margin-bottom:12px;">🎲</div>
         <p style="color:var(--text-dim);font-size:.85rem;margin-bottom:16px;">Roll the dice, race your tokens home</p>
@@ -645,7 +438,6 @@ body {
           <i class="fas fa-play" style="margin-right:8px;"></i> START MATCH
         </button>
       </div>
-
       <div id="ludo-game" class="hidden">
         <div style="display:flex;justify-content:space-between;margin-bottom:10px;gap:8px;">
           <div class="card-elev" style="flex:1;padding:8px;text-align:center;">
@@ -658,24 +450,24 @@ body {
           </div>
         </div>
         <div class="ludo-board-game" id="ludoBoard"></div>
-        <div style="display:flex;gap:10px;margin-top:14px;">
-          <button id="ludoRollBtn" class="btn btn-primary" style="flex:1;padding:14px;font-size:.95rem;">
+        <div class="ludo-dice-area">
+          <div class="ludo-dice" id="ludoBigDice">⚀</div>
+          <button id="ludoRollBtn" class="btn btn-primary ludo-roll-btn">
             <i class="fas fa-dice" style="margin-right:6px;"></i>
             <span id="ludoRollText">ROLL DICE</span>
           </button>
-          <button id="ludoQuitBtn" class="btn btn-ghost" style="padding:14px;">Quit</button>
         </div>
-        <div id="ludoStatus" style="text-align:center;color:var(--text-dim);font-size:.8rem;margin-top:8px;">Your turn — roll!</div>
+        <div id="ludoStatus" style="text-align:center;color:var(--text-dim);font-size:.8rem;margin-top:10px;">Your turn — roll!</div>
+        <button id="ludoQuitBtn" class="btn btn-ghost" style="width:100%;padding:10px;font-size:.8rem;margin-top:10px;">Quit Match</button>
       </div>
     </div>
 
-    <!-- CARROM GAME -->
+    <!-- CARROM -->
     <div id="page-carrom" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:4px;">🎯 Carrom</h2>
       <p style="text-align:center;color:var(--text-dim);font-size:.75rem;margin-bottom:14px;">
         You vs Computer · Entry <span id="carromFee" style="color:var(--brand);font-weight:800;">100</span> · Winner <span id="carromReward" style="color:var(--brand);font-weight:800;">180</span>
       </p>
-
       <div id="carrom-lobby" class="card" style="padding:22px 18px;text-align:center;">
         <div style="font-size:3rem;margin-bottom:12px;">🎯</div>
         <p style="color:var(--text-dim);font-size:.85rem;margin-bottom:16px;">Pot all your coins before the computer</p>
@@ -683,7 +475,6 @@ body {
           <i class="fas fa-play" style="margin-right:8px;"></i> START MATCH
         </button>
       </div>
-
       <div id="carrom-game" class="hidden">
         <div style="display:flex;justify-content:space-between;margin-bottom:10px;gap:8px;">
           <div class="card-elev" style="flex:1;padding:8px;text-align:center;">
@@ -702,31 +493,6 @@ body {
         <div id="carromStatus" style="text-align:center;color:var(--text-dim);font-size:.8rem;margin-top:8px;">Your turn</div>
         <button id="carromQuitBtn" class="btn btn-ghost" style="width:100%;padding:10px;font-size:.8rem;margin-top:10px;">Quit Match</button>
       </div>
-    </div>
-
-    <!-- WATCH & EARN -->
-    <div id="page-watch" class="sub-page" style="padding:16px 18px;">
-      <h2 class="brand-gradient" style="font-size:1.6rem;font-weight:800;text-align:center;margin-bottom:6px;">📺 Watch & Earn</h2>
-      <p style="text-align:center;color:var(--text-dim);font-size:.8rem;margin-bottom:20px;">Watch a short ad, get instant coins</p>
-      <div class="card" style="padding:26px 20px;text-align:center;">
-        <div class="feature-icon" style="width:80px;height:80px;font-size:2rem;margin:0 auto 16px;border-radius:22px;">
-          <i class="fas fa-play"></i>
-        </div>
-        <div id="watchReward" class="brand-gradient" style="font-size:2rem;font-weight:800;margin-bottom:6px;">+50</div>
-        <div style="color:var(--text-dim);font-size:.8rem;">coins per ad</div>
-        <button id="watchBtn" class="btn btn-primary" style="width:100%;padding:16px;font-size:1rem;margin-top:22px;">
-          <i class="fas fa-play-circle" style="margin-right:8px;"></i>
-          <span id="watchBtnText">WATCH NOW</span>
-        </button>
-        <div id="watchTimer" style="color:var(--brand);font-size:.8rem;margin-top:10px;font-weight:700;"></div>
-      </div>
-    </div>
-
-    <!-- VISIT -->
-    <div id="page-visit" class="sub-page" style="padding:16px 18px;">
-      <h2 class="brand-gradient" style="font-size:1.6rem;font-weight:800;text-align:center;margin-bottom:6px;">🌐 Visit & Earn</h2>
-      <p style="text-align:center;color:var(--text-dim);font-size:.8rem;margin-bottom:20px;">Visit websites, get coins</p>
-      <div id="visitList" style="display:flex;flex-direction:column;gap:12px;"></div>
     </div>
 
     <!-- WALLET -->
@@ -783,14 +549,8 @@ body {
         <p id="profileUsername" style="color:var(--text-mute);font-size:.78rem;margin-top:4px;">@—</p>
         <p id="profileTgId" style="color:var(--text-mute);font-size:.68rem;margin-top:2px;">ID: —</p>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px;">
-          <div class="card-elev" style="padding:12px;">
-            <div style="color:var(--text-mute);font-size:.65rem;">Member Since</div>
-            <div id="profileSince" class="brand-gradient" style="font-weight:800;font-size:.9rem;margin-top:2px;">—</div>
-          </div>
-          <div class="card-elev" style="padding:12px;">
-            <div style="color:var(--text-mute);font-size:.65rem;">Total Earned</div>
-            <div id="profileTotal" class="brand-gradient" style="font-weight:800;font-size:.9rem;margin-top:2px;">0</div>
-          </div>
+          <div class="card-elev" style="padding:12px;"><div style="color:var(--text-mute);font-size:.65rem;">Member Since</div><div id="profileSince" class="brand-gradient" style="font-weight:800;font-size:.9rem;margin-top:2px;">—</div></div>
+          <div class="card-elev" style="padding:12px;"><div style="color:var(--text-mute);font-size:.65rem;">Total Earned</div><div id="profileTotal" class="brand-gradient" style="font-weight:800;font-size:.9rem;margin-top:2px;">0</div></div>
         </div>
       </div>
       <button id="closeAppBtn" class="btn btn-ghost" style="width:100%;padding:14px;margin-top:20px;font-size:.9rem;color:var(--danger);">
@@ -809,9 +569,6 @@ body {
 </div>
 
 <script type="module">
-// ============================================================
-// GAMES HUB — Full app with 29 Card Game, Ludo, Carrom
-// ============================================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, serverTimestamp, query, where, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
@@ -826,7 +583,7 @@ const firebaseConfig = {
 const fbApp = initializeApp(firebaseConfig);
 const db = getFirestore(fbApp);
 
-// ============ STATE ============
+// ========== STATE ==========
 let currentUser = null;
 let userData = null;
 let appConfig = {};
@@ -836,24 +593,22 @@ let userCountry = '';
 let tgUser = null;
 let adsgramRewardCtrl = null, adsgramInterstitialCtrl = null, adsgramReady = false, gigapubReady = false;
 let watchBusy = false, watchDisabledUntil = 0, watchTimerInterval = null;
+let ludoDiceBusy = false, ludoDiceDisabledUntil = 0, ludoDiceTimerInterval = null;
 let sliderInterval = null, slideIdx = 0;
 
-// Game configs
 let gameConfig = {
   g29:    { entryFee: 100, winnerReward: 180, visible: true },
   ludo:   { entryFee: 100, winnerReward: 180, visible: true },
-  carrom: { entryFee: 100, winnerReward: 180, visible: true },
-  adRewardPerView: 10
+  carrom: { entryFee: 100, winnerReward: 180, visible: true }
 };
 
-// ============ HELPERS ============
+// ========== HELPERS ==========
 const $ = (id) => document.getElementById(id);
-function safeSet(id, prop, val) { const el = $(id); if (el) el[prop] = val; }
+function safeSet(id, prop, v) { const e = $(id); if (e) e[prop] = v; }
 function safeText(id, v) { safeSet(id, 'textContent', v); }
 function safeHtml(id, v) { safeSet(id, 'innerHTML', v); }
 function safeSrc(id, v) { safeSet(id, 'src', v); }
 
-function showLoader(show) { const el = $('appLoader'); if (el) el.style.display = show ? 'flex' : 'none'; }
 function showAdOverlay(t, m) { safeText('adOverlayTitle', t||'Loading'); safeText('adOverlayMsg', m||'Please wait…'); $('adOverlay')?.classList.add('show'); }
 function hideAdOverlay() { $('adOverlay')?.classList.remove('show'); }
 
@@ -866,9 +621,8 @@ function showConfirm(icon, title, body, yesT, noT, onYes, onNo) {
   safeText('confirmIcon', icon); safeText('confirmTitle', title); safeText('confirmBody', body);
   safeText('confirmYesBtn', yesT); safeText('confirmNoBtn', noT);
   $('confirmModal')?.classList.add('show');
-  const y = $('confirmYesBtn'), n = $('confirmNoBtn');
-  if (y) y.onclick = () => { $('confirmModal').classList.remove('show'); onYes && onYes(); };
-  if (n) n.onclick = () => { $('confirmModal').classList.remove('show'); onNo && onNo(); };
+  $('confirmYesBtn').onclick = () => { $('confirmModal').classList.remove('show'); onYes && onYes(); };
+  $('confirmNoBtn').onclick = () => { $('confirmModal').classList.remove('show'); onNo && onNo(); };
 }
 function showResult(icon, title, body, points, btnLabel, onClose) {
   safeText('resultIcon', icon); safeText('resultTitle', title); safeText('resultBody', body);
@@ -878,7 +632,7 @@ function showResult(icon, title, body, points, btnLabel, onClose) {
   const card = $('resultModalCard');
   if (card) { card.classList.remove('win','lose'); card.classList.add(points >= 0 ? 'win' : 'lose'); }
   $('resultModal')?.classList.add('show');
-  const b = $('resultBtn'); if (b) b.onclick = () => { $('resultModal').classList.remove('show'); if (onClose) onClose(); };
+  $('resultBtn').onclick = () => { $('resultModal').classList.remove('show'); if (onClose) onClose(); };
 }
 
 function navigateTo(page) {
@@ -892,12 +646,15 @@ function navigateTo(page) {
     if (page === 'refer') loadRefer();
     if (page === 'profile') loadProfile();
     if (page === 'visit') loadVisit();
+    if (page === 'social') loadSocial();
     if (page === 'watch') refreshWatchUI();
+    if (page === 'color') startColorRound();
+    if (page === 'ludoDice') refreshLudoDiceUI();
   } catch(e) { console.warn(e); }
 }
 window.navigateTo = navigateTo;
 
-// ============ BOOTSTRAP ============
+// ========== BOOTSTRAP ==========
 async function bootstrap() {
   try {
     if (!window.Telegram?.WebApp) { $('accessDenied')?.classList.add('show'); return; }
@@ -929,13 +686,12 @@ async function bootstrap() {
         adsgramInterstitial:{enabled:a.adsgramInterstitial?.enabled!==false,order:a.adsgramInterstitial?.order||3}
       };
     }
-    // Load 3-game config
-    if (appConfig.game29)    Object.assign(gameConfig.g29,    appConfig.game29);
-    if (appConfig.ludoGame)  Object.assign(gameConfig.ludo,   appConfig.ludoGame);
-    if (appConfig.carromGame)Object.assign(gameConfig.carrom, appConfig.carromGame);
-    if (appConfig.adRewardPerView) gameConfig.adRewardPerView = appConfig.adRewardPerView;
 
-    // Country block
+    // Load 3-game config
+    if (appConfig.game29)     Object.assign(gameConfig.g29,     appConfig.game29);
+    if (appConfig.ludoGame)   Object.assign(gameConfig.ludo,    appConfig.ludoGame);
+    if (appConfig.carromGame) Object.assign(gameConfig.carrom,  appConfig.carromGame);
+
     if (appConfig.allowedCountries?.length && userCountry && !appConfig.allowedCountries.includes(userCountry)) {
       safeText('countryBlockMsg', appConfig.blockedCountryMessage || 'Not available.');
       $('countryBlock')?.classList.add('show');
@@ -973,9 +729,9 @@ async function bootstrap() {
       onSnapshot(doc(db,'config','main'), s => {
         if (s.exists()) {
           appConfig = { ...appConfig, ...s.data() };
-          if (appConfig.game29)    Object.assign(gameConfig.g29,    appConfig.game29);
-          if (appConfig.ludoGame)  Object.assign(gameConfig.ludo,   appConfig.ludoGame);
-          if (appConfig.carromGame)Object.assign(gameConfig.carrom, appConfig.carromGame);
+          if (appConfig.game29)     Object.assign(gameConfig.g29,     appConfig.game29);
+          if (appConfig.ludoGame)   Object.assign(gameConfig.ludo,    appConfig.ludoGame);
+          if (appConfig.carromGame) Object.assign(gameConfig.carrom,  appConfig.carromGame);
           refreshAllUI(); updateGameLabels();
         }
       });
@@ -996,7 +752,7 @@ async function detectCountry() {
   } catch { return ''; }
 }
 
-// ============ USER ============
+// ========== USER ==========
 async function initUser() {
   const uid = `tg_${tgUser.id}`;
   const fn = tgUser.first_name||'', ln = tgUser.last_name||'', un = tgUser.username||'';
@@ -1010,40 +766,33 @@ async function initUser() {
     userData = snap.data();
     try {
       await updateDoc(ref, {
-        telegramId: tgUser.id, telegramUsername: un,
-        telegramFirstName: fn, telegramLastName: ln,
-        telegramChatId: tgUser.id,
-        profilePicture: pic, name: fullName,
+        telegramId: tgUser.id, telegramUsername: un, telegramFirstName: fn, telegramLastName: ln,
+        telegramChatId: tgUser.id, profilePicture: pic, name: fullName,
         lastLogin: serverTimestamp(), lastSeen: serverTimestamp(),
-        isActive: true,
-        country: userCountry || userData.country || 'unknown'
+        isActive: true, country: userCountry || userData.country || 'unknown'
       });
     } catch(e){}
     Object.assign(userData, { telegramId:tgUser.id, telegramUsername:un, telegramFirstName:fn, telegramLastName:ln, telegramChatId:tgUser.id, name:fullName, profilePicture:pic });
   } else {
     const code = Math.random().toString(36).slice(2,8).toUpperCase();
     userData = {
-      uid, telegramId:tgUser.id, telegramUsername:un,
-      telegramFirstName:fn, telegramLastName:ln,
-      telegramChatId:tgUser.id,
-      name: fullName, email: `${tgUser.id}@telegram.miniapp`,
+      uid, telegramId:tgUser.id, telegramUsername:un, telegramFirstName:fn, telegramLastName:ln,
+      telegramChatId:tgUser.id, name: fullName, email: `${tgUser.id}@telegram.miniapp`,
       profilePicture: pic, balance: 100,
       referralCode: code, referredBy: null,
       createdAt: serverTimestamp(), lastLogin: serverTimestamp(), lastSeen: serverTimestamp(),
       isBlocked: false, isActive: true,
-      dailyAdCount: 0, totalAdViews: 0,
-      lastAdWatchDate:'1970-01-01',
+      dailyAdCount: 0, totalAdViews: 0, lastAdWatchDate:'1970-01-01',
       visitedSitesToday:[], lastSiteVisitDate:'1970-01-01',
       completedSocialTasks: [], country: userCountry||'unknown',
-      level: 1, totalEarned: 0, tasksCompleted: 0,
-      userType: 'telegram'
+      level: 1, totalEarned: 0, tasksCompleted: 0, userType: 'telegram'
     };
     try { await setDoc(ref, userData); } catch(e){}
   }
   currentUser = { uid, name: userData.name };
 }
 
-// ============ ADS ============
+// ========== ADS ==========
 function initAdsGram() {
   const tryInit = (n=0) => {
     if (typeof window.Adsgram !== 'undefined') {
@@ -1059,7 +808,6 @@ function initAdsGram() {
   if (document.readyState === 'complete' || document.readyState === 'interactive') check();
   else window.addEventListener('load', check);
 }
-
 async function playGigapubAd() {
   if (!gigapubReady || typeof window.showGiga !== 'function') return { success:false };
   try { await Promise.race([window.showGiga(), new Promise((_,r)=>setTimeout(()=>r(new Error('to')),15000))]); return {success:true}; }
@@ -1092,7 +840,7 @@ async function playRotatingAd() {
   return {success:false};
 }
 
-// ============ BALANCE ============
+// ========== BALANCE ==========
 async function addBalance(amount, source, note) {
   if (!currentUser || !amount) return;
   const nb = parseFloat(((userData.balance||0)+amount).toFixed(2));
@@ -1110,17 +858,137 @@ async function addBalance(amount, source, note) {
   } catch(e){}
   refreshAllUI();
 }
+async function incrementAdView() {
+  userData.totalAdViews = (userData.totalAdViews||0)+1;
+  userData.dailyAdCount = (userData.dailyAdCount||0)+1;
+  try { await updateDoc(doc(db,'users',currentUser.uid), { totalAdViews:userData.totalAdViews, dailyAdCount:userData.dailyAdCount, lastAdWatchDate: new Date().toISOString().slice(0,10) }); } catch(e){}
+}
 
-// ============ WATCH & EARN ============
+// ========== OPTIONAL DOUBLE ==========
+async function optionalDoublePoints(basePoints, onFinal) {
+  showConfirm('✨','Double Your Points!',`Watch a short ad to double your reward?\n\nBase reward: ${basePoints} points`,'Yes, Double!','No, Thanks',
+    async () => {
+      const adRes = await playRotatingAd();
+      if (adRes.success) onFinal(basePoints*2, true);
+      else { onFinal(basePoints, false); showModal('ℹ️','Ad Unavailable',`Base reward of ${basePoints} points given.`,'OK'); }
+    },
+    () => onFinal(basePoints, false)
+  );
+}
+
+// ========== LUDO DICE (simple dice game, keep from previous version) ==========
+async function playLudoDice() {
+  if (ludoDiceBusy) return;
+  const cfg = gamesConfig.ludoDice || {};
+  if (cfg.visible === false) return showModal('🚫','Unavailable','Game is disabled.','OK');
+  const cost = cfg.gameCost || 10;
+  const mult = cfg.winMultiplier || 10;
+  if ((userData.balance||0) < cost) return showNoPointsModal(cost);
+
+  ludoDiceBusy = true;
+  const btn = $('ludoDiceRollBtn'); if (btn) btn.disabled = true;
+  await addBalance(-cost, 'ludoDice_entry', 'Ludo dice entry');
+
+  const diceEl = $('ludoDiceDisplay');
+  let spins = 0;
+  const spinInt = setInterval(() => {
+    if (diceEl) diceEl.textContent = 1 + Math.floor(Math.random()*6);
+    spins++;
+    if (spins >= 12) clearInterval(spinInt);
+  }, 70);
+  await new Promise(r => setTimeout(r, 12*70 + 200));
+
+  const rand = Math.random()*100;
+  let dice;
+  if (rand < 80) dice = 1 + Math.floor(Math.random()*3);
+  else if (rand < 97) dice = 4 + Math.floor(Math.random()*2);
+  else dice = 6;
+  if (diceEl) diceEl.textContent = dice;
+
+  const baseWin = dice * mult;
+  optionalDoublePoints(baseWin, async (finalWin, doubled) => {
+    await addBalance(finalWin, 'ludoDice_win', `Dice ${dice} × ${mult}${doubled?' (doubled)':''}`);
+    if (doubled) await incrementAdView();
+    const cool = 15 + Math.floor(Math.random()*16);
+    ludoDiceDisabledUntil = Date.now() + cool*1000;
+    startLudoDiceCooldown();
+    ludoDiceBusy = false;
+    showModal('🎲', `You rolled ${dice}!`, `+${finalWin} points.${doubled?' (Doubled!)':''}`, 'Awesome!');
+    refreshLudoDiceUI();
+  });
+}
+function startLudoDiceCooldown() {
+  if (ludoDiceTimerInterval) clearInterval(ludoDiceTimerInterval);
+  const b = $('ludoDiceRollBtn'), t = $('ludoDiceRollText'), tm = $('ludoDiceTimer');
+  if (b) b.disabled = true;
+  ludoDiceTimerInterval = setInterval(() => {
+    const left = Math.ceil((ludoDiceDisabledUntil - Date.now())/1000);
+    if (left <= 0) {
+      clearInterval(ludoDiceTimerInterval);
+      if (b) b.disabled = false;
+      if (tm) tm.textContent = '';
+      const cost = gamesConfig.ludoDice?.gameCost || 10;
+      if (t) t.textContent = `ROLL DICE (${cost})`;
+    } else { if (tm) tm.textContent = `Cooldown: ${left}s`; if (t) t.textContent = 'WAIT…'; }
+  }, 500);
+}
+function refreshLudoDiceUI() {
+  const cfg = gamesConfig.ludoDice || {};
+  const cost = cfg.gameCost || 10;
+  const mult = cfg.winMultiplier || 10;
+  safeText('ludoDiceCost', cost);
+  safeText('ludoDiceMultiplier', `Dice × ${mult}`);
+  safeText('ludoDiceRollText', `ROLL DICE (${cost})`);
+  if (ludoDiceDisabledUntil > Date.now()) startLudoDiceCooldown();
+}
+
+// ========== COLOR GAME ==========
+function startColorRound() {
+  const cfg = gamesConfig.colorGame || {};
+  if (cfg.visible === false) return showModal('🚫','Unavailable','Color game disabled.','OK');
+  const target = { r: rnd(), g: rnd(), b: rnd() };
+  const targetStr = `rgb(${target.r}, ${target.g}, ${target.b})`;
+  const tBox = $('colorTarget'); if (tBox) tBox.style.background = targetStr;
+  safeText('colorRGB', `RGB(${target.r}, ${target.g}, ${target.b})`);
+  safeText('colorReward', `Win ${cfg.rewardPerPlay || 100} coins`);
+  const options = [targetStr];
+  for (let i = 0; i < 8; i++) {
+    const d = 30 + Math.floor(Math.random()*40);
+    options.push(`rgb(${cl(target.r + (Math.random()>.5?d:-d))}, ${cl(target.g + (Math.random()>.5?d:-d))}, ${cl(target.b + (Math.random()>.5?d:-d))})`);
+  }
+  options.sort(() => Math.random()-.5);
+  const grid = $('colorGrid'); if (!grid) return;
+  grid.innerHTML = '';
+  options.forEach(c => {
+    const box = document.createElement('div');
+    box.className = 'color-tile';
+    box.style.background = c;
+    box.onclick = () => handleColorPick(c, targetStr, cfg);
+    grid.appendChild(box);
+  });
+}
+const rnd = () => Math.floor(Math.random()*256);
+const cl = (n) => Math.max(0, Math.min(255, n));
+async function handleColorPick(picked, target, cfg) {
+  if (picked !== target) return showModal('❌','Wrong!','Try again.','OK', () => startColorRound());
+  const baseReward = cfg.rewardPerPlay || 100;
+  optionalDoublePoints(baseReward, async (finalReward, doubled) => {
+    await addBalance(finalReward, 'color_game', `Color game${doubled?' (doubled)':''}`);
+    if (doubled) await incrementAdView();
+    showModal('🎨','Correct!', `+${finalReward} coins.${doubled?' (Doubled!)':''}`,'Next', () => startColorRound());
+  });
+}
+
+// ========== WATCH ==========
 async function playWatch() {
   if (watchBusy) return;
   const reward = gamesConfig.watchVideo?.rewardPerPlay || 50;
   watchBusy = true;
   const btn = $('watchBtn'); if (btn) btn.disabled = true;
-  showAdOverlay('Loading Ad', 'Watch to earn coins…');
+  showAdOverlay('Loading Ad','Watch to earn coins…');
   const r = await playRotatingAd();
   hideAdOverlay();
-  if (!r.success) { watchBusy = false; if (btn) btn.disabled = false; return showModal('⚠️','Ad Unavailable','Try again later.','OK'); }
+  if (!r.success) { watchBusy = false; if (btn) btn.disabled = false; return showModal('⚠️','Ad Unavailable','Try later.','OK'); }
   await addBalance(reward, 'watch_earn', 'Watch & Earn');
   const cool = 10 + Math.floor(Math.random()*11);
   watchDisabledUntil = Date.now() + cool*1000;
@@ -1145,135 +1013,219 @@ function refreshWatchUI() {
   if (watchDisabledUntil > Date.now()) startWatchCooldown();
 }
 
-// ============================================================
+// ========== LUCK ==========
+let luckActive = false;
+async function startLuck() {
+  if (luckActive) return;
+  const cfg = gamesConfig.tryYourLuck || {};
+  if (cfg.visible === false) return showModal('🚫','Unavailable','Disabled.','OK');
+  luckActive = true;
+  navigateTo('luck-run');
+  safeText('luckStatus', 'Preparing…');
+  $('luckClaimBtn')?.classList.add('hidden');
+  const bar = $('luckProgressBar'); if (bar) bar.style.width = '0%';
+  safeText('luckProgressText', '0/0');
+  showConfirm('✨','Try Your Luck!', `Watch multiple short ads?`,'Yes, Start!','No, Thanks',
+    async () => {
+      const list = [
+        {key:'gigapub',...adConfig.gigapub},
+        {key:'adsgramReward',...adConfig.adsgramReward},
+        {key:'adsgramInterstitial',...adConfig.adsgramInterstitial}
+      ].filter(a=>a.enabled);
+      const results = [];
+      for (let i = 0; i < list.length; i++) {
+        safeText('luckStatus', `Playing ${i+1}/${list.length}…`);
+        const b = $('luckProgressBar'); if (b) b.style.width = `${(i/list.length)*100}%`;
+        safeText('luckProgressText', `${i}/${list.length}`);
+        let r;
+        if (list[i].key === 'gigapub') r = await playGigapubAd();
+        else if (list[i].key === 'adsgramReward') r = await playAdsGramReward();
+        else r = await playAdsGramInterstitial();
+        results.push({ success: !!r.success });
+        await new Promise(r => setTimeout(r, 400));
+      }
+      const succ = results.filter(r => r.success).length;
+      const b2 = $('luckProgressBar'); if (b2) b2.style.width = '100%';
+      safeText('luckProgressText', `${succ}/${results.length}`);
+      if (!succ) {
+        safeText('luckStatus','No ads available.');
+        luckActive = false;
+        setTimeout(() => showModal('ℹ️','No Ads','Try again later.','OK', () => navigateTo('home')), 600);
+        return;
+      }
+      const reward = cfg.rewardPerPlay || 500;
+      safeText('luckStatus','Ready! Claim.');
+      const cb = $('luckClaimBtn');
+      if (cb) {
+        cb.classList.remove('hidden');
+        cb.onclick = async () => {
+          cb.disabled = true;
+          await addBalance(reward, 'try_luck', `${succ} ads watched`);
+          await incrementAdView();
+          luckActive = false;
+          showModal('🎉','Points Claimed!', `+${reward} points.`,'Great!', () => navigateTo('home'));
+        };
+      }
+    },
+    () => { luckActive = false; navigateTo('luck'); }
+  );
+}
+
+// ========== VISIT ==========
+async function loadVisit() {
+  const list = appConfig.websitesToVisit || [];
+  const el = $('visitList'); if (!el) return;
+  if (!list.length) { el.innerHTML = `<div class="card" style="padding:20px;text-align:center;color:var(--text-dim);font-size:.85rem;">No websites.</div>`; return; }
+  const visited = userData?.visitedSitesToday || [];
+  el.innerHTML = list.map((s,i) => {
+    const done = visited.includes(s.link);
+    return `<div class="card" style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;">
+      <div style="flex:1;min-width:0;">
+        <div style="font-weight:700;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.name}</div>
+        <div style="color:var(--brand);font-size:.75rem;margin-top:2px;">+${s.reward||10} coins · ${s.timer||30}s</div>
+      </div>
+      <button class="btn ${done?'btn-ghost':'btn-primary'}" data-idx="${i}" ${done?'disabled':''} style="padding:8px 16px;font-size:.75rem;">${done?'Done':'Visit'}</button>
+    </div>`;
+  }).join('');
+  el.querySelectorAll('button[data-idx]').forEach(b => b.onclick = () => visitSite(parseInt(b.dataset.idx)));
+}
+async function visitSite(idx) {
+  const site = (appConfig.websitesToVisit||[])[idx]; if (!site) return;
+  window.open(site.link, '_blank');
+  const seconds = site.timer || 30;
+  const reward = site.reward || 10;
+  showModal('⏳','Visit Website', `Stay for ${seconds}s to earn ${reward} coins.`, `Wait…`);
+  let left = seconds;
+  const tick = setInterval(() => {
+    left--; safeText('modalBtn', `Wait… ${left}s`);
+    if (left <= 0) {
+      clearInterval(tick);
+      safeText('modalBtn','Claim');
+      $('modalBtn').onclick = async () => {
+        $('modal').classList.remove('show');
+        const v = [...(userData.visitedSitesToday||[]), site.link];
+        userData.visitedSitesToday = v;
+        userData.lastSiteVisitDate = new Date().toISOString().slice(0,10);
+        try { await updateDoc(doc(db,'users',currentUser.uid), { visitedSitesToday:v, lastSiteVisitDate: userData.lastSiteVisitDate }); } catch(e){}
+        await addBalance(reward, 'visit_site', site.name);
+        showModal('🎉','Success!', `+${reward} coins.`,'OK', () => loadVisit());
+      };
+    }
+  }, 1000);
+}
+
+// ========== SOCIAL ==========
+async function loadSocial() {
+  const list = appConfig.socialTasks || [];
+  const el = $('socialList'); if (!el) return;
+  if (!list.length) { el.innerHTML = `<div class="card" style="padding:20px;text-align:center;color:var(--text-dim);font-size:.85rem;">No tasks.</div>`; return; }
+  const done = userData?.completedSocialTasks || [];
+  el.innerHTML = list.map((s,i) => {
+    const isDone = done.includes(s.link);
+    return `<div class="card" style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;">
+      <div style="flex:1;min-width:0;">
+        <div style="font-weight:700;font-size:.9rem;">${s.name}</div>
+        <div style="color:var(--brand);font-size:.75rem;margin-top:2px;">+${s.reward||20} coins</div>
+      </div>
+      <button class="btn ${isDone?'btn-ghost':'btn-primary'}" data-idx="${i}" ${isDone?'disabled':''} style="padding:8px 16px;font-size:.75rem;">${isDone?'Done':'Follow'}</button>
+    </div>`;
+  }).join('');
+  el.querySelectorAll('button[data-idx]').forEach(b => b.onclick = () => doSocial(parseInt(b.dataset.idx)));
+}
+async function doSocial(idx) {
+  const task = (appConfig.socialTasks||[])[idx]; if (!task) return;
+  window.open(task.link, '_blank');
+  const reward = task.reward || 20;
+  const done = [...(userData.completedSocialTasks||[]), task.link];
+  userData.completedSocialTasks = done;
+  try { await updateDoc(doc(db,'users',currentUser.uid), { completedSocialTasks: done }); } catch(e){}
+  await addBalance(reward, 'social_task', task.name);
+  showModal('🎉','Task Complete!', `+${reward} coins.`,'OK', () => loadSocial());
+}
+
+// =======================================================
 // 29 CARD GAME
-// ============================================================
+// =======================================================
 const SUITS = ['♠','♥','♦','♣'];
-const RANKS = ['J','9','A','10','K','Q','8','7'];
+const RANKS_29 = ['J','9','A','10','K','Q','8','7'];
 const RANK_POWER = { 'J':8, '9':7, 'A':6, '10':5, 'K':4, 'Q':3, '8':2, '7':1 };
 const CARD_POINTS_29 = { 'J':3, '9':2, 'A':1, '10':1, 'K':0, 'Q':0, '8':0, '7':0 };
 
-let g29 = {
-  playing: false, deck: [], hands: { you:[], west:[], north:[], south:[] },
-  trump: null, trumpRevealed: false,
-  turn: null, trick: [], trickLeader: null,
-  teamPoints: { youWest: 0, northSouth: 0 },
-  bidding: [], bidder: null, highestBid: 0,
-  phase: 'idle', // idle | bidding | playing | ended
-  selectedCard: null,
-  pointsAtStake: 0
-};
+let g29 = { playing:false, deck:[], hands:{you:[],west:[],north:[],south:[]}, trump:null, turn:null, trick:[], teamPoints:{youWest:0,northSouth:0}, phase:'idle', pointsAtStake:0 };
 
-function buildDeck29() {
-  const d = [];
-  for (const s of SUITS) for (const r of RANKS) d.push({ suit: s, rank: r });
-  return d;
-}
-function shuffle(arr) { for (let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
-function sortHand29(hand) {
-  return hand.sort((a,b) => {
-    if (a.suit !== b.suit) return SUITS.indexOf(a.suit) - SUITS.indexOf(b.suit);
-    return RANK_POWER[b.rank] - RANK_POWER[a.rank];
-  });
-}
-function cardColor(c) { return c.suit === '♥' || c.suit === '♦' ? 'red' : 'black'; }
-function cardLabel(c) { return `${c.rank}${c.suit}`; }
+function buildDeck29() { const d = []; for (const s of SUITS) for (const r of RANKS_29) d.push({suit:s,rank:r}); return d; }
+function shuffleArr(a) { for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function sortHand29(h) { return h.sort((a,b) => { if (a.suit!==b.suit) return SUITS.indexOf(a.suit)-SUITS.indexOf(b.suit); return RANK_POWER[b.rank]-RANK_POWER[a.rank]; }); }
+function cardColor(c) { return (c.suit==='♥'||c.suit==='♦') ? 'red' : 'black'; }
+function parseCard(s) { return { suit: s.slice(-1), rank: s.slice(0,-1) }; }
 
 async function start29Match() {
   const cfg = gameConfig.g29;
-  if ((userData.balance||0) < cfg.entryFee) {
-    return showNoPointsModal(cfg.entryFee);
-  }
-  await addBalance(-cfg.entryFee, 'g29_entry', '29 card game entry');
-  await recordPlay('g29');
+  if ((userData.balance||0) < cfg.entryFee) return showNoPointsModal(cfg.entryFee);
+  await addBalance(-cfg.entryFee, 'g29_entry', '29 entry');
 
   g29.playing = true;
-  g29.deck = shuffle(buildDeck29());
+  g29.deck = shuffleArr(buildDeck29());
   g29.hands = { you:[], west:[], north:[], south:[] };
-  g29.teamPoints = { youWest: 0, northSouth: 0 };
-  g29.trump = null; g29.trumpRevealed = false;
-  g29.trick = []; g29.trickLeader = null;
-  g29.bidding = []; g29.bidder = null; g29.highestBid = 0;
-  g29.phase = 'bidding';
-  g29.pointsAtStake = 0;
+  g29.teamPoints = { youWest:0, northSouth:0 };
+  g29.trump = null; g29.trick = []; g29.phase = 'bidding'; g29.pointsAtStake = 0;
 
-  // Deal 4 cards each first (for bidding)
-  for (let i=0;i<4;i++) {
-    for (const p of ['you','west','north','south']) g29.hands[p].push(g29.deck.pop());
-  }
+  for (let i=0;i<4;i++) for (const p of ['you','west','north','south']) g29.hands[p].push(g29.deck.pop());
   for (const p of ['you','west','north','south']) sortHand29(g29.hands[p]);
 
   $('g29-lobby')?.classList.add('hidden');
   $('g29-game')?.classList.remove('hidden');
   safeText('g29TeamScore', '0');
-  $('g29TrumpBadge') && ($('g29TrumpBadge').style.display = 'none');
+  const tb = $('g29TrumpBadge'); if (tb) tb.style.display = 'none';
 
   renderG29Hand();
   g29BiddingPhase();
 }
 
 async function g29BiddingPhase() {
-  // Simple AI bidding
-  g29.bidding = [];
-  // Find best human bid from hand
-  const handStrength = evaluateHand29(g29.hands.you);
-  const humanBid = Math.max(15, Math.min(28, handStrength));
-  g29.bidding.push({ player: 'you', bid: humanBid });
-  safeText('g29Status', `You bid ${humanBid}. Waiting for AI…`);
-
+  const bids = [];
+  const humanBid = Math.max(15, Math.min(28, evaluateHand29(g29.hands.you)));
+  bids.push({ player:'you', bid: humanBid });
+  safeText('g29Status', `You bid ${humanBid}…`);
   await new Promise(r => setTimeout(r, 900));
-
   for (const p of ['west','north','south']) {
     const s = evaluateHand29(g29.hands[p]);
     const bid = Math.max(15, Math.min(28, s));
-    g29.bidding.push({ player: p, bid });
+    bids.push({ player:p, bid });
     safeText('g29Status', `${p} bid ${bid}…`);
     await new Promise(r => setTimeout(r, 600));
   }
+  const high = bids.reduce((m,b) => b.bid > m.bid ? b : m, bids[0]);
+  g29.pointsAtStake = high.bid;
 
-  // Highest bidder
-  const highest = g29.bidding.reduce((m,b) => b.bid > m.bid ? b : m, g29.bidding[0]);
-  g29.bidder = highest.player;
-  g29.highestBid = highest.bid;
-  g29.pointsAtStake = highest.bid;
-
-  // Trump = bidder's strongest suit
-  const bidderHand = g29.hands[g29.bidder];
-  const suitCounts = {};
-  bidderHand.forEach(c => suitCounts[c.suit] = (suitCounts[c.suit]||0)+1);
+  const bHand = g29.hands[high.player];
+  const sc = {}; bHand.forEach(c => sc[c.suit] = (sc[c.suit]||0)+1);
   let bestSuit = SUITS[0], bestCount = 0;
-  for (const s of SUITS) if ((suitCounts[s]||0) > bestCount) { bestCount = suitCounts[s]||0; bestSuit = s; }
+  for (const s of SUITS) if ((sc[s]||0) > bestCount) { bestCount = sc[s]||0; bestSuit = s; }
   g29.trump = bestSuit;
 
-  // Deal remaining 4 cards each
-  for (let i=0;i<4;i++) {
-    for (const p of ['you','west','north','south']) g29.hands[p].push(g29.deck.pop());
-  }
+  for (let i=0;i<4;i++) for (const p of ['you','west','north','south']) g29.hands[p].push(g29.deck.pop());
   for (const p of ['you','west','north','south']) sortHand29(g29.hands[p]);
 
-  // Show trump badge
   safeText('g29TrumpSuit', g29.trump);
   const tb = $('g29TrumpBadge');
   if (tb) { tb.style.display='block'; tb.style.color = (g29.trump==='♥'||g29.trump==='♦')?'#ef4444':'#fff'; }
 
-  safeText('g29Status', `${g29.bidder.toUpperCase()} won bid at ${g29.highestBid}. Trump: ${g29.trump}. Playing…`);
+  safeText('g29Status', `${high.player} won bid @ ${high.bid}. Trump ${g29.trump}. Playing…`);
   await new Promise(r => setTimeout(r, 1500));
 
   g29.phase = 'playing';
-  g29.turn = g29.bidder; // Bidder leads first trick
-  g29.trickLeader = g29.bidder;
+  g29.turn = high.player;
   renderG29Hand();
   g29Turn();
 }
 
-function evaluateHand29(hand) {
-  let score = 15;
-  for (const c of hand) score += CARD_POINTS_29[c.rank] || 0;
-  // Bonus for high trumps
-  const suitCounts = {};
-  hand.forEach(c => suitCounts[c.suit] = (suitCounts[c.suit]||0)+1);
-  for (const s of SUITS) if ((suitCounts[s]||0) >= 3) score += 2;
-  return Math.min(28, Math.max(15, score));
+function evaluateHand29(h) {
+  let s = 15;
+  for (const c of h) s += CARD_POINTS_29[c.rank] || 0;
+  const sc = {}; h.forEach(c => sc[c.suit] = (sc[c.suit]||0)+1);
+  for (const su of SUITS) if ((sc[su]||0) >= 3) s += 2;
+  return Math.min(28, Math.max(15, s));
 }
 
 function renderG29Hand() {
@@ -1281,31 +1233,19 @@ function renderG29Hand() {
   const hand = sortHand29([...g29.hands.you]);
   el.innerHTML = hand.map((c, i) => {
     const playable = g29.phase === 'playing' && g29.turn === 'you' && isLegalPlay29(c, 'you');
-    return `
-      <div class="card-29 ${cardColor(c)} ${playable?'':'dim'} ${g29.phase!=='playing'?'disabled':''}"
-           data-idx="${i}" data-card="${c.rank}${c.suit}">
-        <div class="rank">${c.rank}</div>
-        <div class="suit">${c.suit}</div>
-      </div>
-    `;
+    return `<div class="card-29 ${cardColor(c)} ${playable?'':'dim'}" data-card="${c.rank}${c.suit}">
+      <div class="rank">${c.rank}</div><div class="suit">${c.suit}</div>
+    </div>`;
   }).join('');
-
-  el.querySelectorAll('.card-29').forEach(cardEl => {
-    if (cardEl.classList.contains('dim') || g29.phase !== 'playing' || g29.turn !== 'you') return;
-    cardEl.onclick = () => g29PlayHumanCard(cardEl.dataset.card);
+  el.querySelectorAll('.card-29').forEach(cEl => {
+    if (cEl.classList.contains('dim') || g29.phase !== 'playing' || g29.turn !== 'you') return;
+    cEl.onclick = () => g29PlayHumanCard(cEl.dataset.card);
   });
 }
 
-function parseCard(s) {
-  const suit = s.slice(-1);
-  const rank = s.slice(0, -1);
-  return { suit, rank };
-}
-
 function isLegalPlay29(card, player) {
-  if (!g29.trick.length) return true; // leading
+  if (!g29.trick.length) return true;
   const leadSuit = g29.trick[0].card.suit;
-  // Must follow suit if possible
   const hasLead = g29.hands[player].some(c => c.suit === leadSuit);
   if (hasLead && card.suit !== leadSuit) return false;
   return true;
@@ -1314,7 +1254,7 @@ function isLegalPlay29(card, player) {
 async function g29PlayHumanCard(cardStr) {
   if (g29.turn !== 'you' || g29.phase !== 'playing') return;
   const card = parseCard(cardStr);
-  if (!isLegalPlay29(card, 'you')) return showModal('⚠️','Invalid Play',`You must follow ${g29.trick[0]?.card.suit || ''} suit.`,'OK');
+  if (!isLegalPlay29(card, 'you')) return showModal('⚠️','Invalid',`Must follow ${g29.trick[0]?.card.suit || ''}.`,'OK');
   await playCard29('you', card);
 }
 
@@ -1323,7 +1263,6 @@ async function playCard29(player, card) {
   if (idx < 0) return;
   g29.hands[player].splice(idx, 1);
   g29.trick.push({ player, card });
-
   renderTrick29();
 
   if (g29.trick.length === 4) {
@@ -1331,35 +1270,29 @@ async function playCard29(player, card) {
     resolveTrick29();
     return;
   }
-  // Next player in clockwise order: you -> west -> north -> south -> you
   const order = ['you','west','north','south'];
-  const curIdx = order.indexOf(player);
-  g29.turn = order[(curIdx+1) % 4];
-  if (g29.turn === 'you') { renderG29Hand(); safeText('g29Status','Your turn'); }
-  else { renderG29Hand(); safeText('g29Status',`${g29.turn} thinking…`); setTimeout(() => g29AIPlay(g29.turn), 800); }
+  const cur = order.indexOf(player);
+  g29.turn = order[(cur+1) % 4];
+  renderG29Hand();
+  if (g29.turn === 'you') safeText('g29Status','Your turn');
+  else { safeText('g29Status',`${g29.turn} thinking…`); setTimeout(() => g29AIPlay(g29.turn), 800); }
 }
 
 function g29AIPlay(player) {
   if (g29.phase !== 'playing' || g29.turn !== player) return;
-  const hand = g29.hands[player];
-  if (!hand.length) return;
-
+  const hand = g29.hands[player]; if (!hand.length) return;
   let chosen = null;
   if (!g29.trick.length) {
-    // Leading: play strongest non-trump high card, or a low card
     const nonTrump = hand.filter(c => c.suit !== g29.trump);
     const pool = nonTrump.length ? nonTrump : hand;
-    // Try to win with ace/jack
     chosen = pool.find(c => c.rank === 'A') || pool.find(c => c.rank === 'J') || pool[0];
   } else {
     const leadSuit = g29.trick[0].card.suit;
     const sameSuit = hand.filter(c => c.suit === leadSuit);
-    const currentWinner = getTrickWinner29();
-    const isPartnerWinning = (player === 'west' && currentWinner === 'you') || (player === 'you' && currentWinner === 'west')
-                           || (player === 'north' && currentWinner === 'south') || (player === 'south' && currentWinner === 'north');
-
+    const winner = getTrickWinner29();
+    const partnerWin = (player === 'west' && winner === 'you') || (player === 'north' && winner === 'south');
     if (sameSuit.length) {
-      if (isPartnerWinning) chosen = sameSuit.sort((a,b)=>RANK_POWER[a.rank]-RANK_POWER[b.rank])[0];
+      if (partnerWin) chosen = sameSuit.sort((a,b)=>RANK_POWER[a.rank]-RANK_POWER[b.rank])[0];
       else chosen = sameSuit.sort((a,b)=>RANK_POWER[b.rank]-RANK_POWER[a.rank])[0];
     } else {
       const trumps = hand.filter(c => c.suit === g29.trump);
@@ -1373,7 +1306,6 @@ function g29AIPlay(player) {
 
 function getTrickWinner29() {
   if (!g29.trick.length) return null;
-  const leadSuit = g29.trick[0].card.suit;
   let winner = g29.trick[0];
   for (let i=1;i<g29.trick.length;i++) {
     const t = g29.trick[i];
@@ -1385,41 +1317,32 @@ function getTrickWinner29() {
 
 function renderTrick29() {
   const el = $('g29TrickArea'); if (!el) return;
-  const positions = { you: 'pos-bottom', west: 'pos-left', north: 'pos-top', south: 'pos-right' };
+  const pos = { you:'pos-bottom', west:'pos-left', north:'pos-top', south:'pos-right' };
   el.innerHTML = g29.trick.map(t => `
-    <div class="trick-card-29 ${positions[t.player]||''} ${cardColor(t.card)}" style="color:${cardColor(t.card)==='red'?'#dc2626':'#1e293b'};">
-      <div class="rank">${t.card.rank}</div>
-      <div class="suit">${t.card.suit}</div>
+    <div class="trick-card-29 ${pos[t.player]||''}" style="color:${cardColor(t.card)==='red'?'#dc2626':'#1e293b'};">
+      <div class="rank">${t.card.rank}</div><div class="suit">${t.card.suit}</div>
     </div>
   `).join('');
 }
 
 async function resolveTrick29() {
   const winner = getTrickWinner29();
-  const leadSuit = g29.trick[0].card.suit;
-  // Count 29 points in this trick
   let points = 0;
   g29.trick.forEach(t => points += CARD_POINTS_29[t.card.rank] || 0);
-  // Check for trump marriage (K+Q of trump)
   const trumpsPlayed = g29.trick.filter(t => t.card.suit === g29.trump);
-  if (trumpsPlayed.some(t => t.card.rank === 'K') && trumpsPlayed.some(t => t.card.rank === 'Q')) points += 4;
-
+  if (trumpsPlayed.some(t=>t.card.rank==='K') && trumpsPlayed.some(t=>t.card.rank==='Q')) points += 4;
   const winnerTeam = (winner === 'you' || winner === 'west') ? 'youWest' : 'northSouth';
   g29.teamPoints[winnerTeam] += points;
   safeText('g29TeamScore', g29.teamPoints.youWest);
-
-  safeText('g29Status', `${winner.toUpperCase()} won trick (+${points})`);
+  safeText('g29Status', `${winner} won trick (+${points})`);
   await new Promise(r => setTimeout(r, 900));
-
   g29.trick = [];
   renderTrick29();
-
-  // Check if hands empty
-  if (g29.hands.you.length === 0) { end29Match(); return; }
-
+  if (g29.hands.you.length === 0) return end29Match();
   g29.turn = winner;
-  if (g29.turn === 'you') { renderG29Hand(); safeText('g29Status','Your turn'); }
-  else { renderG29Hand(); safeText('g29Status',`${g29.turn} thinking…`); setTimeout(() => g29AIPlay(g29.turn), 700); }
+  renderG29Hand();
+  if (g29.turn === 'you') safeText('g29Status','Your turn');
+  else { safeText('g29Status',`${g29.turn} thinking…`); setTimeout(() => g29AIPlay(g29.turn), 700); }
 }
 
 async function end29Match() {
@@ -1427,22 +1350,19 @@ async function end29Match() {
   const cfg = gameConfig.g29;
   const youWon = g29.teamPoints.youWest >= (g29.pointsAtStake || 20);
 
-  // Show ad
-  showAdOverlay('Loading Ad', 'Please wait…');
-  const adRes = await playRotatingAd();
+  showAdOverlay('Loading Ad','Please wait…');
+  await playRotatingAd();
   hideAdOverlay();
 
   let winAmount = 0;
-  if (youWon) { winAmount = cfg.winnerReward; await addBalance(winAmount, 'g29_win', `29 game won (${g29.teamPoints.youWest} pts)`); }
-  else { winAmount = -cfg.entryFee; }
+  if (youWon) { winAmount = cfg.winnerReward; await addBalance(winAmount, 'g29_win', `29 win (${g29.teamPoints.youWest})`); }
 
-  showResult(
-    youWon ? '🏆' : '😔',
-    youWon ? 'Victory!' : 'Defeat',
-    youWon ? `Your team scored ${g29.teamPoints.youWest} points!` : `Your team scored ${g29.teamPoints.youWest} points. Better luck next time.`,
+  showResult(youWon?'🏆':'😔',
+    youWon?'Victory!':'Defeat',
+    youWon?`Your team scored ${g29.teamPoints.youWest}!`:`Your team scored ${g29.teamPoints.youWest}.`,
     youWon ? winAmount : -cfg.entryFee,
-    youWon ? 'Awesome!' : 'Try Again',
-    () => { reset29UI(); }
+    youWon?'Awesome!':'Try Again',
+    () => reset29UI()
   );
 }
 
@@ -1452,203 +1372,206 @@ function reset29UI() {
   $('g29-game')?.classList.add('hidden');
 }
 
-// ============================================================
-// LUDO GAME
-// ============================================================
-let ludo = {
-  playing: false, tokens: { red: [], blue: [] }, // red = computer, blue = you
-  turn: 'blue', dice: 0, rolled: false, awaitingMove: false,
-  lastRoll: 0, boardCells: []
-};
+// =======================================================
+// LUDO (with visible dice)
+// =======================================================
+let ludo = { playing:false, tokens:{red:[{pos:-1},{pos:-1},{pos:-1},{pos:-1}], blue:[{pos:-1},{pos:-1},{pos:-1},{pos:-1}]}, turn:'blue', dice:0, path:[] };
 
-const LUDO_PATH = [
-  // Blue start path (bottom-left) — 52 cells loop with home stretch
-  // Simplified: 13 cells per arm, 4 arms = 52 + home column
-];
+const LUDO_PATH_LEN = 56;
+const DICE_FACES = ['⚀','⚁','⚂','⚃','⚄','⚅'];
 
 function buildLudoBoard() {
   const board = $('ludoBoard'); if (!board) return;
   board.innerHTML = '';
-
-  // Build 15x15 grid via absolute positioning of cells
-  const cells = [];
   const cellSize = 100/15;
 
-  // Colors for path cells
-  // We'll make a simplified ludo path
-  // Home bases: 6x6 quadrants at corners
-  const html = [];
-
-  // Draw home bases (4 corners 6x6)
-  for (let base = 0; base < 4; base++) {
-    const colors = ['#ef4444', '#22c55e', '#eab308', '#3b82f6'];
-    const bx = base % 2 === 0 ? 0 : 9;
-    const by = base < 2 ? 0 : 9;
-    html.push(`<div style="position:absolute;top:${by*cellSize}%;left:${bx*cellSize}%;width:${6*cellSize}%;height:${6*cellSize}%;background:${colors[base]};border:2px solid #1e293b;box-sizing:border-box;">
-      <div style="position:absolute;inset:15%;background:#fff;border-radius:4px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:8%;padding:8%;">
-        <div style="border-radius:50%;border:2px solid ${colors[base]};background:${colors[base]}40;"></div>
-        <div style="border-radius:50%;border:2px solid ${colors[base]};background:${colors[base]}40;"></div>
-        <div style="border-radius:50%;border:2px solid ${colors[base]};background:${colors[base]}40;"></div>
-        <div style="border-radius:50%;border:2px solid ${colors[base]};background:${colors[base]}40;"></div>
+  // 4 home bases (6x6 quadrants)
+  const baseColors = ['#ef4444','#22c55e','#eab308','#3b82f6'];
+  const basePos = [[0,0],[0,9],[9,9],[9,0]]; // TL, TR, BR, BL (Red top-left, Green top-right, Yellow bottom-right, Blue bottom-left)
+  basePos.forEach((pos, i) => {
+    const html = `<div style="position:absolute;top:${pos[0]*cellSize}%;left:${pos[1]*cellSize}%;width:${6*cellSize}%;height:${6*cellSize}%;background:${baseColors[i]};border:2px solid #1e293b;box-sizing:border-box;">
+      <div style="position:absolute;inset:15%;background:#fff;border-radius:6px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:8%;padding:8%;">
+        <div style="border-radius:50%;border:2px solid ${baseColors[i]};background:${baseColors[i]}40;"></div>
+        <div style="border-radius:50%;border:2px solid ${baseColors[i]};background:${baseColors[i]}40;"></div>
+        <div style="border-radius:50%;border:2px solid ${baseColors[i]};background:${baseColors[i]}40;"></div>
+        <div style="border-radius:50%;border:2px solid ${baseColors[i]};background:${baseColors[i]}40;"></div>
       </div>
-    </div>`);
-  }
+    </div>`;
+    board.innerHTML += html;
+  });
 
-  // Center triangle
-  html.push(`<div style="position:absolute;top:${6*cellSize}%;left:${6*cellSize}%;width:${3*cellSize}%;height:${3*cellSize}%;background:#1e293b;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;overflow:hidden;">
-    <div style="background:#ef4444;clip-path:polygon(0 0,100% 0,100% 100%,0 100%);"></div>
-    <div style="background:#22c55e;clip-path:polygon(0 0,100% 0,100% 100%,0 100%);"></div>
-    <div style="background:#eab308;clip-path:polygon(0 0,100% 0,100% 100%,0 100%);"></div>
-    <div style="background:#3b82f6;clip-path:polygon(0 0,100% 0,100% 100%,0 100%);"></div>
-  </div>`);
+  // Center
+  board.innerHTML += `<div style="position:absolute;top:${6*cellSize}%;left:${6*cellSize}%;width:${3*cellSize}%;height:${3*cellSize}%;background:#1e293b;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;overflow:hidden;">
+    <div style="background:#ef4444;clip-path:polygon(0 0,100% 0,50% 50%);"></div>
+    <div style="background:#22c55e;clip-path:polygon(100% 0,100% 100%,50% 50%);"></div>
+    <div style="background:#eab308;clip-path:polygon(0 100%,100% 100%,50% 50%);"></div>
+    <div style="background:#3b82f6;clip-path:polygon(0 0,0 100%,50% 50%);"></div>
+  </div>`;
 
-  // Draw the simple cross paths (15x15 grid)
-  // Horizontal path (row 6,7,8) and vertical path (col 6,7,8)
+  // Cross path cells
   for (let r = 0; r < 15; r++) {
     for (let c = 0; c < 15; c++) {
       const inCross = (r >= 6 && r <= 8) || (c >= 6 && c <= 8);
       const inHome = (r < 6 || r > 8) && (c < 6 || c > 8);
-      if (inHome) continue;
-      if (!inCross) continue;
-
-      // Determine color
+      if (inHome || !inCross) continue;
       let bg = '#fff';
-      if (c === 6 && r < 6) bg = '#ef4444';
-      else if (c === 8 && r < 6) bg = '#22c55e';
-      else if (c === 6 && r > 8) bg = '#3b82f6';
-      else if (c === 8 && r > 8) bg = '#eab308';
-      else if (r === 6 && c < 6) bg = '#ef4444';
-      else if (r === 8 && c < 6) bg = '#3b82f6';
-      else if (r === 6 && c > 8) bg = '#22c55e';
-      else if (r === 8 && c > 8) bg = '#eab308';
+      // Color path
+      if (c >= 6 && c <= 8 && r === 6) bg = '#ef4444';
+      if (c >= 6 && c <= 8 && r === 8) bg = '#3b82f6';
+      if (r >= 6 && r <= 8 && c === 6) bg = '#22c55e';
+      if (r >= 6 && r <= 8 && c === 8) bg = '#eab308';
 
-      html.push(`<div style="position:absolute;top:${r*cellSize}%;left:${c*cellSize}%;width:${cellSize}%;height:${cellSize}%;background:${bg};border:1px solid rgba(0,0,0,.15);box-sizing:border-box;"></div>`);
+      const cell = document.createElement('div');
+      cell.style.cssText = `position:absolute;top:${r*cellSize}%;left:${c*cellSize}%;width:${cellSize}%;height:${cellSize}%;background:${bg};border:1px solid rgba(0,0,0,.15);box-sizing:border-box;`;
+      cell.dataset.row = r; cell.dataset.col = c;
+      board.appendChild(cell);
     }
   }
 
-  board.innerHTML = html.join('');
-}
-
-// Simplified Ludo — 4 tokens per player, dice-based race
-function initLudo() {
-  buildLudoBoard();
-  ludo.tokens = {
-    red: [{pos:-1},{pos:-1},{pos:-1},{pos:-1}],  // -1 = home base
-    blue: [{pos:-1},{pos:-1},{pos:-1},{pos:-1}]
-  };
-  ludo.turn = 'blue';
-  ludo.dice = 0; ludo.rolled = false; ludo.awaitingMove = false;
-  ludo.playing = true;
   renderLudoTokens();
-  updateLudoStatus('Your turn — roll!');
-  safeText('ludoRollText', 'ROLL DICE');
-  const rb = $('ludoRollBtn'); if (rb) { rb.disabled = false; rb.classList.remove('btn-ghost'); rb.classList.add('btn-primary'); }
 }
 
-const LUDO_PATH_LEN = 52; // approximate
+// Simple path around the cross — coordinates (row, col)
+function getLudoPath(player) {
+  // Simplified path: 52 perimeter + 6 home column
+  // Blue starts at (13, 6) going up
+  // Returns array of [row, col] positions
+  const path = [];
+  if (player === 'blue') {
+    // From bottom-middle going up left arm, around, back
+    // Perimeter cells of the cross
+    const cells = [];
+    // Bottom-left arm exit
+    for (let r = 13; r >= 6; r--) cells.push([r, 6]);
+    for (let r = 6; r > 0; r--) cells.push([r, 6]);
+    // Top-left arm
+    for (let c = 6; c <= 8; c++) cells.push([0, c]);
+    // Top-right arm
+    for (let r = 0; r <= 6; r++) cells.push([r, 8]);
+    for (let r = 6; r <= 8; r++) cells.push([r, 14]);
+    // Right arm
+    for (let c = 14; c >= 8; c--) cells.push([8, c]);
+    // Bottom-right arm
+    for (let r = 8; r <= 14; r++) cells.push([r, 8]);
+    for (let c = 8; c >= 6; c--) cells.push([14, c]);
+    // Bottom-left
+    for (let r = 14; r >= 8; r--) cells.push([r, 6]);
+    // Bottom-left exit → back to start
+    for (let r = 8; r >= 6; r--) cells.push([r, 6]);
+    // Home column (blue goes to (7, 7))
+    cells.push([7, 7]);
+    // Just take first 57 cells
+    return cells.slice(0, 57);
+  }
+  // For red (computer), just offset the path
+  if (player === 'red') {
+    const base = getLudoPath('blue');
+    // Rotate by 13 (roughly)
+    const offset = 26;
+    const result = [];
+    for (let i = 0; i < base.length; i++) {
+      const idx = (i + offset) % base.length;
+      result.push(base[idx]);
+    }
+    return result;
+  }
+  return [];
+}
 
 function renderLudoTokens() {
   const board = $('ludoBoard'); if (!board) return;
-  board.querySelectorAll('.ludo-token').forEach(t => t.remove());
+  board.querySelectorAll('.ludo-token-el').forEach(t => t.remove());
 
   const cellSize = 100/15;
-  // Home base positions for tokens
-  const homePositions = {
-    red: [ [1,1],[1,4],[4,1],[4,4] ],       // top-left red
-    blue: [ [10,1],[10,4],[13,1],[13,4] ]   // bottom-left blue
+
+  const homeBasePositions = {
+    red: [[1,1],[1,4],[4,1],[4,4]],   // Red is top-left
+    blue: [[10,1],[10,4],[13,1],[13,4]] // Blue is bottom-left
   };
 
-  function tokenPosition(player, idx, pos) {
+  function getTokenPos(player, idx, pos) {
     if (pos === -1) {
-      const [r, c] = homePositions[player][idx];
-      return { top: r*cellSize + cellSize*0.1, left: c*cellSize + cellSize*0.1, size: cellSize*0.8 };
+      const [r, c] = homeBasePositions[player][idx];
+      return { top: r * cellSize + cellSize * 0.12, left: c * cellSize + cellSize * 0.12, size: cellSize * 0.76 };
     }
-    // Simple path: pos 0-51 around the board perimeter
-    // Map pos to a grid cell
     const path = getLudoPath(player);
-    const p = path[pos];
+    const p = path[Math.min(pos, path.length - 1)];
     if (!p) return null;
-    return { top: p[0]*cellSize + cellSize*0.08, left: p[1]*cellSize + cellSize*0.08, size: cellSize*0.84 };
+    return { top: p[0] * cellSize + cellSize * 0.12, left: p[1] * cellSize + cellSize * 0.12, size: cellSize * 0.76 };
   }
 
-  for (const player of ['red','blue']) {
+  for (const player of ['red', 'blue']) {
     ludo.tokens[player].forEach((tok, i) => {
-      const tp = tokenPosition(player, i, tok.pos);
+      const tp = getTokenPos(player, i, tok.pos);
       if (!tp) return;
       const div = document.createElement('div');
-      div.className = `ludo-token ${player}`;
-      div.style.cssText = `position:absolute;top:${tp.top}%;left:${tp.left}%;width:${tp.size}%;height:${tp.size}%;`;
+      div.className = `ludo-token-el ${player}`;
+      div.style.cssText = `position:absolute;top:${tp.top}%;left:${tp.left}%;width:${tp.size}%;height:${tp.size}%;z-index:${tok.pos >= 0 ? 8 : 4};`;
       board.appendChild(div);
     });
   }
 }
 
-// Simplified path generation for each color
-function getLudoPath(player) {
-  // Perimeter cells of the 15x15 board (excluding corners)
-  // Blue starts at (13,1) going up
-  const path = [];
-  // Simple perimeter walk - 52 cells
-  // We'll just make a linear path around the cross
-  const cells = [];
-  // Left arm going up
-  for (let r = 13; r >= 0; r--) if (r !== 6 && r !== 7 && r !== 8) cells.push([r, 1]);
-  for (let r = 13; r >= 0; r--) if (r !== 6 && r !== 7 && r !== 8) cells.push([r, 2]);
-  for (let r = 13; r >= 0; r--) if (r !== 6 && r !== 7 && r !== 8) cells.push([r, 3]);
-  for (let r = 13; r >= 0; r--) if (r !== 6 && r !== 7 && r !== 8) cells.push([r, 4]);
-  for (let r = 13; r >= 0; r--) if (r !== 6 && r !== 7 && r !== 8) cells.push([r, 5]);
-  // ... this is getting complex. Simplified version below.
-  return path; // placeholder
+function initLudo() {
+  buildLudoBoard();
+  ludo.tokens = {
+    red: [{pos:-1},{pos:-1},{pos:-1},{pos:-1}],
+    blue: [{pos:-1},{pos:-1},{pos:-1},{pos:-1}]
+  };
+  ludo.turn = 'blue';
+  ludo.dice = 0;
+  ludo.playing = true;
+  renderLudoTokens();
+  safeText('ludoStatus', 'Your turn — roll!');
+  safeText('ludoRollText', 'ROLL DICE');
+  safeText('ludoBigDice', '⚀');
+  const rb = $('ludoRollBtn'); if (rb) rb.disabled = false;
 }
 
 async function ludoRoll() {
-  if (!ludo.playing || ludo.turn !== 'blue' || ludo.awaitingMove) return;
+  if (!ludo.playing || ludo.turn !== 'blue') return;
   const rb = $('ludoRollBtn'); if (rb) rb.disabled = true;
-  const dice = 1 + Math.floor(Math.random()*6);
-  ludo.dice = dice; ludo.rolled = true;
-  safeText('ludoStatus', `You rolled ${dice}!`);
-  await new Promise(r => setTimeout(r, 500));
+  const diceEl = $('ludoBigDice');
+  if (diceEl) diceEl.classList.add('rolling');
 
-  // Pick a token (simplified: pick first that can move)
-  const movable = ludo.tokens.blue.map((t,i)=>({t,i})).filter(x => x.t.pos === -1 || (x.t.pos + dice) <= LUDO_PATH_LEN);
+  // Animate dice
+  for (let i = 0; i < 8; i++) {
+    if (diceEl) diceEl.textContent = DICE_FACES[Math.floor(Math.random()*6)];
+    await new Promise(r => setTimeout(r, 80));
+  }
+  const dice = 1 + Math.floor(Math.random()*6);
+  if (diceEl) { diceEl.classList.remove('rolling'); diceEl.textContent = DICE_FACES[dice-1]; }
+  safeText('ludoStatus', `You rolled ${dice}!`);
+  ludo.dice = dice;
+
+  await new Promise(r => setTimeout(r, 400));
+
+  // Auto-pick a token
+  const movable = ludo.tokens.blue.map((t,i)=>({t,i})).filter(x => {
+    if (x.t.pos === -1) return dice === 6;
+    return x.t.pos + dice <= LUDO_PATH_LEN;
+  });
+
   if (!movable.length) {
     safeText('ludoStatus', `No moves for ${dice}. Next player.`);
     await new Promise(r => setTimeout(r, 800));
     ludo.turn = 'red';
-    setTimeout(ludoComputerTurn, 800);
+    safeText('ludoStatus', 'Computer\'s turn…');
+    setTimeout(ludoComputerTurn, 900);
     return;
   }
-  // Auto-pick first
+
   const pick = movable[0];
-  // If at home and rolled 6, move out
-  if (pick.t.pos === -1) {
-    if (dice === 6) { pick.t.pos = 0; }
-    else {
-      // can't move out, try next movable
-      const canMoveOut = movable.find(x => x.t.pos !== -1);
-      if (!canMoveOut) {
-        safeText('ludoStatus', `Need 6 to start. Next player.`);
-        await new Promise(r => setTimeout(r, 800));
-        ludo.turn = 'red';
-        setTimeout(ludoComputerTurn, 800);
-        return;
-      }
-      canMoveOut.t.pos += dice;
-    }
-  } else {
-    pick.t.pos += dice;
-    if (pick.t.pos > LUDO_PATH_LEN) pick.t.pos = LUDO_PATH_LEN;
-  }
+  if (pick.t.pos === -1) pick.t.pos = 0;
+  else pick.t.pos = Math.min(LUDO_PATH_LEN, pick.t.pos + dice);
   renderLudoTokens();
 
-  // Check win
-  const wonCount = ludo.tokens.blue.filter(t => t.pos === LUDO_PATH_LEN).length;
-  safeText('ludoYouHome', `${wonCount}/4`);
-  if (wonCount === 4) { return endLudo('blue'); }
+  const won = ludo.tokens.blue.filter(t => t.pos === LUDO_PATH_LEN).length;
+  safeText('ludoYouHome', `${won}/4`);
+  if (won === 4) return endLudo('blue');
 
-  // Extra turn on 6
   if (dice === 6) {
-    safeText('ludoStatus', `Rolled 6! Roll again.`);
+    safeText('ludoStatus', 'Rolled 6! Roll again.');
     if (rb) rb.disabled = false;
     return;
   }
@@ -1661,26 +1584,38 @@ async function ludoRoll() {
 
 async function ludoComputerTurn() {
   if (!ludo.playing) return;
+  const diceEl = $('ludoBigDice');
+  if (diceEl) diceEl.classList.add('rolling');
+  for (let i = 0; i < 6; i++) {
+    if (diceEl) diceEl.textContent = DICE_FACES[Math.floor(Math.random()*6)];
+    await new Promise(r => setTimeout(r, 80));
+  }
   const dice = 1 + Math.floor(Math.random()*6);
+  if (diceEl) { diceEl.classList.remove('rolling'); diceEl.textContent = DICE_FACES[dice-1]; }
   safeText('ludoStatus', `Computer rolled ${dice}`);
   await new Promise(r => setTimeout(r, 600));
 
-  const movable = ludo.tokens.red.map((t,i)=>({t,i})).filter(x => x.t.pos === -1 ? dice === 6 : (x.t.pos + dice) <= LUDO_PATH_LEN);
+  const movable = ludo.tokens.red.map((t,i)=>({t,i})).filter(x => {
+    if (x.t.pos === -1) return dice === 6;
+    return x.t.pos + dice <= LUDO_PATH_LEN;
+  });
+
   if (movable.length) {
     const pick = movable[Math.floor(Math.random()*movable.length)];
     if (pick.t.pos === -1) pick.t.pos = 0;
     else pick.t.pos = Math.min(LUDO_PATH_LEN, pick.t.pos + dice);
     renderLudoTokens();
   }
-  const wonCount = ludo.tokens.red.filter(t => t.pos === LUDO_PATH_LEN).length;
-  safeText('ludoComHome', `${wonCount}/4`);
-  if (wonCount === 4) return endLudo('red');
+
+  const won = ludo.tokens.red.filter(t => t.pos === LUDO_PATH_LEN).length;
+  safeText('ludoComHome', `${won}/4`);
+  if (won === 4) return endLudo('red');
 
   if (dice === 6) { setTimeout(ludoComputerTurn, 800); return; }
 
   ludo.turn = 'blue';
   safeText('ludoStatus', 'Your turn — roll!');
-  const rb = $('ludoRollBtn'); if (rb) { rb.disabled = false; }
+  const rb = $('ludoRollBtn'); if (rb) rb.disabled = false;
 }
 
 async function endLudo(winner) {
@@ -1689,32 +1624,29 @@ async function endLudo(winner) {
   const cfg = gameConfig.ludo;
   const youWon = winner === 'blue';
 
-  showAdOverlay('Loading Ad', 'Please wait…');
+  showAdOverlay('Loading Ad','Please wait…');
   await playRotatingAd();
   hideAdOverlay();
 
   let winAmount = 0;
-  if (youWon) { winAmount = cfg.winnerReward; await addBalance(winAmount, 'ludo_win', 'Ludo game won'); }
-  showResult(
-    youWon ? '🏆' : '😔',
-    youWon ? 'Victory!' : 'Defeat',
-    youWon ? 'You brought all 4 tokens home first!' : 'Computer won this round.',
+  if (youWon) { winAmount = cfg.winnerReward; await addBalance(winAmount, 'ludo_win', 'Ludo won'); }
+
+  showResult(youWon?'🏆':'😔',
+    youWon?'Victory!':'Defeat',
+    youWon?'All 4 tokens home!':'Computer won.',
     youWon ? winAmount : -cfg.entryFee,
-    youWon ? 'Awesome!' : 'Try Again',
-    () => { resetLudoUI(); }
+    youWon?'Awesome!':'Try Again',
+    () => resetLudoUI()
   );
 }
-
 function resetLudoUI() {
   $('ludo-lobby')?.classList.remove('hidden');
   $('ludo-game')?.classList.add('hidden');
 }
-
 async function startLudoMatch() {
   const cfg = gameConfig.ludo;
   if ((userData.balance||0) < cfg.entryFee) return showNoPointsModal(cfg.entryFee);
   await addBalance(-cfg.entryFee, 'ludo_entry', 'Ludo entry');
-  await recordPlay('ludo');
   $('ludo-lobby')?.classList.add('hidden');
   $('ludo-game')?.classList.remove('hidden');
   safeText('ludoYouHome', '0/4');
@@ -1722,20 +1654,15 @@ async function startLudoMatch() {
   initLudo();
 }
 
-// ============================================================
+// =======================================================
 // CARROM
-// ============================================================
-let carrom = {
-  playing: false, coins: [], striker: {x:0,y:0,vx:0,vy:0}, pocketed: {white:0, black:0},
-  turn: 'you', aimStart: null, aiming: false,
-  animFrame: null
-};
+// =======================================================
+let carrom = { playing:false, coins:[], striker:{x:50,y:82,vx:0,vy:0}, pocketed:{white:0,black:0}, turn:'you', animFrame:null, aiming:false, aimStart:null };
 
 async function startCarromMatch() {
   const cfg = gameConfig.carrom;
   if ((userData.balance||0) < cfg.entryFee) return showNoPointsModal(cfg.entryFee);
   await addBalance(-cfg.entryFee, 'carrom_entry', 'Carrom entry');
-  await recordPlay('carrom');
   $('carrom-lobby')?.classList.add('hidden');
   $('carrom-game')?.classList.remove('hidden');
   safeText('carromYouScore', '0/9');
@@ -1748,25 +1675,19 @@ function initCarrom() {
   carrom.coins = [];
   carrom.pocketed = { white:0, black:0 };
   carrom.turn = 'you';
-  carrom.striker = { x: 50, y: 82, vx: 0, vy: 0 };
+  carrom.striker = { x:50, y:82, vx:0, vy:0 };
   carrom.aiming = false;
-  carrom.aimStart = null;
 
-  // Place 19 coins in center: 9 white, 9 black, 1 queen (red)
-  const centerX = 50, centerY = 50;
-  let idx = 0;
   const positions = [
-    [50,50], // queen
-    [46,50],[54,50],[50,46],[50,54],[46,46],[54,46],[46,54],[54,54], // inner ring 8
-    [42,50],[58,50],[50,42],[50,58],[44,44],[56,44],[44,56],[56,56],[42,42],[58,58] // outer ring 10
+    [50,50],
+    [46,50],[54,50],[50,46],[50,54],[46,46],[54,46],[46,54],[54,54],
+    [42,50],[58,50],[50,42],[50,58],[44,44],[56,44],[44,56],[56,56],[42,42],[58,58]
   ];
-  // Actually let's just place in hexagonal pattern
-  carrom.coins = [];
   positions.forEach((p,i) => {
     let type = 'white';
     if (i === 0) type = 'queen';
     else if (i % 2 === 1) type = 'black';
-    carrom.coins.push({ x: p[0], y: p[1], type, vx: 0, vy: 0, alive: true });
+    carrom.coins.push({ x:p[0], y:p[1], type, vx:0, vy:0, alive:true });
   });
 
   renderCarrom();
@@ -1785,25 +1706,21 @@ function renderCarrom() {
     if (!c.alive) return;
     const el = document.createElement('div');
     el.className = `carrom-coin ${c.type}`;
-    el.style.left = `${c.x}%`;
-    el.style.top = `${c.y}%`;
-    el.style.transform = 'translate(-50%, -50%)';
+    el.style.left = `${c.x}%`; el.style.top = `${c.y}%`;
+    el.style.transform = 'translate(-50%,-50%)';
     board.appendChild(el);
   });
   const striker = document.createElement('div');
   striker.className = 'carrom-striker';
   striker.style.left = `${carrom.striker.x}%`;
   striker.style.top = `${carrom.striker.y}%`;
-  striker.style.transform = 'translate(-50%, -50%)';
+  striker.style.transform = 'translate(-50%,-50%)';
   striker.id = 'carromStrikerEl';
   board.appendChild(striker);
 
-  // Only enable dragging on your turn
   if (carrom.turn === 'you' && !carrom.animFrame) {
     striker.style.cursor = 'grab';
     striker.onpointerdown = startAim;
-  } else {
-    striker.style.cursor = 'default';
   }
 }
 
@@ -1812,44 +1729,33 @@ function startAim(e) {
   e.preventDefault();
   carrom.aiming = true;
   carrom.aimStart = { x: e.clientX, y: e.clientY };
-  const strikerEl = $('carromStrikerEl');
-  if (strikerEl) strikerEl.style.cursor = 'grabbing';
   document.addEventListener('pointermove', moveAim);
   document.addEventListener('pointerup', endAim);
 }
-
 function moveAim(e) {
   if (!carrom.aiming) return;
   const dx = carrom.aimStart.x - e.clientX;
   const dy = carrom.aimStart.y - e.clientY;
   const dist = Math.sqrt(dx*dx + dy*dy);
   const power = Math.min(1, dist/150);
-
-  const board = $('carromBoard');
-  if (!board) return;
+  const board = $('carromBoard'); if (!board) return;
   board.querySelectorAll('.carrom-aim-line').forEach(l => l.remove());
-
   const angle = Math.atan2(dy, dx);
-  const len = 25;
   const line = document.createElement('div');
   line.className = 'carrom-aim-line';
   line.style.left = `${carrom.striker.x}%`;
   line.style.top = `${carrom.striker.y}%`;
-  line.style.width = `${len}%`;
+  line.style.width = '25%';
   line.style.transform = `rotate(${angle}rad)`;
   line.style.background = `rgba(255,255,255,${0.4 + power*0.5})`;
-  line.style.height = `${2 + power*3}px`;
   board.appendChild(line);
 }
-
 function endAim(e) {
   if (!carrom.aiming) return;
   carrom.aiming = false;
   document.removeEventListener('pointermove', moveAim);
   document.removeEventListener('pointerup', endAim);
-
-  const board = $('carromBoard');
-  if (board) board.querySelectorAll('.carrom-aim-line').forEach(l => l.remove());
+  const board = $('carromBoard'); if (board) board.querySelectorAll('.carrom-aim-line').forEach(l => l.remove());
 
   const dx = carrom.aimStart.x - e.clientX;
   const dy = carrom.aimStart.y - e.clientY;
@@ -1858,7 +1764,6 @@ function endAim(e) {
   const power = Math.min(1, dist/150);
   const angle = Math.atan2(dy, dx);
   const speed = 0.8 + power * 2.5;
-
   carrom.striker.vx = Math.cos(angle) * speed;
   carrom.striker.vy = Math.sin(angle) * speed;
   animateCarrom();
@@ -1866,44 +1771,28 @@ function endAim(e) {
 
 function animateCarrom() {
   const board = $('carromBoard'); if (!board) return;
-  const boardRect = board.getBoundingClientRect();
-  const scale = 100 / boardRect.width; // convert px to %
-
   let steps = 0;
   const step = () => {
     steps++;
-    // Move striker
     carrom.striker.x += carrom.striker.vx * 0.7;
     carrom.striker.y += carrom.striker.vy * 0.7;
-    carrom.striker.vx *= 0.94;
-    carrom.striker.vy *= 0.94;
-
-    // Wall collisions for striker
+    carrom.striker.vx *= 0.94; carrom.striker.vy *= 0.94;
     if (carrom.striker.x < 12) { carrom.striker.x = 12; carrom.striker.vx *= -0.7; }
     if (carrom.striker.x > 88) { carrom.striker.x = 88; carrom.striker.vx *= -0.7; }
     if (carrom.striker.y < 12) { carrom.striker.y = 12; carrom.striker.vy *= -0.7; }
     if (carrom.striker.y > 88) { carrom.striker.y = 88; carrom.striker.vy *= -0.7; }
 
-    // Move coins
     let totalSpeed = Math.abs(carrom.striker.vx) + Math.abs(carrom.striker.vy);
     carrom.coins.forEach(c => {
       if (!c.alive) return;
-      c.x += c.vx * 0.7;
-      c.y += c.vy * 0.7;
-      c.vx *= 0.94;
-      c.vy *= 0.94;
+      c.x += c.vx * 0.7; c.y += c.vy * 0.7;
+      c.vx *= 0.94; c.vy *= 0.94;
       totalSpeed += Math.abs(c.vx) + Math.abs(c.vy);
-
-      // Wall collisions
       if (c.x < 12) { c.x = 12; c.vx *= -0.7; }
       if (c.x > 88) { c.x = 88; c.vx *= -0.7; }
       if (c.y < 12) { c.y = 12; c.vy *= -0.7; }
       if (c.y > 88) { c.y = 88; c.vy *= -0.7; }
-
-      // Pocket check (corners)
-      const inPocket =
-        (c.x < 16 && c.y < 16) || (c.x > 84 && c.y < 16) ||
-        (c.x < 16 && c.y > 84) || (c.x > 84 && c.y > 84);
+      const inPocket = (c.x < 16 && c.y < 16) || (c.x > 84 && c.y < 16) || (c.x < 16 && c.y > 84) || (c.x > 84 && c.y > 84);
       if (inPocket) {
         c.alive = false;
         if (c.type === 'white') carrom.pocketed.white++;
@@ -1911,29 +1800,19 @@ function animateCarrom() {
       }
     });
 
-    // Striker pocket check
-    const strikerPocketed =
-      (carrom.striker.x < 16 && carrom.striker.y < 16) ||
-      (carrom.striker.x > 84 && carrom.striker.y < 16) ||
-      (carrom.striker.x < 16 && carrom.striker.y > 84) ||
-      (carrom.striker.x > 84 && carrom.striker.y > 84);
+    const strikerPocketed = (carrom.striker.x < 16 && carrom.striker.y < 16) || (carrom.striker.x > 84 && carrom.striker.y < 16) || (carrom.striker.x < 16 && carrom.striker.y > 84) || (carrom.striker.x > 84 && carrom.striker.y > 84);
 
-    // Striker-coin collisions
     carrom.coins.forEach(c => {
       if (!c.alive) return;
       const dx = c.x - carrom.striker.x, dy = c.y - carrom.striker.y;
       const d = Math.sqrt(dx*dx + dy*dy);
       if (d < 4) {
         const nx = dx/d, ny = dy/d;
-        const push = 2.5;
-        c.vx = nx * push;
-        c.vy = ny * push;
-        carrom.striker.vx *= -0.5;
-        carrom.striker.vy *= -0.5;
+        c.vx = nx * 2.5; c.vy = ny * 2.5;
+        carrom.striker.vx *= -0.5; carrom.striker.vy *= -0.5;
       }
     });
 
-    // Coin-coin collisions
     for (let i = 0; i < carrom.coins.length; i++) {
       const a = carrom.coins[i]; if (!a.alive) continue;
       for (let j = i+1; j < carrom.coins.length; j++) {
@@ -1942,29 +1821,22 @@ function animateCarrom() {
         const d = Math.sqrt(dx*dx + dy*dy);
         if (d < 3.5) {
           const nx = dx/d, ny = dy/d;
-          const push = 1.2;
-          a.vx -= nx*push; a.vy -= ny*push;
-          b.vx += nx*push; b.vy += ny*push;
+          a.vx -= nx*1.2; a.vy -= ny*1.2;
+          b.vx += nx*1.2; b.vy += ny*1.2;
         }
       }
     }
 
-    // Update
     safeText('carromYouScore', `${carrom.pocketed.white}/9`);
     safeText('carromComScore', `${carrom.pocketed.black}/9`);
-
     renderCarrom();
 
-    // Check win
-    if (carrom.pocketed.white >= 9) { endCarrom('you'); return; }
-    if (carrom.pocketed.black >= 9) { endCarrom('com'); return; }
+    if (carrom.pocketed.white >= 9) return endCarrom('you');
+    if (carrom.pocketed.black >= 9) return endCarrom('com');
 
     if (strikerPocketed || steps > 200 || totalSpeed < 0.05) {
       carrom.animFrame = null;
-      if (strikerPocketed) {
-        // Foul - reset striker
-        carrom.striker.x = 50; carrom.striker.y = 82; carrom.striker.vx = 0; carrom.striker.vy = 0;
-      }
+      if (strikerPocketed) { carrom.striker.x = 50; carrom.striker.y = 82; carrom.striker.vx = 0; carrom.striker.vy = 0; }
       setTimeout(() => {
         if (carrom.turn === 'you') { carrom.turn = 'com'; updateCarromStatus('Computer\'s turn…'); setTimeout(carromComputerTurn, 900); }
         else { carrom.turn = 'you'; updateCarromStatus('Your turn'); renderCarrom(); }
@@ -1980,26 +1852,19 @@ async function carromComputerTurn() {
   if (!carrom.playing) return;
   updateCarromStatus('Computer aiming…');
   await new Promise(r => setTimeout(r, 800));
-
-  // Find a black coin and aim toward it
   const targets = carrom.coins.filter(c => c.type === 'black' && c.alive);
   if (!targets.length) { carrom.turn = 'you'; updateCarromStatus('Your turn'); renderCarrom(); return; }
 
-  // Place striker at random position along bottom
-  carrom.striker.x = 35 + Math.random() * 30;
+  carrom.striker.x = 35 + Math.random()*30;
   carrom.striker.y = 82;
   carrom.striker.vx = 0; carrom.striker.vy = 0;
 
-  // Aim at nearest black to a corner
-  const target = targets.sort((a,b) => (a.y - b.y))[0];
+  const target = targets.sort((a,b)=>(a.y - b.y))[0];
   const dx = target.x - carrom.striker.x;
   const dy = target.y - carrom.striker.y;
-  const dist = Math.sqrt(dx*dx + dy*dy);
-  const power = Math.min(1, 1.2);
   const angle = Math.atan2(dy, dx);
-  carrom.striker.vx = Math.cos(angle) * (0.8 + power * 2);
-  carrom.striker.vy = Math.sin(angle) * (0.8 + power * 2);
-
+  carrom.striker.vx = Math.cos(angle) * 2.3;
+  carrom.striker.vy = Math.sin(angle) * 2.3;
   setTimeout(animateCarrom, 300);
 }
 
@@ -2011,84 +1876,60 @@ async function endCarrom(winner) {
   const cfg = gameConfig.carrom;
   const youWon = winner === 'you';
 
-  showAdOverlay('Loading Ad', 'Please wait…');
+  showAdOverlay('Loading Ad','Please wait…');
   await playRotatingAd();
   hideAdOverlay();
 
   let winAmount = 0;
   if (youWon) { winAmount = cfg.winnerReward; await addBalance(winAmount, 'carrom_win', 'Carrom won'); }
-  showResult(
-    youWon ? '🏆' : '😔',
-    youWon ? 'Victory!' : 'Defeat',
-    youWon ? `You pocketed all ${carrom.pocketed.white} coins!` : `You pocketed ${carrom.pocketed.white} coins. Computer won.`,
+
+  showResult(youWon?'🏆':'😔',
+    youWon?'Victory!':'Defeat',
+    youWon?`You pocketed all ${carrom.pocketed.white}!`:`You pocketed ${carrom.pocketed.white}. Computer won.`,
     youWon ? winAmount : -cfg.entryFee,
-    youWon ? 'Awesome!' : 'Try Again',
-    () => { resetCarromUI(); }
+    youWon?'Awesome!':'Try Again',
+    () => resetCarromUI()
   );
 }
-
 function resetCarromUI() {
   $('carrom-lobby')?.classList.remove('hidden');
   $('carrom-game')?.classList.add('hidden');
 }
 
-// ============================================================
-// NO POINTS MODAL (Watch Ad to get points)
-// ============================================================
+// ========== NO POINTS MODAL ==========
 function showNoPointsModal(needed) {
   const reward = gameConfig.adRewardPerView || 10;
-  safeHtml('modalIcon', '<i class="fas fa-play-circle" style="color:var(--warn);"></i>');
-  safeText('modalTitle', 'Not Enough Points');
-  safeText('modalBody', `You need at least ${needed} points.\n\nWatch a short ad to earn ${reward} points!`);
+  safeHtml('modalIcon','<i class="fas fa-play-circle" style="color:var(--warn);"></i>');
+  safeText('modalTitle','Not Enough Points');
+  safeText('modalBody',`You need at least ${needed} points.\n\nWatch a short ad to earn ${reward} points!`);
   const btn = $('modalBtn');
   if (btn) {
     btn.textContent = `📺 Watch Ad (+${reward})`;
     $('modal').classList.add('show');
     btn.onclick = async () => {
       $('modal').classList.remove('show');
-      showAdOverlay('Loading Ad', 'Watch to earn points…');
+      showAdOverlay('Loading Ad','Watch to earn points…');
       const r = await playRotatingAd();
       hideAdOverlay();
       if (r.success) {
-        await addBalance(reward, 'ad_collect', `Watched ad for ${reward} points`);
-        showModal('🎉', 'Points Added!', `+${reward} points.`, 'Great!');
-      } else {
-        showModal('⚠️', 'Ad Unavailable', 'No ad available. Try again later.', 'OK');
-      }
+        await addBalance(reward, 'ad_collect', `Ad for ${reward} points`);
+        showModal('🎉','Points Added!',`+${reward} points.`,'Great!');
+      } else showModal('⚠️','Ad Unavailable','Try later.','OK');
     };
-  } else {
-    showModal('💰', 'Not Enough Points', `You need ${needed} points.`, 'OK');
   }
 }
 
-async function recordPlay(gameId) {
-  try {
-    await addDoc(collection(db, 'gameHistory'), {
-      userId: currentUser.uid,
-      userName: userData.name,
-      telegramId: userData.telegramId,
-      game: gameId,
-      timestamp: serverTimestamp()
-    });
-  } catch(e){}
-}
-
-// ============================================================
-// WALLET / REFER / PROFILE / VISIT
-// ============================================================
+// ========== WALLET / REFER / PROFILE ==========
 async function loadWallet() {
   if (!userData) return;
   const walletVisible = gamesConfig.wallet?.visible !== false;
-  const withdrawVisible = gamesConfig.withdraw?.visible !== false;
   const navW = $('navWallet');
   if (navW) navW.style.display = walletVisible ? 'flex' : 'none';
   safeText('walletBalance', (userData.balance||0).toFixed(0));
   safeText('walletValueInfo', `${appConfig.coinValueCoins||1000} coins = ₹${appConfig.coinValueInr||10}`);
   const methods = appConfig.paymentMethods || ['UPI','Paytm','PayPal'];
   const sel = $('withdrawMethod');
-  if (sel) sel.innerHTML = methods.map(m => `<option value="${m}">${m}</option>`).join('');
-  const wb = $('withdrawBtn');
-  if (wb) wb.style.display = withdrawVisible ? 'block' : 'none';
+  if (sel) sel.innerHTML = methods.map(m=>`<option value="${m}">${m}</option>`).join('');
 
   const el = $('withdrawHistory'); if (!el) return;
   try {
@@ -2129,7 +1970,7 @@ async function requestWithdraw() {
       amount, method, paymentDetail: detail,
       status:'pending', requestedAt: serverTimestamp(), country: userCountry||'unknown'
     });
-    showModal('✅','Submitted','Your request is pending.','OK');
+    showModal('✅','Submitted','Pending review.','OK');
     if ($('withdrawAmount')) $('withdrawAmount').value='';
     if ($('withdrawDetail')) $('withdrawDetail').value='';
     loadWallet();
@@ -2168,51 +2009,8 @@ function loadProfile() {
   safeText('profileSince', since);
   safeText('profileTotal', (userData.totalEarned||0).toFixed(0));
 }
-async function loadVisit() {
-  const list = appConfig.websitesToVisit || [];
-  const el = $('visitList'); if (!el) return;
-  if (!list.length) { el.innerHTML = `<div class="card" style="padding:20px;text-align:center;color:var(--text-dim);font-size:.85rem;">No websites available.</div>`; return; }
-  const visited = userData?.visitedSitesToday || [];
-  el.innerHTML = list.map((s,i) => {
-    const done = visited.includes(s.link);
-    return `<div class="card" style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;">
-      <div style="flex:1;min-width:0;">
-        <div style="font-weight:700;font-size:.9rem;">${s.name}</div>
-        <div style="color:var(--brand);font-size:.75rem;margin-top:2px;">+${s.reward||10} coins · ${s.timer||30}s</div>
-      </div>
-      <button class="btn ${done?'btn-ghost':'btn-primary'}" data-idx="${i}" ${done?'disabled':''} style="padding:8px 16px;font-size:.75rem;">${done?'Done':'Visit'}</button>
-    </div>`;
-  }).join('');
-  el.querySelectorAll('button[data-idx]').forEach(b => b.onclick = () => visitSite(parseInt(b.dataset.idx)));
-}
-async function visitSite(idx) {
-  const site = (appConfig.websitesToVisit||[])[idx]; if (!site) return;
-  window.open(site.link, '_blank');
-  const seconds = site.timer || 30;
-  const reward = site.reward || 10;
-  showModal('⏳','Visit Website', `Stay for ${seconds} seconds to earn ${reward} coins.`, 'Wait…');
-  let left = seconds;
-  const tick = setInterval(() => {
-    left--; safeText('modalBtn', `Wait… ${left}s`);
-    if (left <= 0) {
-      clearInterval(tick);
-      safeText('modalBtn','Claim');
-      const b = $('modalBtn'); if (b) b.onclick = async () => {
-        $('modal').classList.remove('show');
-        const v = [...(userData.visitedSitesToday||[]), site.link];
-        userData.visitedSitesToday = v;
-        userData.lastSiteVisitDate = new Date().toISOString().slice(0,10);
-        try { await updateDoc(doc(db,'users',currentUser.uid), { visitedSitesToday:v, lastSiteVisitDate: userData.lastSiteVisitDate }); } catch(e){}
-        await addBalance(reward, 'visit_site', site.name);
-        showModal('🎉','Success!',`+${reward} coins.`,'OK', () => loadVisit());
-      };
-    }
-  }, 1000);
-}
 
-// ============================================================
-// UI INIT
-// ============================================================
+// ========== UI ==========
 function initUI() {
   if (!userData) return;
   safeText('hdrName', `Hi, ${(userData.name||'Player').split(' ')[0]}`);
@@ -2250,35 +2048,51 @@ function startSlider() {
 }
 function goToSlide(i) {
   slideIdx = i;
-  const b = appConfig.sliderBanners || [];
   const t = $('sliderTrack'); if (t) t.style.transform = `translateX(-${i*100}%)`;
   $('sliderDots')?.querySelectorAll('.dot').forEach((d,idx) => d.classList.toggle('active', idx===i));
 }
 
 function renderFeatures() {
   const grid = $('featureGrid'); if (!grid) return;
+
+  // Merge: previous games + new games, all filtered by admin visibility
   const items = [
-    { id:'29',    name:'29 Card Game', icon:'fa-diamond',    desc:'You+West vs 2 AI', cls:'card29' },
-    { id:'ludo',  name:'Ludo',         icon:'fa-dice',       desc:'Race to home',     cls:'ludo' },
-    { id:'carrom',name:'Carrom',       icon:'fa-bullseye',   desc:'Pocket all coins', cls:'carrom' },
-    { id:'watch', name:'Watch & Earn', icon:'fa-play-circle',desc:'Instant coins',    cls:'' }
+    { id:'29',        name:'29 Card Game',  icon:'fa-diamond',     desc:'You+West vs 2 AI', cls:'card29',        visKey:'game29' },
+    { id:'ludo',      name:'Ludo',          icon:'fa-dice',        desc:'Race to home',     cls:'ludo',          visKey:'ludoGame' },
+    { id:'carrom',    name:'Carrom',        icon:'fa-bullseye',    desc:'Pocket all coins', cls:'carrom',        visKey:'carromGame' },
+    { id:'ludoDice',  name:'Ludo Dice',     icon:'fa-dice-five',   desc:'Roll & win',       cls:'ludoDiceCard',  visKey:'ludoDice' },
+    { id:'color',     name:'Color Match',   icon:'fa-palette',     desc:'Match colors',     cls:'',              visKey:'colorGame' },
+    { id:'watch',     name:'Watch & Earn',  icon:'fa-play-circle', desc:'Instant coins',    cls:'',              visKey:'watchVideo' },
+    { id:'luck',      name:'Try Your Luck', icon:'fa-star',        desc:'Big reward',       cls:'luck',          visKey:'tryYourLuck' },
+    { id:'visit',     name:'Visit Sites',   icon:'fa-globe',       desc:'Browse & earn',    cls:'',              visKey:'visitWebsites' },
+    { id:'social',    name:'Social Tasks',  icon:'fa-share-nodes', desc:'Follow & earn',    cls:'',              visKey:'socialTasks' }
   ];
 
-  // Filter by visibility
-  const vis = {
-    '29':    gameConfig.g29.visible !== false && gamesConfig.game29?.visible !== false,
-    ludo:    gameConfig.ludo.visible !== false && gamesConfig.ludo?.visible !== false,
-    carrom:  gameConfig.carrom.visible !== false && gamesConfig.carrom?.visible !== false,
-    watch:   gamesConfig.watchVideo?.visible !== false
-  };
+  // Visibility check: admin toggle overrides
+  const visible = {};
+  items.forEach(i => {
+    const gc = gamesConfig[i.visKey] || {};
+    visible[i.id] = gc.visible !== false;
+  });
 
-  grid.innerHTML = items.filter(i => vis[i.id]).map(i => `
+  grid.innerHTML = items.filter(i => visible[i.id]).map(i => `
     <div class="feature-card ${i.cls}" onclick="navigateTo('${i.id}')">
       <div class="feature-icon"><i class="fas ${i.icon}"></i></div>
       <div style="font-weight:700;font-size:.85rem;">${i.name}</div>
       <div style="color:var(--text-mute);font-size:.7rem;margin-top:3px;">${i.desc}</div>
     </div>
   `).join('');
+
+  const walletVisible = gamesConfig.wallet?.visible !== false;
+  if (walletVisible) {
+    grid.innerHTML += `
+      <div class="feature-card" onclick="navigateTo('wallet')">
+        <div class="feature-icon"><i class="fas fa-wallet"></i></div>
+        <div style="font-weight:700;font-size:.85rem;">My Wallet</div>
+        <div style="color:var(--text-mute);font-size:.7rem;margin-top:3px;">Withdraw</div>
+      </div>
+    `;
+  }
 }
 
 function initListeners() {
@@ -2286,27 +2100,26 @@ function initListeners() {
     l.onclick = (e) => { e.preventDefault(); navigateTo(l.dataset.page); };
   });
 
-  // 29
+  // Previous games
+  $('ludoDiceRollBtn')?.addEventListener('click', playLudoDice);
+  $('watchBtn')?.addEventListener('click', playWatch);
+  $('luckBtn')?.addEventListener('click', startLuck);
+  $('luckExitBtn')?.addEventListener('click', () => { luckActive = false; navigateTo('luck'); });
+
+  // New games
   $('g29StartBtn')?.addEventListener('click', start29Match);
   $('g29QuitBtn')?.addEventListener('click', () => {
-    if (g29.playing) showConfirm('🚪','Quit Match?','You will lose your entry fee.','Quit','Stay', () => { g29.playing = false; reset29UI(); });
+    if (g29.playing) showConfirm('🚪','Quit Match?','Entry fee not refunded.','Quit','Stay', () => { g29.playing = false; reset29UI(); });
   });
-
-  // Ludo
   $('ludoStartBtn')?.addEventListener('click', startLudoMatch);
   $('ludoRollBtn')?.addEventListener('click', ludoRoll);
   $('ludoQuitBtn')?.addEventListener('click', () => {
     if (ludo.playing) showConfirm('🚪','Quit Match?','Entry fee not refunded.','Quit','Stay', () => { ludo.playing = false; resetLudoUI(); });
   });
-
-  // Carrom
   $('carromStartBtn')?.addEventListener('click', startCarromMatch);
   $('carromQuitBtn')?.addEventListener('click', () => {
     if (carrom.playing) showConfirm('🚪','Quit Match?','Entry fee not refunded.','Quit','Stay', () => { carrom.playing = false; resetCarromUI(); });
   });
-
-  // Watch
-  $('watchBtn')?.addEventListener('click', playWatch);
 
   // Wallet/Refer/Profile
   $('withdrawBtn')?.addEventListener('click', requestWithdraw);
@@ -2331,6 +2144,7 @@ function refreshAllUI() {
   safeText('statTasks', (userData.tasksCompleted||0));
   safeText('statLevel', Math.floor((userData.totalEarned||0)/500)+1);
   refreshWatchUI();
+  refreshLudoDiceUI();
 }
 
 function showNotice(n) {
