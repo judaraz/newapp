@@ -68,7 +68,6 @@ body {
 .feature-card.ludo .feature-icon{background:linear-gradient(135deg,#06b6d4,#3b82f6);}
 .feature-card.luck{background:linear-gradient(160deg,rgba(245,158,11,.08),rgba(239,68,68,.05));border-color:rgba(245,158,11,.2);}
 .feature-card.luck .feature-icon{background:linear-gradient(135deg,#f59e0b,#ef4444);}
-.feature-card.ludoDiceCard{background:linear-gradient(160deg,rgba(0,229,160,.08),rgba(0,184,212,.05));border-color:rgba(0,229,160,.2);}
 .spinner{width:24px;height:24px;border:3px solid rgba(0,229,160,.15);border-top-color:var(--brand);border-radius:50%;animation:spin .9s linear infinite;}
 .spinner-lg{width:60px;height:60px;border-width:4px;}
 .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:.65rem;font-weight:700;}
@@ -153,10 +152,8 @@ body {
 .carrom-striker{position:absolute;width:9%;height:9%;border-radius:50%;background:radial-gradient(circle at 30% 30%,#fff,#e5e7eb 60%,#94a3b8);box-shadow:0 2px 6px rgba(0,0,0,.6),inset 0 -2px 4px rgba(0,0,0,.15);border:2px solid #fff;z-index:5;transition:transform .12s ease-out;cursor:grab;}
 .carrom-aim-line{position:absolute;height:2px;background:rgba(255,255,255,.8);transform-origin:left center;pointer-events:none;z-index:6;border-radius:2px;box-shadow:0 0 8px rgba(255,255,255,.6);}
 
-/* Color game tiles */
 .color-tile{height:70px;border-radius:14px;cursor:pointer;transition:transform .15s;box-shadow:0 4px 12px rgba(0,0,0,.3);}
 
-/* Result modal */
 .result-modal-card{background:var(--bg-card);border:2px solid var(--border);border-radius:24px;padding:32px 26px;max-width:380px;width:100%;text-align:center;animation:slideUp .3s ease;}
 .result-modal-card.win{border-color:rgba(34,197,94,.5);box-shadow:0 25px 60px rgba(34,197,94,.3);}
 .result-modal-card.lose{border-color:rgba(239,68,68,.5);box-shadow:0 25px 60px rgba(239,68,68,.3);}
@@ -300,7 +297,7 @@ body {
       </div>
     </div>
 
-    <!-- LUDO DICE (simple) -->
+    <!-- LUDO DICE -->
     <div id="page-ludoDice" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:4px;">🎲 Ludo Dice</h2>
       <p style="text-align:center;color:var(--text-dim);font-size:.75rem;margin-bottom:14px;">Roll the dice, win points!</p>
@@ -393,7 +390,7 @@ body {
       <div id="socialList" style="display:flex;flex-direction:column;gap:12px;"></div>
     </div>
 
-    <!-- 29 CARD GAME -->
+    <!-- 29 -->
     <div id="page-29" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:4px;">🃏 29 Card Game</h2>
       <p style="text-align:center;color:var(--text-dim);font-size:.75rem;margin-bottom:14px;">
@@ -687,11 +684,35 @@ async function bootstrap() {
       };
     }
 
-    // Load 3-game config
-    if (appConfig.game29)     Object.assign(gameConfig.g29,     appConfig.game29);
-    if (appConfig.ludoGame)   Object.assign(gameConfig.ludo,    appConfig.ludoGame);
-    if (appConfig.carromGame) Object.assign(gameConfig.carrom,  appConfig.carromGame);
+    // Load 3-game config from config/main
+    if (appConfig.game29) {
+      Object.assign(gameConfig.g29, {
+        entryFee: appConfig.game29.entryFee || 100,
+        winnerReward: appConfig.game29.winnerReward || 180
+      });
+      if (typeof appConfig.game29.visible === 'boolean') gameConfig.g29.visible = appConfig.game29.visible;
+    }
+    if (appConfig.ludoGame) {
+      Object.assign(gameConfig.ludo, {
+        entryFee: appConfig.ludoGame.entryFee || 100,
+        winnerReward: appConfig.ludoGame.winnerReward || 180
+      });
+      if (typeof appConfig.ludoGame.visible === 'boolean') gameConfig.ludo.visible = appConfig.ludoGame.visible;
+    }
+    if (appConfig.carromGame) {
+      Object.assign(gameConfig.carrom, {
+        entryFee: appConfig.carromGame.entryFee || 100,
+        winnerReward: appConfig.carromGame.winnerReward || 180
+      });
+      if (typeof appConfig.carromGame.visible === 'boolean') gameConfig.carrom.visible = appConfig.carromGame.visible;
+    }
 
+    // Also check config/games visibility for 3-game (fallback)
+    if (gamesConfig.game29) gameConfig.g29.visible = gamesConfig.game29.visible !== false;
+    if (gamesConfig.ludoGame) gameConfig.ludo.visible = gamesConfig.ludoGame.visible !== false;
+    if (gamesConfig.carromGame) gameConfig.carrom.visible = gamesConfig.carromGame.visible !== false;
+
+    // Country block
     if (appConfig.allowedCountries?.length && userCountry && !appConfig.allowedCountries.includes(userCountry)) {
       safeText('countryBlockMsg', appConfig.blockedCountryMessage || 'Not available.');
       $('countryBlock')?.classList.add('show');
@@ -714,7 +735,13 @@ async function bootstrap() {
 
     try {
       onSnapshot(doc(db,'config','games'), s => {
-        if (s.exists()) { gamesConfig = s.data(); refreshAllUI(); renderFeatures(); }
+        if (s.exists()) {
+          gamesConfig = s.data();
+          if (gamesConfig.game29) gameConfig.g29.visible = gamesConfig.game29.visible !== false;
+          if (gamesConfig.ludoGame) gameConfig.ludo.visible = gamesConfig.ludoGame.visible !== false;
+          if (gamesConfig.carromGame) gameConfig.carrom.visible = gamesConfig.carromGame.visible !== false;
+          refreshAllUI(); renderFeatures();
+        }
       });
       onSnapshot(doc(db,'config','ads'), s => {
         if (s.exists()) {
@@ -729,10 +756,21 @@ async function bootstrap() {
       onSnapshot(doc(db,'config','main'), s => {
         if (s.exists()) {
           appConfig = { ...appConfig, ...s.data() };
-          if (appConfig.game29)     Object.assign(gameConfig.g29,     appConfig.game29);
-          if (appConfig.ludoGame)   Object.assign(gameConfig.ludo,    appConfig.ludoGame);
-          if (appConfig.carromGame) Object.assign(gameConfig.carrom,  appConfig.carromGame);
-          refreshAllUI(); updateGameLabels();
+          if (appConfig.game29) {
+            Object.assign(gameConfig.g29, { entryFee: appConfig.game29.entryFee || 100, winnerReward: appConfig.game29.winnerReward || 180 });
+            if (typeof appConfig.game29.visible === 'boolean') gameConfig.g29.visible = appConfig.game29.visible;
+          }
+          if (appConfig.ludoGame) {
+            Object.assign(gameConfig.ludo, { entryFee: appConfig.ludoGame.entryFee || 100, winnerReward: appConfig.ludoGame.winnerReward || 180 });
+            if (typeof appConfig.ludoGame.visible === 'boolean') gameConfig.ludo.visible = appConfig.ludoGame.visible;
+          }
+          if (appConfig.carromGame) {
+            Object.assign(gameConfig.carrom, { entryFee: appConfig.carromGame.entryFee || 100, winnerReward: appConfig.carromGame.winnerReward || 180 });
+            if (typeof appConfig.carromGame.visible === 'boolean') gameConfig.carrom.visible = appConfig.carromGame.visible;
+          }
+          updateGameLabels();
+          renderFeatures();
+          refreshAllUI();
         }
       });
     } catch(e){}
@@ -876,7 +914,7 @@ async function optionalDoublePoints(basePoints, onFinal) {
   );
 }
 
-// ========== LUDO DICE (simple dice game, keep from previous version) ==========
+// ========== LUDO DICE (simple) ==========
 async function playLudoDice() {
   if (ludoDiceBusy) return;
   const cfg = gamesConfig.ludoDice || {};
@@ -1081,7 +1119,7 @@ async function loadVisit() {
     const done = visited.includes(s.link);
     return `<div class="card" style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;">
       <div style="flex:1;min-width:0;">
-        <div style="font-weight:700;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.name}</div>
+        <div style="font-weight:700;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(s.name)}</div>
         <div style="color:var(--brand);font-size:.75rem;margin-top:2px;">+${s.reward||10} coins · ${s.timer||30}s</div>
       </div>
       <button class="btn ${done?'btn-ghost':'btn-primary'}" data-idx="${i}" ${done?'disabled':''} style="padding:8px 16px;font-size:.75rem;">${done?'Done':'Visit'}</button>
@@ -1124,7 +1162,7 @@ async function loadSocial() {
     const isDone = done.includes(s.link);
     return `<div class="card" style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;">
       <div style="flex:1;min-width:0;">
-        <div style="font-weight:700;font-size:.9rem;">${s.name}</div>
+        <div style="font-weight:700;font-size:.9rem;">${escHtml(s.name)}</div>
         <div style="color:var(--brand);font-size:.75rem;margin-top:2px;">+${s.reward||20} coins</div>
       </div>
       <button class="btn ${isDone?'btn-ghost':'btn-primary'}" data-idx="${i}" ${isDone?'disabled':''} style="padding:8px 16px;font-size:.75rem;">${isDone?'Done':'Follow'}</button>
@@ -1373,10 +1411,9 @@ function reset29UI() {
 }
 
 // =======================================================
-// LUDO (with visible dice)
+// LUDO
 // =======================================================
-let ludo = { playing:false, tokens:{red:[{pos:-1},{pos:-1},{pos:-1},{pos:-1}], blue:[{pos:-1},{pos:-1},{pos:-1},{pos:-1}]}, turn:'blue', dice:0, path:[] };
-
+let ludo = { playing:false, tokens:{red:[{pos:-1},{pos:-1},{pos:-1},{pos:-1}], blue:[{pos:-1},{pos:-1},{pos:-1},{pos:-1}]}, turn:'blue', dice:0 };
 const LUDO_PATH_LEN = 56;
 const DICE_FACES = ['⚀','⚁','⚂','⚃','⚄','⚅'];
 
@@ -1384,12 +1421,10 @@ function buildLudoBoard() {
   const board = $('ludoBoard'); if (!board) return;
   board.innerHTML = '';
   const cellSize = 100/15;
-
-  // 4 home bases (6x6 quadrants)
   const baseColors = ['#ef4444','#22c55e','#eab308','#3b82f6'];
-  const basePos = [[0,0],[0,9],[9,9],[9,0]]; // TL, TR, BR, BL (Red top-left, Green top-right, Yellow bottom-right, Blue bottom-left)
+  const basePos = [[0,0],[0,9],[9,9],[9,0]];
   basePos.forEach((pos, i) => {
-    const html = `<div style="position:absolute;top:${pos[0]*cellSize}%;left:${pos[1]*cellSize}%;width:${6*cellSize}%;height:${6*cellSize}%;background:${baseColors[i]};border:2px solid #1e293b;box-sizing:border-box;">
+    board.innerHTML += `<div style="position:absolute;top:${pos[0]*cellSize}%;left:${pos[1]*cellSize}%;width:${6*cellSize}%;height:${6*cellSize}%;background:${baseColors[i]};border:2px solid #1e293b;box-sizing:border-box;">
       <div style="position:absolute;inset:15%;background:#fff;border-radius:6px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:8%;padding:8%;">
         <div style="border-radius:50%;border:2px solid ${baseColors[i]};background:${baseColors[i]}40;"></div>
         <div style="border-radius:50%;border:2px solid ${baseColors[i]};background:${baseColors[i]}40;"></div>
@@ -1397,81 +1432,51 @@ function buildLudoBoard() {
         <div style="border-radius:50%;border:2px solid ${baseColors[i]};background:${baseColors[i]}40;"></div>
       </div>
     </div>`;
-    board.innerHTML += html;
   });
-
-  // Center
   board.innerHTML += `<div style="position:absolute;top:${6*cellSize}%;left:${6*cellSize}%;width:${3*cellSize}%;height:${3*cellSize}%;background:#1e293b;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;overflow:hidden;">
     <div style="background:#ef4444;clip-path:polygon(0 0,100% 0,50% 50%);"></div>
     <div style="background:#22c55e;clip-path:polygon(100% 0,100% 100%,50% 50%);"></div>
     <div style="background:#eab308;clip-path:polygon(0 100%,100% 100%,50% 50%);"></div>
     <div style="background:#3b82f6;clip-path:polygon(0 0,0 100%,50% 50%);"></div>
   </div>`;
-
-  // Cross path cells
   for (let r = 0; r < 15; r++) {
     for (let c = 0; c < 15; c++) {
       const inCross = (r >= 6 && r <= 8) || (c >= 6 && c <= 8);
       const inHome = (r < 6 || r > 8) && (c < 6 || c > 8);
       if (inHome || !inCross) continue;
       let bg = '#fff';
-      // Color path
       if (c >= 6 && c <= 8 && r === 6) bg = '#ef4444';
       if (c >= 6 && c <= 8 && r === 8) bg = '#3b82f6';
       if (r >= 6 && r <= 8 && c === 6) bg = '#22c55e';
       if (r >= 6 && r <= 8 && c === 8) bg = '#eab308';
-
       const cell = document.createElement('div');
       cell.style.cssText = `position:absolute;top:${r*cellSize}%;left:${c*cellSize}%;width:${cellSize}%;height:${cellSize}%;background:${bg};border:1px solid rgba(0,0,0,.15);box-sizing:border-box;`;
-      cell.dataset.row = r; cell.dataset.col = c;
       board.appendChild(cell);
     }
   }
-
   renderLudoTokens();
 }
 
-// Simple path around the cross — coordinates (row, col)
 function getLudoPath(player) {
-  // Simplified path: 52 perimeter + 6 home column
-  // Blue starts at (13, 6) going up
-  // Returns array of [row, col] positions
-  const path = [];
-  if (player === 'blue') {
-    // From bottom-middle going up left arm, around, back
-    // Perimeter cells of the cross
-    const cells = [];
-    // Bottom-left arm exit
-    for (let r = 13; r >= 6; r--) cells.push([r, 6]);
-    for (let r = 6; r > 0; r--) cells.push([r, 6]);
-    // Top-left arm
-    for (let c = 6; c <= 8; c++) cells.push([0, c]);
-    // Top-right arm
-    for (let r = 0; r <= 6; r++) cells.push([r, 8]);
-    for (let r = 6; r <= 8; r++) cells.push([r, 14]);
-    // Right arm
-    for (let c = 14; c >= 8; c--) cells.push([8, c]);
-    // Bottom-right arm
-    for (let r = 8; r <= 14; r++) cells.push([r, 8]);
-    for (let c = 8; c >= 6; c--) cells.push([14, c]);
-    // Bottom-left
-    for (let r = 14; r >= 8; r--) cells.push([r, 6]);
-    // Bottom-left exit → back to start
-    for (let r = 8; r >= 6; r--) cells.push([r, 6]);
-    // Home column (blue goes to (7, 7))
-    cells.push([7, 7]);
-    // Just take first 57 cells
-    return cells.slice(0, 57);
-  }
-  // For red (computer), just offset the path
+  const cells = [];
+  for (let r = 13; r >= 6; r--) cells.push([r, 6]);
+  for (let r = 6; r > 0; r--) cells.push([r, 6]);
+  for (let c = 6; c <= 8; c++) cells.push([0, c]);
+  for (let r = 0; r <= 6; r++) cells.push([r, 8]);
+  for (let r = 6; r <= 8; r++) cells.push([r, 14]);
+  for (let c = 14; c >= 8; c--) cells.push([8, c]);
+  for (let r = 8; r <= 14; r++) cells.push([r, 8]);
+  for (let c = 8; c >= 6; c--) cells.push([14, c]);
+  for (let r = 14; r >= 8; r--) cells.push([r, 6]);
+  for (let r = 8; r >= 6; r--) cells.push([r, 6]);
+  cells.push([7, 7]);
+  if (player === 'blue') return cells.slice(0, 57);
   if (player === 'red') {
-    const base = getLudoPath('blue');
-    // Rotate by 13 (roughly)
     const offset = 26;
     const result = [];
-    for (let i = 0; i < base.length; i++) {
-      const idx = (i + offset) % base.length;
-      result.push(base[idx]);
+    for (let i = 0; i < cells.length; i++) {
+      const idx = (i + offset) % cells.length;
+      result.push(cells[idx]);
     }
     return result;
   }
@@ -1481,14 +1486,11 @@ function getLudoPath(player) {
 function renderLudoTokens() {
   const board = $('ludoBoard'); if (!board) return;
   board.querySelectorAll('.ludo-token-el').forEach(t => t.remove());
-
   const cellSize = 100/15;
-
   const homeBasePositions = {
-    red: [[1,1],[1,4],[4,1],[4,4]],   // Red is top-left
-    blue: [[10,1],[10,4],[13,1],[13,4]] // Blue is bottom-left
+    red: [[1,1],[1,4],[4,1],[4,4]],
+    blue: [[10,1],[10,4],[13,1],[13,4]]
   };
-
   function getTokenPos(player, idx, pos) {
     if (pos === -1) {
       const [r, c] = homeBasePositions[player][idx];
@@ -1499,7 +1501,6 @@ function renderLudoTokens() {
     if (!p) return null;
     return { top: p[0] * cellSize + cellSize * 0.12, left: p[1] * cellSize + cellSize * 0.12, size: cellSize * 0.76 };
   }
-
   for (const player of ['red', 'blue']) {
     ludo.tokens[player].forEach((tok, i) => {
       const tp = getTokenPos(player, i, tok.pos);
@@ -1533,8 +1534,6 @@ async function ludoRoll() {
   const rb = $('ludoRollBtn'); if (rb) rb.disabled = true;
   const diceEl = $('ludoBigDice');
   if (diceEl) diceEl.classList.add('rolling');
-
-  // Animate dice
   for (let i = 0; i < 8; i++) {
     if (diceEl) diceEl.textContent = DICE_FACES[Math.floor(Math.random()*6)];
     await new Promise(r => setTimeout(r, 80));
@@ -1543,10 +1542,8 @@ async function ludoRoll() {
   if (diceEl) { diceEl.classList.remove('rolling'); diceEl.textContent = DICE_FACES[dice-1]; }
   safeText('ludoStatus', `You rolled ${dice}!`);
   ludo.dice = dice;
-
   await new Promise(r => setTimeout(r, 400));
 
-  // Auto-pick a token
   const movable = ludo.tokens.blue.map((t,i)=>({t,i})).filter(x => {
     if (x.t.pos === -1) return dice === 6;
     return x.t.pos + dice <= LUDO_PATH_LEN;
@@ -1898,7 +1895,7 @@ function resetCarromUI() {
 
 // ========== NO POINTS MODAL ==========
 function showNoPointsModal(needed) {
-  const reward = gameConfig.adRewardPerView || 10;
+  const reward = appConfig.adRewardPerView || 10;
   safeHtml('modalIcon','<i class="fas fa-play-circle" style="color:var(--warn);"></i>');
   safeText('modalTitle','Not Enough Points');
   safeText('modalBody',`You need at least ${needed} points.\n\nWatch a short ad to earn ${reward} points!`);
@@ -1927,9 +1924,21 @@ async function loadWallet() {
   if (navW) navW.style.display = walletVisible ? 'flex' : 'none';
   safeText('walletBalance', (userData.balance||0).toFixed(0));
   safeText('walletValueInfo', `${appConfig.coinValueCoins||1000} coins = ₹${appConfig.coinValueInr||10}`);
-  const methods = appConfig.paymentMethods || ['UPI','Paytm','PayPal'];
+
+  // Payment methods — handle both strings and {name, placeholder} objects
+  const rawMethods = appConfig.paymentMethods || ['UPI','Paytm','PayPal'];
+  const methods = rawMethods.map(m => {
+    if (typeof m === 'string') return { name: m, placeholder: `Enter ${m} details` };
+    return { name: m.name || 'Method', placeholder: m.placeholder || `Enter ${m.name || ''} details` };
+  });
+  window._paymentMethods = methods;
+
   const sel = $('withdrawMethod');
-  if (sel) sel.innerHTML = methods.map(m=>`<option value="${m}">${m}</option>`).join('');
+  if (sel) {
+    sel.innerHTML = methods.map(m => `<option value="${escAttr(m.name)}">${escHtml(m.name)}</option>`).join('');
+    updateWithdrawPlaceholder();
+    sel.onchange = updateWithdrawPlaceholder;
+  }
 
   const el = $('withdrawHistory'); if (!el) return;
   try {
@@ -1943,11 +1952,20 @@ async function loadWallet() {
       const clr = r.status==='approved'?'pill-success':r.status==='rejected'?'pill-danger':'pill-warn';
       return `<div class="card" style="padding:12px 16px;display:flex;justify-content:space-between;align-items:center;">
         <div><div style="font-weight:700;font-size:.9rem;">${r.amount} coins</div>
-        <div style="color:var(--text-mute);font-size:.7rem;margin-top:2px;">${r.method||''}</div></div>
+        <div style="color:var(--text-mute);font-size:.7rem;margin-top:2px;">${escHtml(r.method||'')}</div></div>
         <span class="pill ${clr}">${(r.status||'pending').toUpperCase()}</span>
       </div>`;
     }).join('');
   } catch(e){}
+}
+
+function updateWithdrawPlaceholder() {
+  const sel = $('withdrawMethod');
+  const detailInput = $('withdrawDetail');
+  if (!sel || !detailInput) return;
+  const methods = window._paymentMethods || [];
+  const selected = methods.find(m => m.name === sel.value);
+  detailInput.placeholder = selected?.placeholder || 'Enter payment details';
 }
 
 async function requestWithdraw() {
@@ -2055,12 +2073,11 @@ function goToSlide(i) {
 function renderFeatures() {
   const grid = $('featureGrid'); if (!grid) return;
 
-  // Merge: previous games + new games, all filtered by admin visibility
   const items = [
     { id:'29',        name:'29 Card Game',  icon:'fa-diamond',     desc:'You+West vs 2 AI', cls:'card29',        visKey:'game29' },
     { id:'ludo',      name:'Ludo',          icon:'fa-dice',        desc:'Race to home',     cls:'ludo',          visKey:'ludoGame' },
     { id:'carrom',    name:'Carrom',        icon:'fa-bullseye',    desc:'Pocket all coins', cls:'carrom',        visKey:'carromGame' },
-    { id:'ludoDice',  name:'Ludo Dice',     icon:'fa-dice-five',   desc:'Roll & win',       cls:'ludoDiceCard',  visKey:'ludoDice' },
+    { id:'ludoDice',  name:'Ludo Dice',     icon:'fa-dice-five',   desc:'Roll & win',       cls:'',              visKey:'ludoDice' },
     { id:'color',     name:'Color Match',   icon:'fa-palette',     desc:'Match colors',     cls:'',              visKey:'colorGame' },
     { id:'watch',     name:'Watch & Earn',  icon:'fa-play-circle', desc:'Instant coins',    cls:'',              visKey:'watchVideo' },
     { id:'luck',      name:'Try Your Luck', icon:'fa-star',        desc:'Big reward',       cls:'luck',          visKey:'tryYourLuck' },
@@ -2068,11 +2085,15 @@ function renderFeatures() {
     { id:'social',    name:'Social Tasks',  icon:'fa-share-nodes', desc:'Follow & earn',    cls:'',              visKey:'socialTasks' }
   ];
 
-  // Visibility check: admin toggle overrides
   const visible = {};
   items.forEach(i => {
     const gc = gamesConfig[i.visKey] || {};
-    visible[i.id] = gc.visible !== false;
+    let vis = gc.visible !== false;
+    // 3-game visibility may also come from config/games.game29 etc
+    if (i.id === '29' && gamesConfig.game29) vis = gamesConfig.game29.visible !== false;
+    if (i.id === 'ludo' && gamesConfig.ludoGame) vis = gamesConfig.ludoGame.visible !== false;
+    if (i.id === 'carrom' && gamesConfig.carromGame) vis = gamesConfig.carromGame.visible !== false;
+    visible[i.id] = vis;
   });
 
   grid.innerHTML = items.filter(i => visible[i.id]).map(i => `
@@ -2100,13 +2121,11 @@ function initListeners() {
     l.onclick = (e) => { e.preventDefault(); navigateTo(l.dataset.page); };
   });
 
-  // Previous games
   $('ludoDiceRollBtn')?.addEventListener('click', playLudoDice);
   $('watchBtn')?.addEventListener('click', playWatch);
   $('luckBtn')?.addEventListener('click', startLuck);
   $('luckExitBtn')?.addEventListener('click', () => { luckActive = false; navigateTo('luck'); });
 
-  // New games
   $('g29StartBtn')?.addEventListener('click', start29Match);
   $('g29QuitBtn')?.addEventListener('click', () => {
     if (g29.playing) showConfirm('🚪','Quit Match?','Entry fee not refunded.','Quit','Stay', () => { g29.playing = false; reset29UI(); });
@@ -2121,7 +2140,6 @@ function initListeners() {
     if (carrom.playing) showConfirm('🚪','Quit Match?','Entry fee not refunded.','Quit','Stay', () => { carrom.playing = false; resetCarromUI(); });
   });
 
-  // Wallet/Refer/Profile
   $('withdrawBtn')?.addEventListener('click', requestWithdraw);
   $('copyCodeBtn')?.addEventListener('click', () => {
     navigator.clipboard.writeText(userData?.referralCode||'');
@@ -2161,6 +2179,14 @@ function showNotice(n) {
     $('noticeModal').classList.remove('show');
   });
 }
+
+function escHtml(s) {
+  if (s == null) return '';
+  return String(s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function escAttr(s) { return escHtml(s); }
 
 bootstrap();
 </script>
