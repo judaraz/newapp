@@ -6,15 +6,9 @@
 <meta name="theme-color" content="#0a0e1a">
 <title>Games Hub</title>
 
-<!-- Telegram WebApp SDK -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-<!-- AdsGram SDK -->
 <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
-
-<!-- Gigapub SDK -->
 <script src="https://ad.gigapub.tech/script?id=1794"></script>
-
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,12 +47,6 @@ body {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
-.brand-bg {
-  background: linear-gradient(135deg, var(--brand), var(--brand-2));
-  color: #0a0e1a;
-  font-weight: 700;
-}
-
 .card {
   background: var(--bg-card);
   backdrop-filter: blur(12px);
@@ -71,7 +59,6 @@ body {
   border: 1px solid rgba(255,255,255,0.06);
   border-radius: 18px;
 }
-
 .input-field {
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.08);
@@ -83,7 +70,6 @@ body {
   border-color: var(--brand);
   box-shadow: 0 0 0 3px rgba(0, 229, 160, 0.15);
 }
-
 .btn {
   transition: transform 0.15s ease, box-shadow 0.2s ease;
   border-radius: 14px;
@@ -118,7 +104,7 @@ body {
 }
 
 .main-page { display: none; min-height: 100vh; }
-.main-page.active { display: flex; flex-direction: column; animation: fadeIn 0.35s ease; }
+.main-page.active { display: flex; flex-direction: column; }
 .sub-page { display: none; }
 .sub-page.active { display: block; animation: fadeIn 0.25s ease; }
 
@@ -128,13 +114,10 @@ body {
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
-@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(30px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
-.float { animation: float 3s ease-in-out infinite; }
 .pulse-soft { animation: pulse 2.5s ease-in-out infinite; }
 
 .bottom-nav {
@@ -194,7 +177,6 @@ body {
 }
 .feature-card.luck .feature-icon {
   background: linear-gradient(135deg, #f59e0b, #ef4444);
-  box-shadow: 0 6px 16px rgba(245,158,11,0.3);
 }
 
 .spinner {
@@ -212,8 +194,6 @@ body {
   font-size: 0.65rem; font-weight: 700;
 }
 .pill-success { background: rgba(34,197,94,0.15); color: #4ade80; }
-.pill-warn    { background: rgba(245,158,11,0.15); color: #fbbf24; }
-.pill-danger  { background: rgba(239,68,68,0.15); color: #f87171; }
 .pill-info    { background: rgba(59,130,246,0.15); color: #60a5fa; }
 
 .ad-overlay {
@@ -236,7 +216,6 @@ body {
   box-shadow: 0 25px 60px rgba(0,0,0,0.6);
   animation: slideUp 0.3s ease;
 }
-
 .modal {
   position: fixed; inset: 0;
   background: rgba(10,14,26,0.92);
@@ -258,7 +237,6 @@ body {
   animation: slideUp 0.3s ease;
   position: relative;
 }
-
 .slider {
   overflow: hidden; position: relative;
   border-radius: 18px;
@@ -270,13 +248,8 @@ body {
   transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   height: 100%;
 }
-.slider-item {
-  min-width: 100%; height: 100%;
-}
-.slider-item img {
-  width: 100%; height: 100%; object-fit: cover;
-  display: block;
-}
+.slider-item { min-width: 100%; height: 100%; }
+.slider-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .slider-dots {
   position: absolute; bottom: 10px; left: 50%;
   transform: translateX(-50%);
@@ -294,7 +267,6 @@ body {
   background: linear-gradient(90deg, var(--brand), var(--brand-2));
   border-radius: 3px;
 }
-
 .ludo-board {
   width: 240px; height: 240px;
   margin: 0 auto;
@@ -341,40 +313,36 @@ body {
   color: #1e293b;
   z-index: 10;
   box-shadow: 0 8px 22px rgba(0,0,0,0.4);
-  transition: transform 0.2s ease;
 }
-
 .coin-pill {
   background: linear-gradient(135deg, rgba(0,229,160,0.15), rgba(0,184,212,0.1));
   border: 1px solid rgba(0,229,160,0.3);
   border-radius: 20px;
   padding: 6px 14px;
 }
-
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, var(--brand), var(--brand-2));
   border-radius: 3px;
 }
-
 .hidden { display: none !important; }
 </style>
 </head>
 <body class="max-w-md mx-auto">
 
-<!-- ============ AD LOADING OVERLAY ============ -->
+<!-- AD LOADING OVERLAY -->
 <div id="adOverlay" class="ad-overlay">
   <div class="ad-overlay-card">
     <div style="display:flex; justify-content:center; margin-bottom:20px;">
       <div class="spinner spinner-lg"></div>
     </div>
     <h3 id="adOverlayTitle" class="brand-gradient" style="font-size:1.4rem; font-weight:800; margin-bottom:8px;">Loading</h3>
-    <p id="adOverlayMsg" style="color:var(--text-dim); font-size:0.85rem; line-height:1.5;">Please wait…</p>
+    <p id="adOverlayMsg" style="color:var(--text-dim); font-size:0.85rem;">Please wait…</p>
   </div>
 </div>
 
-<!-- ============ GENERIC MODAL ============ -->
+<!-- GENERIC MODAL -->
 <div id="modal" class="modal">
   <div class="modal-card">
     <div id="modalIcon" style="font-size:3rem; margin-bottom:14px;">🎉</div>
@@ -384,7 +352,7 @@ body {
   </div>
 </div>
 
-<!-- ============ CONFIRM MODAL (yes/no) ============ -->
+<!-- CONFIRM MODAL -->
 <div id="confirmModal" class="modal">
   <div class="modal-card">
     <div id="confirmIcon" style="font-size:3rem; margin-bottom:14px;">✨</div>
@@ -397,7 +365,7 @@ body {
   </div>
 </div>
 
-<!-- ============ COUNTRY BLOCK ============ -->
+<!-- COUNTRY BLOCK -->
 <div id="countryBlock" class="modal">
   <div class="modal-card">
     <div style="font-size:3.5rem; margin-bottom:14px;">🌍</div>
@@ -407,7 +375,7 @@ body {
   </div>
 </div>
 
-<!-- ============ APP NOTICE ============ -->
+<!-- NOTICE -->
 <div id="noticeModal" class="modal">
   <div class="modal-card">
     <div id="noticeIcon" style="font-size:3rem; margin-bottom:14px;">📢</div>
@@ -417,20 +385,10 @@ body {
       <button id="noticeDismissBtn" class="btn btn-ghost" style="flex:1; padding:12px; font-size:0.85rem;">Don't Show</button>
       <button id="noticeOkBtn" class="btn btn-primary" style="flex:1; padding:12px; font-size:0.85rem;">OK</button>
     </div>
-    <div id="noticeTimer" style="color:var(--brand); font-size:0.75rem; margin-top:14px; font-weight:700;"></div>
   </div>
 </div>
 
-<!-- ============ LOADER ============ -->
-<div id="appLoader" class="ad-overlay show">
-  <div style="text-align:center;">
-    <div class="spinner spinner-lg" style="margin:0 auto 16px;"></div>
-    <p class="brand-gradient" style="font-weight:800; font-size:1.1rem;">Games Hub</p>
-    <p style="color:var(--text-mute); font-size:0.7rem; margin-top:4px;">Loading your rewards…</p>
-  </div>
-</div>
-
-<!-- ============ ACCESS DENIED (non-Telegram) ============ -->
+<!-- ACCESS DENIED (non-Telegram) -->
 <div id="accessDenied" class="modal">
   <div class="modal-card">
     <div style="font-size:3.5rem; margin-bottom:14px;">🔒</div>
@@ -442,14 +400,14 @@ body {
   </div>
 </div>
 
-<!-- ============ MAIN APP ============ -->
+<!-- MAIN APP -->
 <div id="app" class="main-page">
 
   <header style="padding:14px 18px; display:flex; align-items:center; justify-content:space-between; background:rgba(10,14,26,0.85); backdrop-filter:blur(14px); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:50;">
     <div style="display:flex; align-items:center; gap:12px;">
-      <img id="hdrAvatar" src="" style="width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid var(--brand);">
+      <img id="hdrAvatar" src="https://ui-avatars.com/api/?name=G&background=00e5a0&color=0a0e1a&bold=true" style="width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid var(--brand);">
       <div>
-        <div id="hdrName" class="brand-gradient" style="font-weight:800; font-size:0.95rem; line-height:1.1;">Hi</div>
+        <div id="hdrName" class="brand-gradient" style="font-weight:800; font-size:0.95rem; line-height:1.1;">Hi there</div>
         <div style="color:var(--text-mute); font-size:0.62rem; margin-top:2px;">Games Hub</div>
       </div>
     </div>
@@ -467,7 +425,7 @@ body {
       </button>
     </div>
 
-    <!-- ============ HOME ============ -->
+    <!-- HOME -->
     <div id="page-home" class="sub-page active" style="padding:16px 18px;">
       <div class="card" style="padding:18px; margin-bottom:18px; position:relative; overflow:hidden;">
         <div style="position:absolute; top:-30px; right:-30px; width:100px; height:100px; background:radial-gradient(circle, rgba(0,229,160,0.2), transparent 70%); border-radius:50%;"></div>
@@ -506,7 +464,7 @@ body {
       </div>
     </div>
 
-    <!-- ============ LUDO ============ -->
+    <!-- LUDO -->
     <div id="page-ludo" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.6rem; font-weight:800; text-align:center; margin-bottom:6px;">🎲 Ludo Dice</h2>
       <p style="text-align:center; color:var(--text-dim); font-size:0.8rem; margin-bottom:20px;">Roll the dice, win points!</p>
@@ -530,11 +488,10 @@ body {
         </button>
         <div id="ludoTimer" style="color:var(--brand); font-size:0.8rem; margin-top:10px; font-weight:700;"></div>
         <div id="ludoMultiplier" style="color:var(--text-mute); font-size:0.7rem; margin-top:8px;">Dice × multiplier</div>
-        <div id="ludoPlayCount" style="color:var(--text-mute); font-size:0.65rem; margin-top:4px;"></div>
       </div>
     </div>
 
-    <!-- ============ COLOR ============ -->
+    <!-- COLOR -->
     <div id="page-color" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.6rem; font-weight:800; text-align:center; margin-bottom:6px;">🎨 Color Match</h2>
       <p style="text-align:center; color:var(--text-dim); font-size:0.8rem; margin-bottom:20px;">Find the matching color</p>
@@ -544,13 +501,12 @@ body {
         <div id="colorTarget" style="width:120px; height:70px; margin:0 auto 12px; border-radius:14px; border:3px solid white; box-shadow:0 8px 20px rgba(0,0,0,0.4);"></div>
         <div id="colorRGB" style="font-family:monospace; color:var(--brand); font-weight:700; font-size:0.95rem;"></div>
         <div id="colorReward" style="color:var(--text-mute); font-size:0.7rem; margin-top:10px;"></div>
-        <div id="colorPlayCount" style="color:var(--text-mute); font-size:0.65rem; margin-top:4px;"></div>
       </div>
 
       <div id="colorGrid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;"></div>
     </div>
 
-    <!-- ============ WATCH ============ -->
+    <!-- WATCH -->
     <div id="page-watch" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.6rem; font-weight:800; text-align:center; margin-bottom:6px;">📺 Watch & Earn</h2>
       <p style="text-align:center; color:var(--text-dim); font-size:0.8rem; margin-bottom:20px;">Watch a short ad, get instant coins</p>
@@ -561,7 +517,6 @@ body {
         </div>
         <div id="watchReward" class="brand-gradient" style="font-size:2rem; font-weight:800; margin-bottom:6px;">+50</div>
         <div style="color:var(--text-dim); font-size:0.8rem;">coins per ad</div>
-        <div id="watchPlayCount" style="color:var(--text-mute); font-size:0.65rem; margin-top:6px;"></div>
 
         <button id="watchBtn" class="btn btn-primary" style="width:100%; padding:16px; font-size:1rem; margin-top:22px;">
           <i class="fas fa-play-circle" style="margin-right:8px;"></i>
@@ -571,7 +526,7 @@ body {
       </div>
     </div>
 
-    <!-- ============ LUCK ============ -->
+    <!-- LUCK -->
     <div id="page-luck" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.6rem; font-weight:800; text-align:center; margin-bottom:6px;">🍀 Try Your Luck</h2>
       <p style="text-align:center; color:var(--text-dim); font-size:0.8rem; margin-bottom:20px;">Chain ads for a big reward</p>
@@ -582,7 +537,6 @@ body {
         </div>
         <div id="luckReward" class="brand-gradient" style="font-size:1.9rem; font-weight:800;">+500</div>
         <div style="color:var(--text-dim); font-size:0.75rem; margin-top:4px;">max points</div>
-        <div id="luckPlayCount" style="color:var(--text-mute); font-size:0.65rem; margin-top:6px;"></div>
 
         <button id="luckBtn" class="btn btn-primary pulse-soft" style="width:100%; padding:16px; font-size:1rem; margin-top:22px;">
           <i class="fas fa-play" style="margin-right:8px;"></i> START
@@ -590,7 +544,7 @@ body {
       </div>
     </div>
 
-    <!-- ============ LUCK RUN ============ -->
+    <!-- LUCK RUN -->
     <div id="page-luck-run" class="sub-page" style="padding:16px 18px;">
       <div class="card" style="padding:26px 20px; text-align:center;">
         <div class="feature-icon" style="width:70px; height:70px; font-size:1.8rem; margin:0 auto 14px; background:linear-gradient(135deg,#f59e0b,#ef4444);">
@@ -611,21 +565,21 @@ body {
       </div>
     </div>
 
-    <!-- ============ VISIT ============ -->
+    <!-- VISIT -->
     <div id="page-visit" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.6rem; font-weight:800; text-align:center; margin-bottom:6px;">🌐 Visit & Earn</h2>
       <p style="text-align:center; color:var(--text-dim); font-size:0.8rem; margin-bottom:20px;">Visit websites, get coins</p>
       <div id="visitList" style="display:flex; flex-direction:column; gap:12px;"></div>
     </div>
 
-    <!-- ============ SOCIAL ============ -->
+    <!-- SOCIAL -->
     <div id="page-social" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.6rem; font-weight:800; text-align:center; margin-bottom:6px;">📱 Social Tasks</h2>
       <p style="text-align:center; color:var(--text-dim); font-size:0.8rem; margin-bottom:20px;">Follow & earn coins</p>
       <div id="socialList" style="display:flex; flex-direction:column; gap:12px;"></div>
     </div>
 
-    <!-- ============ WALLET ============ -->
+    <!-- WALLET -->
     <div id="page-wallet" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.6rem; font-weight:800; text-align:center; margin-bottom:6px;">💼 Wallet</h2>
       <p style="text-align:center; color:var(--text-dim); font-size:0.8rem; margin-bottom:20px;">Manage your earnings</p>
@@ -651,7 +605,7 @@ body {
       <div id="withdrawHistory" style="display:flex; flex-direction:column; gap:10px;"></div>
     </div>
 
-    <!-- ============ REFER ============ -->
+    <!-- REFER -->
     <div id="page-refer" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.6rem; font-weight:800; text-align:center; margin-bottom:6px;">🎁 Refer & Earn</h2>
       <p style="text-align:center; color:var(--text-dim); font-size:0.8rem; margin-bottom:20px;">Invite friends, earn together</p>
@@ -680,7 +634,7 @@ body {
       </div>
     </div>
 
-    <!-- ============ PROFILE ============ -->
+    <!-- PROFILE -->
     <div id="page-profile" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.6rem; font-weight:800; text-align:center; margin-bottom:20px;">Profile</h2>
 
@@ -762,13 +716,11 @@ let adConfig = {
 let userCountry = '';
 let tgUser = null;
 
-// Ad controllers
 let adsgramRewardCtrl = null;
 let adsgramInterstitialCtrl = null;
 let adsgramReady = false;
 let gigapubReady = false;
 
-// Ludo/Watch cooldowns
 let ludoBusy = false;
 let ludoDisabledUntil = 0;
 let ludoTimerInterval = null;
@@ -777,95 +729,126 @@ let watchDisabledUntil = 0;
 let watchTimerInterval = null;
 let luckActive = false;
 
-// Slider
 let sliderInterval = null;
 let slideIdx = 0;
 
 // =========================================================
-// UI HELPERS
+// SAFE DOM HELPERS (prevent crashes)
 // =========================================================
 const $ = (id) => document.getElementById(id);
 
-function showLoader(show) { $('appLoader').style.display = show ? 'flex' : 'none'; }
-function hideAdOverlay() { $('adOverlay').classList.remove('show'); }
+function safeSet(id, prop, val) {
+  const el = $(id);
+  if (el) el[prop] = val;
+}
+function safeText(id, val) { safeSet(id, 'textContent', val); }
+function safeHtml(id, val) { safeSet(id, 'innerHTML', val); }
+function safeSrc(id, val) { safeSet(id, 'src', val); }
+function safeShow(id, show) {
+  const el = $(id);
+  if (el) el.style.display = show ? 'flex' : 'none';
+}
+
+function showLoader(show) {
+  const el = $('appLoader');
+  if (el) el.style.display = show ? 'flex' : 'none';
+}
+
+function hideAdOverlay() {
+  const el = $('adOverlay');
+  if (el) el.classList.remove('show');
+}
 
 function showModal(icon, title, body, btnText = 'OK', onClose = null) {
-  $('modalIcon').textContent = icon;
-  $('modalTitle').textContent = title;
-  $('modalBody').textContent = body;
-  $('modalBtn').textContent = btnText;
-  $('modal').classList.add('show');
-  $('modalBtn').onclick = () => { $('modal').classList.remove('show'); if (onClose) onClose(); };
+  safeText('modalIcon', icon);
+  safeText('modalTitle', title);
+  safeText('modalBody', body);
+  safeText('modalBtn', btnText);
+  $('modal')?.classList.add('show');
+  const btn = $('modalBtn');
+  if (btn) btn.onclick = () => { $('modal').classList.remove('show'); if (onClose) onClose(); };
 }
 
 function showConfirm(icon, title, body, yesText, noText, onYes, onNo) {
-  $('confirmIcon').textContent = icon;
-  $('confirmTitle').textContent = title;
-  $('confirmBody').textContent = body;
-  $('confirmYesBtn').textContent = yesText;
-  $('confirmNoBtn').textContent = noText;
-  $('confirmModal').classList.add('show');
-  $('confirmYesBtn').onclick = () => { $('confirmModal').classList.remove('show'); onYes && onYes(); };
-  $('confirmNoBtn').onclick = () => { $('confirmModal').classList.remove('show'); onNo && onNo(); };
+  safeText('confirmIcon', icon);
+  safeText('confirmTitle', title);
+  safeText('confirmBody', body);
+  safeText('confirmYesBtn', yesText);
+  safeText('confirmNoBtn', noText);
+  $('confirmModal')?.classList.add('show');
+  const yBtn = $('confirmYesBtn');
+  const nBtn = $('confirmNoBtn');
+  if (yBtn) yBtn.onclick = () => { $('confirmModal').classList.remove('show'); onYes && onYes(); };
+  if (nBtn) nBtn.onclick = () => { $('confirmModal').classList.remove('show'); onNo && onNo(); };
 }
 
+// =========================================================
+// NAVIGATION
+// =========================================================
 function navigateTo(page) {
   document.querySelectorAll('.sub-page').forEach(p => p.classList.remove('active'));
   const target = $(`page-${page}`);
   if (target) target.classList.add('active');
   document.querySelectorAll('.nav-link').forEach(l => l.classList.toggle('active', l.dataset.page === page));
-  $('backBar').classList.toggle('hidden', page === 'home');
+  const bb = $('backBar');
+  if (bb) bb.classList.toggle('hidden', page === 'home');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  if (page === 'wallet') loadWallet();
-  if (page === 'refer') loadRefer();
-  if (page === 'profile') loadProfile();
-  if (page === 'visit') loadVisit();
-  if (page === 'social') loadSocial();
-  if (page === 'ludo') refreshLudoUI();
-  if (page === 'watch') refreshWatchUI();
-  if (page === 'luck') refreshLuckUI();
-  if (page === 'color') startColorRound();
+  try {
+    if (page === 'wallet') loadWallet();
+    if (page === 'refer') loadRefer();
+    if (page === 'profile') loadProfile();
+    if (page === 'visit') loadVisit();
+    if (page === 'social') loadSocial();
+    if (page === 'ludo') refreshLudoUI();
+    if (page === 'watch') refreshWatchUI();
+    if (page === 'luck') refreshLuckUI();
+    if (page === 'color') startColorRound();
+  } catch (e) { console.warn('navigate error:', e); }
 }
 window.navigateTo = navigateTo;
 
 // =========================================================
-// BOOTSTRAP
+// BOOTSTRAP — the critical part
 // =========================================================
 async function bootstrap() {
   try {
     // Must be in Telegram
     if (!window.Telegram?.WebApp) {
-      showLoader(false);
-      $('accessDenied').classList.add('show');
+      $('appLoader')?.classList.remove('show');
+      $('accessDenied')?.classList.add('show');
       return;
     }
     const tg = window.Telegram.WebApp;
     tg.ready();
     tg.expand();
-    tg.setHeaderColor('#0a0e1a');
-    tg.setBackgroundColor('#0a0e1a');
+    try { tg.setHeaderColor('#0a0e1a'); tg.setBackgroundColor('#0a0e1a'); } catch(e) {}
     tgUser = tg.initDataUnsafe?.user || null;
 
     if (!tgUser) {
-      showLoader(false);
-      $('accessDenied').classList.add('show');
+      $('appLoader')?.classList.remove('show');
+      $('accessDenied')?.classList.add('show');
       return;
     }
 
     userCountry = await detectCountry();
 
-    // Fetch configs in parallel
-    const [mainSnap, gamesSnap, adsSnap, noticeSnap] = await Promise.all([
-      getDoc(doc(db, 'config', 'main')),
-      getDoc(doc(db, 'config', 'games')),
-      getDoc(doc(db, 'config', 'ads')),
-      getDoc(doc(db, 'config', 'appNotice'))
-    ]);
+    // Fetch configs
+    let mainSnap, gamesSnap, adsSnap, noticeSnap;
+    try {
+      [mainSnap, gamesSnap, adsSnap, noticeSnap] = await Promise.all([
+        getDoc(doc(db, 'config', 'main')),
+        getDoc(doc(db, 'config', 'games')),
+        getDoc(doc(db, 'config', 'ads')),
+        getDoc(doc(db, 'config', 'appNotice'))
+      ]);
+    } catch (e) {
+      console.warn('Config fetch failed, using defaults:', e);
+    }
 
-    appConfig = mainSnap.exists() ? mainSnap.data() : {};
-    gamesConfig = gamesSnap.exists() ? gamesSnap.data() : {};
-    if (adsSnap.exists()) {
+    appConfig = mainSnap?.exists() ? mainSnap.data() : {};
+    gamesConfig = gamesSnap?.exists() ? gamesSnap.data() : {};
+    if (adsSnap?.exists()) {
       const a = adsSnap.data();
       adConfig = {
         gigapub: { enabled: a.gigapub?.enabled !== false, order: a.gigapub?.order || 1 },
@@ -876,57 +859,77 @@ async function bootstrap() {
 
     // Country block
     if (appConfig.allowedCountries?.length && userCountry && !appConfig.allowedCountries.includes(userCountry)) {
-      $('countryBlockMsg').textContent = appConfig.blockedCountryMessage || 'Not available in your country.';
-      $('countryBlock').classList.add('show');
-      showLoader(false);
+      $('countryBlockMsg') && ($('countryBlockMsg').textContent = appConfig.blockedCountryMessage || 'Not available.');
+      $('countryBlock')?.classList.add('show');
+      $('appLoader')?.classList.remove('show');
       return;
     }
 
-    // Create or load user (Telegram only)
+    // Create/load user
     await initUser();
 
-    // Init AdsGram
-    initAdsGram();
+    // Blocked check
+    if (userData?.isBlocked) {
+      $('appLoader')?.classList.remove('show');
+      showModal('🚫', 'Account Blocked', 'Your account has been blocked by admin.', 'Close', () => {
+        if (window.Telegram?.WebApp) window.Telegram.WebApp.close();
+      });
+      // Still show app but with blocked notice — or hide it. We'll show modal above the app.
+    }
 
-    // UI
+    // Init AdsGram in background (non-blocking)
+    setTimeout(() => initAdsGram(), 100);
+
+    // **CRITICAL: Show the app before anything else**
+    $('appLoader')?.classList.remove('show');
+    const appEl = $('app');
+    if (appEl) appEl.classList.add('active');
+
+    // Init UI now that app is visible
     initUI();
     initListeners();
     refreshAllUI();
 
-    // Notice
-    if (noticeSnap.exists()) {
+    // Notice (after app shown)
+    if (noticeSnap?.exists()) {
       const n = noticeSnap.data();
       if (n.enabled && n.title && n.message) {
         const dismissedKey = `notice_dismissed_${n.title}`;
         if (!localStorage.getItem(dismissedKey)) {
-          setTimeout(() => showNotice(n), 800);
+          setTimeout(() => showNotice(n), 1200);
         }
       }
     }
 
     // Live updates
-    onSnapshot(doc(db, 'config', 'games'), (s) => {
-      if (s.exists()) { gamesConfig = s.data(); refreshAllUI(); renderFeatures(); }
-    });
-    onSnapshot(doc(db, 'config', 'ads'), (s) => {
-      if (s.exists()) {
-        const a = s.data();
-        adConfig = {
-          gigapub: { enabled: a.gigapub?.enabled !== false, order: a.gigapub?.order || 1 },
-          adsgramReward: { enabled: a.adsgramReward?.enabled !== false, order: a.adsgramReward?.order || 2 },
-          adsgramInterstitial: { enabled: a.adsgramInterstitial?.enabled !== false, order: a.adsgramInterstitial?.order || 3 }
-        };
-      }
-    });
-    onSnapshot(doc(db, 'config', 'main'), (s) => {
-      if (s.exists()) { appConfig = { ...appConfig, ...s.data() }; refreshAllUI(); }
-    });
+    try {
+      onSnapshot(doc(db, 'config', 'games'), (s) => {
+        if (s.exists()) { gamesConfig = s.data(); refreshAllUI(); renderFeatures(); }
+      });
+      onSnapshot(doc(db, 'config', 'ads'), (s) => {
+        if (s.exists()) {
+          const a = s.data();
+          adConfig = {
+            gigapub: { enabled: a.gigapub?.enabled !== false, order: a.gigapub?.order || 1 },
+            adsgramReward: { enabled: a.adsgramReward?.enabled !== false, order: a.adsgramReward?.order || 2 },
+            adsgramInterstitial: { enabled: a.adsgramInterstitial?.enabled !== false, order: a.adsgramInterstitial?.order || 3 }
+          };
+        }
+      });
+      onSnapshot(doc(db, 'config', 'main'), (s) => {
+        if (s.exists()) { appConfig = { ...appConfig, ...s.data() }; refreshAllUI(); }
+      });
+    } catch (e) { console.warn('snapshot err', e); }
 
-    showLoader(false);
   } catch (err) {
     console.error('Bootstrap error:', err);
-    showLoader(false);
-    showModal('⚠️', 'Error', 'Could not load app. Please reopen.', 'Retry', () => location.reload());
+    $('appLoader')?.classList.remove('show');
+    // Show app anyway with default state so it's not blank
+    const appEl = $('app');
+    if (appEl) appEl.classList.add('active');
+    initUI();
+    initListeners();
+    showModal('⚠️', 'Connection Error', 'Could not load app data. Using defaults.', 'OK');
   }
 }
 
@@ -934,7 +937,7 @@ async function detectCountry() {
   try {
     const lang = navigator.language || '';
     if (lang.includes('-')) return lang.split('-')[1].toLowerCase();
-    const r = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(4000) });
+    const r = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(3500) });
     const j = await r.json();
     return (j.country_code || '').toLowerCase();
   } catch { return ''; }
@@ -956,29 +959,32 @@ async function initUser() {
 
   if (snap.exists()) {
     userData = snap.data();
-    // Update Telegram data on every login
-    await updateDoc(ref, {
+    try {
+      await updateDoc(ref, {
+        telegramId: tgUser.id,
+        telegramUsername: username,
+        telegramFirstName: firstName,
+        telegramLastName: lastName,
+        telegramChatId: tgUser.id,
+        telegramLanguageCode: tgUser.language_code || '',
+        telegramIsPremium: !!tgUser.is_premium,
+        profilePicture: pic,
+        name: fullName,
+        lastLogin: serverTimestamp(),
+        lastSeen: serverTimestamp(),
+        isActive: true,
+        country: userCountry || userData.country || 'unknown'
+      });
+    } catch (e) { console.warn('user update err', e); }
+    Object.assign(userData, {
       telegramId: tgUser.id,
       telegramUsername: username,
       telegramFirstName: firstName,
       telegramLastName: lastName,
       telegramChatId: tgUser.id,
-      telegramLanguageCode: tgUser.language_code || '',
-      telegramIsPremium: !!tgUser.is_premium,
-      profilePicture: pic,
       name: fullName,
-      lastLogin: serverTimestamp(),
-      lastSeen: serverTimestamp(),
-      isActive: true,
-      country: userCountry || userData.country || 'unknown'
+      profilePicture: pic
     });
-    userData.telegramId = tgUser.id;
-    userData.telegramUsername = username;
-    userData.telegramFirstName = firstName;
-    userData.telegramLastName = lastName;
-    userData.telegramChatId = tgUser.id;
-    userData.name = fullName;
-    userData.profilePicture = pic;
   } else {
     const code = Math.random().toString(36).slice(2, 8).toUpperCase();
     userData = {
@@ -1015,17 +1021,11 @@ async function initUser() {
       ludoTotalWon: 0,
       userType: 'telegram'
     };
-    await setDoc(ref, userData);
+    try {
+      await setDoc(ref, userData);
+    } catch (e) { console.warn('user create err', e); }
   }
   currentUser = { uid, name: userData.name };
-
-  // Blocked check
-  if (userData.isBlocked) {
-    showLoader(false);
-    showModal('🚫', 'Account Blocked', 'Your account has been blocked by admin. Contact support.', 'Close', () => {
-      if (window.Telegram?.WebApp) window.Telegram.WebApp.close();
-    });
-  }
 }
 
 // =========================================================
@@ -1060,62 +1060,37 @@ function initAdsGram() {
 }
 
 // =========================================================
-// AD PLAYERS — silent, no provider name shown to user
+// AD PLAYERS
 // =========================================================
 async function playGigapubAd() {
-  if (!gigapubReady || typeof window.showGiga !== 'function') {
-    return { success: false, reason: 'not_ready' };
-  }
+  if (!gigapubReady || typeof window.showGiga !== 'function') return { success: false };
   try {
-    await Promise.race([
-      window.showGiga(),
-      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 15000))
-    ]);
+    await Promise.race([window.showGiga(), new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 15000))]);
     return { success: true };
-  } catch (e) {
-    return { success: false, reason: e.message };
-  }
+  } catch { return { success: false }; }
 }
-
 async function playAdsGramReward() {
-  if (!adsgramReady || !adsgramRewardCtrl) return { success: false, reason: 'not_ready' };
+  if (!adsgramReady || !adsgramRewardCtrl) return { success: false };
   try {
-    const res = await Promise.race([
-      adsgramRewardCtrl.show(),
-      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 15000))
-    ]);
+    const res = await Promise.race([adsgramRewardCtrl.show(), new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 15000))]);
     return { success: !!res?.done };
-  } catch (e) {
-    return { success: false, reason: e.message };
-  }
+  } catch { return { success: false }; }
 }
-
 async function playAdsGramInterstitial() {
-  if (!adsgramReady || !adsgramInterstitialCtrl) return { success: false, reason: 'not_ready' };
+  if (!adsgramReady || !adsgramInterstitialCtrl) return { success: false };
   try {
-    const res = await Promise.race([
-      adsgramInterstitialCtrl.show(),
-      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 15000))
-    ]);
+    const res = await Promise.race([adsgramInterstitialCtrl.show(), new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 15000))]);
     return { success: !!res?.done };
-  } catch (e) {
-    return { success: false, reason: e.message };
-  }
+  } catch { return { success: false }; }
 }
 
-/**
- * Try each enabled network in admin-configured order.
- * Silent — no overlay, no provider names.
- */
 async function playRotatingAd() {
   const enabled = [
     { key: 'gigapub', ...adConfig.gigapub },
     { key: 'adsgramReward', ...adConfig.adsgramReward },
     { key: 'adsgramInterstitial', ...adConfig.adsgramInterstitial }
   ].filter(a => a.enabled).sort((a, b) => (a.order || 99) - (b.order || 99));
-
   if (!enabled.length) return { success: false };
-
   for (const ad of enabled) {
     let r;
     if (ad.key === 'gigapub') r = await playGigapubAd();
@@ -1126,16 +1101,12 @@ async function playRotatingAd() {
   return { success: false };
 }
 
-/**
- * Play every enabled network once (for Try Your Luck).
- */
 async function playAllAds(onProgress) {
   const enabled = [
     { key: 'gigapub', ...adConfig.gigapub },
     { key: 'adsgramReward', ...adConfig.adsgramReward },
     { key: 'adsgramInterstitial', ...adConfig.adsgramInterstitial }
   ].filter(a => a.enabled).sort((a, b) => (a.order || 99) - (b.order || 99));
-
   const results = [];
   for (let i = 0; i < enabled.length; i++) {
     const ad = enabled[i];
@@ -1150,11 +1121,6 @@ async function playAllAds(onProgress) {
   return results;
 }
 
-/**
- * OPTIONAL AD FLOW: Show confirm dialog "Double your points?"
- * Yes → play ad. If ad succeeds, double. If fails, base.
- * No → base, no ad.
- */
 async function optionalDoublePoints(basePoints, onFinal) {
   showConfirm(
     '✨',
@@ -1163,20 +1129,14 @@ async function optionalDoublePoints(basePoints, onFinal) {
     'Yes, Double!',
     'No, Thanks',
     async () => {
-      // YES — play ads
       const adRes = await playRotatingAd();
-      if (adRes.success) {
-        onFinal(basePoints * 2, true);
-      } else {
-        // Ad failed → give base
+      if (adRes.success) onFinal(basePoints * 2, true);
+      else {
         onFinal(basePoints, false);
-        showModal('ℹ️', 'Ad Unavailable', `Could not load ad. Base reward of ${basePoints} points given instead.`, 'OK');
+        showModal('ℹ️', 'Ad Unavailable', `Base reward of ${basePoints} points given.`, 'OK');
       }
     },
-    () => {
-      // NO — just base, no ad
-      onFinal(basePoints, false);
-    }
+    () => onFinal(basePoints, false)
   );
 }
 
@@ -1236,38 +1196,35 @@ async function playLudo() {
   const mult = cfg.winMultiplier || 10;
 
   if ((userData.balance || 0) < cost) {
-    return showModal('💰', 'Not Enough Points', `You need at least ${cost} points to play.`, 'OK');
+    return showModal('💰', 'Not Enough Points', `You need at least ${cost} points.`, 'OK');
   }
 
   ludoBusy = true;
-  $('ludoRollBtn').disabled = true;
+  const rollBtn = $('ludoRollBtn');
+  if (rollBtn) rollBtn.disabled = true;
 
-  // Deduct entry fee
   await addBalance(-cost, 'ludo_entry', 'Ludo dice entry fee');
 
-  // Animate dice
   const diceEl = $('ludoDice');
   const spins = 12;
   let spinCount = 0;
   const spinInt = setInterval(() => {
-    diceEl.textContent = 1 + Math.floor(Math.random() * 6);
+    if (diceEl) diceEl.textContent = 1 + Math.floor(Math.random() * 6);
     spinCount++;
     if (spinCount >= spins) clearInterval(spinInt);
   }, 70);
 
   await new Promise(r => setTimeout(r, spins * 70 + 200));
 
-  // Weighted result
   const rand = Math.random() * 100;
   let dice;
   if (rand < 80) dice = 1 + Math.floor(Math.random() * 3);
   else if (rand < 97) dice = 4 + Math.floor(Math.random() * 2);
   else dice = 6;
-  diceEl.textContent = dice;
+  if (diceEl) diceEl.textContent = dice;
 
   const baseWin = dice * mult;
 
-  // Optional double
   optionalDoublePoints(baseWin, async (finalWin, doubled) => {
     await addBalance(finalWin, 'ludo_win', `Dice ${dice} × ${mult}${doubled ? ' (doubled)' : ''}`);
     if (doubled) await incrementAdView();
@@ -1287,18 +1244,18 @@ function startLudoCooldown() {
   const btn = $('ludoRollBtn');
   const text = $('ludoRollText');
   const timer = $('ludoTimer');
-  btn.disabled = true;
+  if (btn) btn.disabled = true;
   ludoTimerInterval = setInterval(() => {
     const left = Math.ceil((ludoDisabledUntil - Date.now()) / 1000);
     if (left <= 0) {
       clearInterval(ludoTimerInterval);
-      btn.disabled = false;
-      timer.textContent = '';
+      if (btn) btn.disabled = false;
+      if (timer) timer.textContent = '';
       const cost = gamesConfig.ludoDice?.gameCost || 10;
-      text.textContent = `ROLL DICE (${cost})`;
+      if (text) text.textContent = `ROLL DICE (${cost})`;
     } else {
-      timer.textContent = `Cooldown: ${left}s`;
-      text.textContent = 'WAIT…';
+      if (timer) timer.textContent = `Cooldown: ${left}s`;
+      if (text) text.textContent = 'WAIT…';
     }
   }, 500);
 }
@@ -1307,14 +1264,14 @@ function refreshLudoUI() {
   const cfg = gamesConfig.ludoDice || {};
   const cost = cfg.gameCost || 10;
   const mult = cfg.winMultiplier || 10;
-  $('ludoCost').textContent = cost;
-  $('ludoMultiplier').textContent = `Dice × ${mult}`;
-  $('ludoRollText').textContent = `ROLL DICE (${cost})`;
+  safeText('ludoCost', cost);
+  safeText('ludoMultiplier', `Dice × ${mult}`);
+  safeText('ludoRollText', `ROLL DICE (${cost})`);
   if (ludoDisabledUntil > Date.now()) startLudoCooldown();
 }
 
 // =========================================================
-// WATCH & EARN
+// WATCH
 // =========================================================
 async function playWatch() {
   if (watchBusy) return;
@@ -1323,7 +1280,8 @@ async function playWatch() {
   const baseReward = cfg.rewardPerPlay || 50;
 
   watchBusy = true;
-  $('watchBtn').disabled = true;
+  const btn = $('watchBtn');
+  if (btn) btn.disabled = true;
 
   optionalDoublePoints(baseReward, async (finalReward, doubled) => {
     await addBalance(finalReward, 'watch_earn', `Watch & Earn${doubled ? ' (doubled)' : ''}`);
@@ -1344,17 +1302,17 @@ function startWatchCooldown() {
   const btn = $('watchBtn');
   const text = $('watchBtnText');
   const timer = $('watchTimer');
-  btn.disabled = true;
+  if (btn) btn.disabled = true;
   watchTimerInterval = setInterval(() => {
     const left = Math.ceil((watchDisabledUntil - Date.now()) / 1000);
     if (left <= 0) {
       clearInterval(watchTimerInterval);
-      btn.disabled = false;
-      timer.textContent = '';
-      text.textContent = 'WATCH NOW';
+      if (btn) btn.disabled = false;
+      if (timer) timer.textContent = '';
+      if (text) text.textContent = 'WATCH NOW';
     } else {
-      timer.textContent = `Next ad in ${left}s`;
-      text.textContent = 'WAIT…';
+      if (timer) timer.textContent = `Next ad in ${left}s`;
+      if (text) text.textContent = 'WAIT…';
     }
   }, 500);
 }
@@ -1362,12 +1320,12 @@ function startWatchCooldown() {
 function refreshWatchUI() {
   const cfg = gamesConfig.watchVideo || {};
   const reward = cfg.rewardPerPlay || 50;
-  $('watchReward').textContent = `+${reward}`;
+  safeText('watchReward', `+${reward}`);
   if (watchDisabledUntil > Date.now()) startWatchCooldown();
 }
 
 // =========================================================
-// TRY YOUR LUCK — optional double at the end
+// LUCK
 // =========================================================
 async function startLuck() {
   if (luckActive) return;
@@ -1376,12 +1334,11 @@ async function startLuck() {
 
   luckActive = true;
   navigateTo('luck-run');
-  $('luckStatus').textContent = 'Preparing…';
-  $('luckClaimBtn').classList.add('hidden');
-  $('luckProgressBar').style.width = '0%';
-  $('luckProgressText').textContent = '0/0';
+  safeText('luckStatus', 'Preparing…');
+  $('luckClaimBtn')?.classList.add('hidden');
+  safeSet('luckProgressBar', 'style', 'height:100%; width:0%; background:linear-gradient(90deg,#00e5a0,#00b8d4); transition:width 0.4s;');
+  safeText('luckProgressText', '0/0');
 
-  // Ask user first (optional ads)
   showConfirm(
     '✨',
     'Try Your Luck!',
@@ -1390,34 +1347,39 @@ async function startLuck() {
     'No, Thanks',
     async () => {
       const results = await playAllAds((i, total) => {
-        $('luckStatus').textContent = `Playing ${i + 1} of ${total}…`;
-        $('luckProgressBar').style.width = `${(i / total) * 100}%`;
-        $('luckProgressText').textContent = `${i}/${total}`;
+        safeText('luckStatus', `Playing ${i + 1} of ${total}…`);
+        const bar = $('luckProgressBar');
+        if (bar) bar.style.width = `${(i / total) * 100}%`;
+        safeText('luckProgressText', `${i}/${total}`);
       });
 
       const successes = results.filter(r => r.success).length;
-      $('luckProgressBar').style.width = '100%';
-      $('luckProgressText').textContent = `${successes}/${results.length}`;
+      const bar = $('luckProgressBar');
+      if (bar) bar.style.width = '100%';
+      safeText('luckProgressText', `${successes}/${results.length}`);
 
       if (!successes) {
-        $('luckStatus').textContent = 'No ads available right now.';
+        safeText('luckStatus', 'No ads available right now.');
         luckActive = false;
         setTimeout(() => {
-          showModal('ℹ️', 'No Ads', 'No ads could be shown. Please try again later.', 'OK', () => navigateTo('home'));
+          showModal('ℹ️', 'No Ads', 'No ads could be shown. Try again later.', 'OK', () => navigateTo('home'));
         }, 600);
         return;
       }
 
       const reward = cfg.rewardPerPlay || 500;
-      $('luckStatus').textContent = `Ready! Claim your reward.`;
-      $('luckClaimBtn').classList.remove('hidden');
-      $('luckClaimBtn').onclick = async () => {
-        $('luckClaimBtn').disabled = true;
-        await addBalance(reward, 'try_luck', `${successes} ads watched`);
-        await incrementAdView();
-        luckActive = false;
-        showModal('🎉', 'Points Claimed!', `+${reward} points added.`, 'Great!', () => navigateTo('home'));
-      };
+      safeText('luckStatus', `Ready! Claim your reward.`);
+      const claimBtn = $('luckClaimBtn');
+      if (claimBtn) {
+        claimBtn.classList.remove('hidden');
+        claimBtn.onclick = async () => {
+          claimBtn.disabled = true;
+          await addBalance(reward, 'try_luck', `${successes} ads watched`);
+          await incrementAdView();
+          luckActive = false;
+          showModal('🎉', 'Points Claimed!', `+${reward} points added.`, 'Great!', () => navigateTo('home'));
+        };
+      }
     },
     () => {
       luckActive = false;
@@ -1428,20 +1390,21 @@ async function startLuck() {
 
 function refreshLuckUI() {
   const cfg = gamesConfig.tryYourLuck || {};
-  $('luckReward').textContent = `+${cfg.rewardPerPlay || 500}`;
+  safeText('luckReward', `+${cfg.rewardPerPlay || 500}`);
 }
 
 // =========================================================
-// COLOR GAME — optional double
+// COLOR
 // =========================================================
 function startColorRound() {
   const cfg = gamesConfig.colorGame || {};
   if (cfg.visible === false) return showModal('🚫', 'Unavailable', 'Color game is disabled.', 'OK');
   const target = { r: rnd(), g: rnd(), b: rnd() };
   const targetStr = `rgb(${target.r}, ${target.g}, ${target.b})`;
-  $('colorTarget').style.background = targetStr;
-  $('colorRGB').textContent = `RGB(${target.r}, ${target.g}, ${target.b})`;
-  $('colorReward').textContent = `Win ${cfg.rewardPerPlay || 100} coins`;
+  const targetBox = $('colorTarget');
+  if (targetBox) targetBox.style.background = targetStr;
+  safeText('colorRGB', `RGB(${target.r}, ${target.g}, ${target.b})`);
+  safeText('colorReward', `Win ${cfg.rewardPerPlay || 100} coins`);
 
   const options = [targetStr];
   for (let i = 0; i < 8; i++) {
@@ -1451,6 +1414,7 @@ function startColorRound() {
   options.sort(() => Math.random() - .5);
 
   const grid = $('colorGrid');
+  if (!grid) return;
   grid.innerHTML = '';
   options.forEach(c => {
     const box = document.createElement('div');
@@ -1465,9 +1429,7 @@ const rnd = () => Math.floor(Math.random() * 256);
 const cl = (n) => Math.max(0, Math.min(255, n));
 
 async function handleColorPick(picked, target, cfg) {
-  if (picked !== target) {
-    return showModal('❌', 'Wrong!', 'Try again.', 'OK', () => startColorRound());
-  }
+  if (picked !== target) return showModal('❌', 'Wrong!', 'Try again.', 'OK', () => startColorRound());
   const baseReward = cfg.rewardPerPlay || 100;
   optionalDoublePoints(baseReward, async (finalReward, doubled) => {
     await addBalance(finalReward, 'color_game', `Color game${doubled ? ' (doubled)' : ''}`);
@@ -1477,16 +1439,17 @@ async function handleColorPick(picked, target, cfg) {
 }
 
 // =========================================================
-// VISIT + SOCIAL — optional double
+// VISIT + SOCIAL
 // =========================================================
 async function loadVisit() {
   const list = appConfig.websitesToVisit || [];
   const el = $('visitList');
+  if (!el) return;
   if (!list.length) {
     el.innerHTML = `<div class="card" style="padding:20px; text-align:center; color:var(--text-dim); font-size:0.85rem;">No websites available.</div>`;
     return;
   }
-  const visited = userData.visitedSitesToday || [];
+  const visited = userData?.visitedSitesToday || [];
   el.innerHTML = list.map((s, i) => {
     const done = visited.includes(s.link);
     return `
@@ -1501,7 +1464,6 @@ async function loadVisit() {
       </div>
     `;
   }).join('');
-
   el.querySelectorAll('button[data-idx]').forEach(btn => {
     btn.onclick = () => visitSite(parseInt(btn.dataset.idx));
   });
@@ -1514,27 +1476,30 @@ async function visitSite(idx) {
   const seconds = site.timer || 30;
   const baseReward = site.reward || 10;
 
-  showModal('⏳', 'Visit Website', `Stay on the page for ${seconds} seconds to earn ${baseReward} coins.`, `Wait…`);
+  showModal('⏳', 'Visit Website', `Stay for ${seconds} seconds to earn ${baseReward} coins.`, `Wait…`);
   let left = seconds;
   const tick = setInterval(() => {
     left--;
-    $('modalBtn').textContent = `Wait… ${left}s`;
+    safeText('modalBtn', `Wait… ${left}s`);
     if (left <= 0) {
       clearInterval(tick);
-      $('modalBtn').textContent = 'Claim';
-      $('modalBtn').onclick = () => {
+      safeText('modalBtn', 'Claim');
+      const btn = $('modalBtn');
+      if (btn) btn.onclick = () => {
         $('modal').classList.remove('show');
         optionalDoublePoints(baseReward, async (finalReward, doubled) => {
           const visited = [...(userData.visitedSitesToday || []), site.link];
           userData.visitedSitesToday = visited;
           userData.lastSiteVisitDate = new Date().toISOString().slice(0, 10);
-          await updateDoc(doc(db, 'users', currentUser.uid), {
-            visitedSitesToday: visited,
-            lastSiteVisitDate: userData.lastSiteVisitDate
-          });
+          try {
+            await updateDoc(doc(db, 'users', currentUser.uid), {
+              visitedSitesToday: visited,
+              lastSiteVisitDate: userData.lastSiteVisitDate
+            });
+          } catch (e) {}
           await addBalance(finalReward, 'visit_site', `${site.name}${doubled ? ' (doubled)' : ''}`);
           if (doubled) await incrementAdView();
-          showModal('🎉', 'Success!', `+${finalReward} coins added.${doubled ? ' (Doubled!)' : ''}`, 'OK', () => loadVisit());
+          showModal('🎉', 'Success!', `+${finalReward} coins.${doubled ? ' (Doubled!)' : ''}`, 'OK', () => loadVisit());
         });
       };
     }
@@ -1544,11 +1509,12 @@ async function visitSite(idx) {
 async function loadSocial() {
   const list = appConfig.socialTasks || [];
   const el = $('socialList');
+  if (!el) return;
   if (!list.length) {
     el.innerHTML = `<div class="card" style="padding:20px; text-align:center; color:var(--text-dim); font-size:0.85rem;">No social tasks available.</div>`;
     return;
   }
-  const done = userData.completedSocialTasks || [];
+  const done = userData?.completedSocialTasks || [];
   el.innerHTML = list.map((s, i) => {
     const isDone = done.includes(s.link);
     return `
@@ -1563,7 +1529,6 @@ async function loadSocial() {
       </div>
     `;
   }).join('');
-
   el.querySelectorAll('button[data-idx]').forEach(btn => {
     btn.onclick = () => doSocial(parseInt(btn.dataset.idx));
   });
@@ -1577,7 +1542,7 @@ async function doSocial(idx) {
   optionalDoublePoints(baseReward, async (finalReward, doubled) => {
     const done = [...(userData.completedSocialTasks || []), task.link];
     userData.completedSocialTasks = done;
-    await updateDoc(doc(db, 'users', currentUser.uid), { completedSocialTasks: done });
+    try { await updateDoc(doc(db, 'users', currentUser.uid), { completedSocialTasks: done }); } catch (e) {}
     await addBalance(finalReward, 'social_task', `${task.name}${doubled ? ' (doubled)' : ''}`);
     if (doubled) await incrementAdView();
     showModal('🎉', 'Task Complete!', `+${finalReward} coins.${doubled ? ' (Doubled!)' : ''}`, 'OK', () => loadSocial());
@@ -1588,21 +1553,23 @@ async function doSocial(idx) {
 // WALLET
 // =========================================================
 async function loadWallet() {
-  // Wallet visibility
+  if (!userData) return;
   const walletVisible = gamesConfig.wallet?.visible !== false;
   const withdrawVisible = gamesConfig.withdraw?.visible !== false;
-  $('navWallet').style.display = walletVisible ? 'flex' : 'none';
-  if (!walletVisible && $('page-wallet').classList.contains('active')) navigateTo('home');
+  const navW = $('navWallet');
+  if (navW) navW.style.display = walletVisible ? 'flex' : 'none';
 
-  $('walletBalance').textContent = (userData.balance || 0).toFixed(0);
-  $('walletValueInfo').textContent = `${appConfig.coinValueCoins || 1000} coins = ₹${appConfig.coinValueInr || 10}`;
+  safeText('walletBalance', (userData.balance || 0).toFixed(0));
+  safeText('walletValueInfo', `${appConfig.coinValueCoins || 1000} coins = ₹${appConfig.coinValueInr || 10}`);
 
   const methods = appConfig.paymentMethods || ['UPI', 'Paytm', 'PayPal'];
-  $('withdrawMethod').innerHTML = methods.map(m => `<option value="${m}">${m}</option>`).join('');
-
-  $('withdrawBtn').style.display = withdrawVisible ? 'block' : 'none';
+  const methodSelect = $('withdrawMethod');
+  if (methodSelect) methodSelect.innerHTML = methods.map(m => `<option value="${m}">${m}</option>`).join('');
+  const wBtn = $('withdrawBtn');
+  if (wBtn) wBtn.style.display = withdrawVisible ? 'block' : 'none';
 
   const el = $('withdrawHistory');
+  if (!el) return;
   try {
     const q = query(collection(db, 'withdrawals'), where('userId', '==', currentUser.uid));
     const snap = await getDocs(q);
@@ -1629,18 +1596,20 @@ async function loadWallet() {
 }
 
 async function requestWithdraw() {
-  const amount = parseInt($('withdrawAmount').value);
-  const method = $('withdrawMethod').value;
-  const detail = $('withdrawDetail').value.trim();
+  if (!currentUser || !userData) return;
+  const amount = parseInt($('withdrawAmount')?.value);
+  const method = $('withdrawMethod')?.value;
+  const detail = $('withdrawDetail')?.value.trim();
   const msg = $('withdrawMsg');
-  msg.style.display = 'none';
+  if (msg) msg.style.display = 'none';
 
   const min = appConfig.minWithdrawal || 1000;
-  if (!amount || amount < min) { msg.textContent = `Minimum is ${min} coins.`; msg.style.display = 'block'; return; }
-  if (amount > (userData.balance || 0)) { msg.textContent = 'Insufficient balance.'; msg.style.display = 'block'; return; }
-  if (!detail) { msg.textContent = 'Enter payment details.'; msg.style.display = 'block'; return; }
+  if (!amount || amount < min) { if (msg) { msg.textContent = `Minimum is ${min} coins.`; msg.style.display = 'block'; } return; }
+  if (amount > (userData.balance || 0)) { if (msg) { msg.textContent = 'Insufficient balance.'; msg.style.display = 'block'; } return; }
+  if (!detail) { if (msg) { msg.textContent = 'Enter payment details.'; msg.style.display = 'block'; } return; }
 
-  $('withdrawBtn').disabled = true;
+  const wBtn = $('withdrawBtn');
+  if (wBtn) wBtn.disabled = true;
   try {
     await addBalance(-amount, 'withdrawal', `Withdraw via ${method}`);
     await addDoc(collection(db, 'withdrawals'), {
@@ -1655,14 +1624,13 @@ async function requestWithdraw() {
       country: userCountry || 'unknown'
     });
     showModal('✅', 'Request Submitted', 'Your withdrawal request is pending review.', 'OK');
-    $('withdrawAmount').value = '';
-    $('withdrawDetail').value = '';
+    if ($('withdrawAmount')) $('withdrawAmount').value = '';
+    if ($('withdrawDetail')) $('withdrawDetail').value = '';
     loadWallet();
   } catch (e) {
-    msg.textContent = 'Error: ' + e.message;
-    msg.style.display = 'block';
+    if (msg) { msg.textContent = 'Error: ' + e.message; msg.style.display = 'block'; }
   } finally {
-    $('withdrawBtn').disabled = false;
+    if (wBtn) wBtn.disabled = false;
   }
 }
 
@@ -1670,12 +1638,14 @@ async function requestWithdraw() {
 // REFER
 // =========================================================
 function loadRefer() {
-  $('referBonus').textContent = `Earn ${appConfig.referralBonus || 100} coins per referral`;
-  $('referCode').textContent = userData.referralCode || '------';
+  if (!userData) return;
+  safeText('referBonus', `Earn ${appConfig.referralBonus || 100} coins per referral`);
+  safeText('referCode', userData.referralCode || '------');
 }
 
 async function applyReferCode() {
-  const code = $('inputReferCode').value.trim().toUpperCase();
+  if (!currentUser || !userData) return;
+  const code = $('inputReferCode')?.value.trim().toUpperCase();
   if (!code) return;
   if (userData.referredBy) return showModal('⚠️', 'Already Used', 'You already applied a referral code.', 'OK');
   if (code === userData.referralCode) return showModal('⚠️', 'Invalid', 'You cannot use your own code.', 'OK');
@@ -1686,24 +1656,27 @@ async function applyReferCode() {
 
   const bonus = appConfig.referralBonus || 100;
   const referrerRef = snap.docs[0].ref;
-  await updateDoc(referrerRef, { balance: (snap.docs[0].data().balance || 0) + bonus });
-  await updateDoc(doc(db, 'users', currentUser.uid), { referredBy: code });
-  userData.referredBy = code;
-  await addBalance(bonus, 'referral', `Applied code ${code}`);
-  showModal('🎉', 'Success!', `+${bonus} coins added from referral.`, 'OK');
+  try {
+    await updateDoc(referrerRef, { balance: (snap.docs[0].data().balance || 0) + bonus });
+    await updateDoc(doc(db, 'users', currentUser.uid), { referredBy: code });
+    userData.referredBy = code;
+    await addBalance(bonus, 'referral', `Applied code ${code}`);
+    showModal('🎉', 'Success!', `+${bonus} coins added.`, 'OK');
+  } catch (e) { showModal('❌', 'Error', e.message, 'OK'); }
 }
 
 // =========================================================
 // PROFILE
 // =========================================================
 function loadProfile() {
-  $('profileAvatar').src = userData.profilePicture || '';
-  $('profileName').textContent = userData.name;
-  $('profileUsername').textContent = userData.telegramUsername ? '@' + userData.telegramUsername : 'No username';
-  $('profileTgId').textContent = `ID: ${userData.telegramId || '—'}`;
+  if (!userData) return;
+  safeSrc('profileAvatar', userData.profilePicture || '');
+  safeText('profileName', userData.name || 'User');
+  safeText('profileUsername', userData.telegramUsername ? '@' + userData.telegramUsername : 'No username');
+  safeText('profileTgId', `ID: ${userData.telegramId || '—'}`);
   const since = userData.createdAt?.seconds ? new Date(userData.createdAt.seconds * 1000).toLocaleDateString() : 'Today';
-  $('profileSince').textContent = since;
-  $('profileTotal').textContent = (userData.totalEarned || 0).toFixed(0);
+  safeText('profileSince', since);
+  safeText('profileTotal', (userData.totalEarned || 0).toFixed(0));
 }
 
 // =========================================================
@@ -1711,36 +1684,39 @@ function loadProfile() {
 // =========================================================
 function showNotice(n) {
   const icons = { info: '📢', success: '✅', warning: '⚠️', error: '❌', premium: '👑' };
-  $('noticeIcon').textContent = icons[n.type] || '📢';
-  $('noticeTitle').textContent = n.title;
-  $('noticeBody').textContent = n.message;
-
+  safeText('noticeIcon', icons[n.type] || '📢');
+  safeText('noticeTitle', n.title);
+  safeText('noticeBody', n.message);
   const cancelable = n.cancelable !== false;
-  $('noticeDismissBtn').style.display = cancelable ? 'block' : 'none';
-
-  $('noticeModal').classList.add('show');
-  $('noticeOkBtn').onclick = () => $('noticeModal').classList.remove('show');
-  $('noticeDismissBtn').onclick = () => {
+  const db2 = $('noticeDismissBtn');
+  if (db2) db2.style.display = cancelable ? 'block' : 'none';
+  $('noticeModal')?.classList.add('show');
+  const okBtn = $('noticeOkBtn');
+  const dismissBtn = $('noticeDismissBtn');
+  if (okBtn) okBtn.onclick = () => $('noticeModal').classList.remove('show');
+  if (dismissBtn) dismissBtn.onclick = () => {
     localStorage.setItem(`notice_dismissed_${n.title}`, '1');
     $('noticeModal').classList.remove('show');
   };
 }
 
 // =========================================================
-// UI
+// UI INIT
 // =========================================================
 function initUI() {
-  $('hdrName').textContent = `Hi, ${userData.name.split(' ')[0]}`;
-  $('hdrAvatar').src = userData.profilePicture || '';
+  if (!userData) return;
+  safeText('hdrName', `Hi, ${(userData.name || 'Player').split(' ')[0]}`);
+  safeSrc('hdrAvatar', userData.profilePicture || '');
 
   const banners = appConfig.sliderBanners || [];
-  if (banners.length) {
-    $('slider').style.display = 'block';
-    $('sliderTrack').innerHTML = banners.map(b => `
+  const slider = $('slider');
+  if (banners.length && slider) {
+    slider.style.display = 'block';
+    safeHtml('sliderTrack', banners.map(b => `
       <div class="slider-item"><a href="${b.link || '#'}" target="_blank"><img src="${b.img}" loading="lazy" alt=""></a></div>
-    `).join('');
-    $('sliderDots').innerHTML = banners.map((_, i) => `<span class="dot${i === 0 ? ' active' : ''}" data-i="${i}"></span>`).join('');
-    $('sliderDots').querySelectorAll('.dot').forEach(d => d.onclick = () => goToSlide(parseInt(d.dataset.i)));
+    `).join(''));
+    safeHtml('sliderDots', banners.map((_, i) => `<span class="dot${i === 0 ? ' active' : ''}" data-i="${i}"></span>`).join(''));
+    $('sliderDots')?.querySelectorAll('.dot').forEach(d => d.onclick = () => goToSlide(parseInt(d.dataset.i)));
     startSlider();
   }
 
@@ -1757,11 +1733,15 @@ function startSlider() {
 function goToSlide(i) {
   const banners = appConfig.sliderBanners || [];
   slideIdx = i;
-  $('sliderTrack').style.transform = `translateX(-${i * 100}%)`;
-  $('sliderDots').querySelectorAll('.dot').forEach((d, idx) => d.classList.toggle('active', idx === i));
+  const track = $('sliderTrack');
+  if (track) track.style.transform = `translateX(-${i * 100}%)`;
+  $('sliderDots')?.querySelectorAll('.dot').forEach((d, idx) => d.classList.toggle('active', idx === i));
 }
 
 function renderFeatures() {
+  const grid = $('featureGrid');
+  if (!grid) return;
+
   const items = [
     { id: 'ludo', name: 'Ludo Dice', icon: 'fa-dice', desc: 'Roll & win', cls: '' },
     { id: 'color', name: 'Color Match', icon: 'fa-palette', desc: 'Match colors', cls: '' },
@@ -1780,7 +1760,7 @@ function renderFeatures() {
     social: gamesConfig.socialTasks?.visible !== false
   };
 
-  $('featureGrid').innerHTML = items.filter(i => allowed[i.id]).map(i => `
+  grid.innerHTML = items.filter(i => allowed[i.id]).map(i => `
     <div class="feature-card ${i.cls}" onclick="navigateTo('${i.id}')">
       <div class="feature-icon"><i class="fas ${i.icon}"></i></div>
       <div style="font-weight:700; font-size:0.85rem;">${i.name}</div>
@@ -1788,10 +1768,9 @@ function renderFeatures() {
     </div>
   `).join('');
 
-  // Wallet visible?
   const walletVisible = gamesConfig.wallet?.visible !== false;
   if (walletVisible) {
-    $('featureGrid').innerHTML += `
+    grid.innerHTML += `
       <div class="feature-card" onclick="navigateTo('wallet')">
         <div class="feature-icon"><i class="fas fa-wallet"></i></div>
         <div style="font-weight:700; font-size:0.85rem;">My Wallet</div>
@@ -1805,33 +1784,43 @@ function initListeners() {
   document.querySelectorAll('.nav-link').forEach(l => {
     l.onclick = (e) => { e.preventDefault(); navigateTo(l.dataset.page); };
   });
-  $('ludoRollBtn').onclick = playLudo;
-  $('watchBtn').onclick = playWatch;
-  $('luckBtn').onclick = startLuck;
-  $('luckExitBtn').onclick = () => { luckActive = false; navigateTo('luck'); };
-  $('withdrawBtn').onclick = requestWithdraw;
-  $('copyCodeBtn').onclick = () => {
-    navigator.clipboard.writeText(userData.referralCode || '');
-    showModal('📋', 'Copied!', 'Referral code copied to clipboard.', 'OK');
+  const ludoBtn = $('ludoRollBtn');
+  if (ludoBtn) ludoBtn.onclick = playLudo;
+  const wBtn = $('watchBtn');
+  if (wBtn) wBtn.onclick = playWatch;
+  const lBtn = $('luckBtn');
+  if (lBtn) lBtn.onclick = startLuck;
+  const lExit = $('luckExitBtn');
+  if (lExit) lExit.onclick = () => { luckActive = false; navigateTo('luck'); };
+  const wdBtn = $('withdrawBtn');
+  if (wdBtn) wdBtn.onclick = requestWithdraw;
+  const copyBtn = $('copyCodeBtn');
+  if (copyBtn) copyBtn.onclick = () => {
+    navigator.clipboard.writeText(userData?.referralCode || '');
+    showModal('📋', 'Copied!', 'Referral code copied.', 'OK');
   };
-  $('shareBtn').onclick = () => {
-    const tpl = appConfig.referralShareText || 'Join Games Hub and earn rewards! Use my code: {CODE}';
-    const text = tpl.replace('{CODE}', userData.referralCode || '');
+  const shareBtn = $('shareBtn');
+  if (shareBtn) shareBtn.onclick = () => {
+    const tpl = appConfig.referralShareText || 'Join Games Hub! Use my code: {CODE}';
+    const text = tpl.replace('{CODE}', userData?.referralCode || '');
     if (navigator.share) navigator.share({ title: 'Games Hub', text });
     else navigator.clipboard.writeText(text).then(() => showModal('📋', 'Copied!', 'Share text copied.', 'OK'));
   };
-  $('applyReferBtn').onclick = applyReferCode;
-  $('closeAppBtn').onclick = () => {
+  const applyBtn = $('applyReferBtn');
+  if (applyBtn) applyBtn.onclick = applyReferCode;
+  const closeBtn = $('closeAppBtn');
+  if (closeBtn) closeBtn.onclick = () => {
     if (window.Telegram?.WebApp) window.Telegram.WebApp.close();
   };
 }
 
 function refreshAllUI() {
-  $('hdrBalance').textContent = (userData?.balance || 0).toFixed(0);
-  $('statToday').textContent = ((userData?.dailyAdCount || 0) * (gamesConfig.watchVideo?.rewardPerPlay || 50)).toFixed(0);
-  $('statTasks').textContent = (userData?.tasksCompleted || 0);
-  const lvl = Math.floor((userData?.totalEarned || 0) / 500) + 1;
-  $('statLevel').textContent = lvl;
+  if (!userData) return;
+  safeText('hdrBalance', (userData.balance || 0).toFixed(0));
+  safeText('statToday', ((userData.dailyAdCount || 0) * (gamesConfig.watchVideo?.rewardPerPlay || 50)).toFixed(0));
+  safeText('statTasks', (userData.tasksCompleted || 0));
+  const lvl = Math.floor((userData.totalEarned || 0) / 500) + 1;
+  safeText('statLevel', lvl);
   refreshLudoUI();
   refreshWatchUI();
   refreshLuckUI();
