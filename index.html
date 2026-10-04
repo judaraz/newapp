@@ -14,15 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<script src="https://richinfo.co/richpartners/telegram/js/tg-ob.js"></script>
-          <script>
-            window.TelegramAdsController = new TelegramAdsController();
-            window.TelegramAdsController.initialize({
-              pubId: "1024526",
-              appId: "9137",
-            });
-          </script>
-  
+
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body {
@@ -102,7 +94,6 @@ body {
 ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--brand),var(--brand-2));border-radius:3px;}
 .hidden{display:none !important;}
 
-/* LUDO */
 .ludo-board-game{position:relative;aspect-ratio:1;max-width:400px;margin:0 auto;background:#fff;border-radius:14px;border:6px solid #1e293b;box-shadow:0 15px 40px rgba(0,0,0,.5);overflow:hidden;}
 .ludo-dice-area{display:flex;justify-content:center;align-items:center;gap:14px;margin-top:14px;}
 .ludo-dice{width:70px;height:70px;background:linear-gradient(145deg,#fff,#e2e8f0);border-radius:14px;border:3px solid #1e293b;display:flex;align-items:center;justify-content:center;font-size:2.3rem;font-weight:900;color:#1e293b;box-shadow:0 8px 20px rgba(0,0,0,.4),inset 0 -4px 8px rgba(0,0,0,.1);transition:transform .2s;}
@@ -112,7 +103,6 @@ body {
 .ludo-token-el.red{background:radial-gradient(circle at 30% 30%,#ff8a8a,#b91c1c);}
 .ludo-token-el.blue{background:radial-gradient(circle at 30% 30%,#93c5fd,#1d4ed8);}
 
-/* 29 */
 .game-table-29{position:relative;background:radial-gradient(ellipse at center,#2d5a3d 0%,#1a3d28 100%);border-radius:20px;border:8px solid #3d2817;box-shadow:inset 0 0 60px rgba(0,0,0,.5),0 20px 50px rgba(0,0,0,.6);aspect-ratio:1/1.15;margin:0 auto;max-width:400px;overflow:hidden;}
 .game-table-29::before{content:'';position:absolute;inset:20px;border:2px dashed rgba(255,255,255,.08);border-radius:12px;pointer-events:none;}
 .player-seat-29{position:absolute;text-align:center;}
@@ -144,7 +134,6 @@ body {
 .trump-badge-29 .suit-big{font-size:1.3rem;display:block;line-height:1;}
 .score-area-29{position:absolute;top:12px;left:12px;background:rgba(0,0,0,.6);padding:6px 12px;border-radius:12px;font-size:.7rem;font-weight:700;border:1px solid rgba(255,255,255,.15);color:white;text-align:center;}
 
-/* Carrom */
 .carrom-board{position:relative;aspect-ratio:1;max-width:400px;margin:0 auto;background:linear-gradient(135deg,#f5deb3 0%,#deb887 100%);border-radius:12px;border:12px solid #654321;box-shadow:inset 0 0 30px rgba(0,0,0,.3),0 15px 40px rgba(0,0,0,.5);overflow:hidden;}
 .carrom-board::before{content:'';position:absolute;inset:8%;border:2px solid rgba(0,0,0,.25);border-radius:4px;pointer-events:none;}
 .carrom-board::after{content:'';position:absolute;inset:26%;border:2px solid rgba(0,0,0,.25);border-radius:50%;pointer-events:none;}
@@ -165,11 +154,24 @@ body {
 .result-modal-card{background:var(--bg-card);border:2px solid var(--border);border-radius:24px;padding:32px 26px;max-width:380px;width:100%;text-align:center;animation:slideUp .3s ease;}
 .result-modal-card.win{border-color:rgba(34,197,94,.5);box-shadow:0 25px 60px rgba(34,197,94,.3);}
 .result-modal-card.lose{border-color:rgba(239,68,68,.5);box-shadow:0 25px 60px rgba(239,68,68,.3);}
+
+/* fast-loader — minimal skeleton while config loads */
+#fastLoader{
+  display:none;
+}
+#fastLoader.show{
+  display:flex;position:fixed;top:70px;left:0;right:0;
+  justify-content:center;padding:6px;
+  background:linear-gradient(90deg,rgba(0,229,160,.1),transparent);
+  font-size:.68rem;color:var(--brand);font-weight:700;
+  z-index:80;
+}
 </style>
 </head>
 <body class="max-w-md mx-auto">
 
-<!-- AD OVERLAY -->
+<div id="fastLoader" class="show"><i class="fas fa-sync-alt fa-spin" style="margin-right:6px;"></i> Syncing…</div>
+
 <div id="adOverlay" class="ad-overlay">
   <div class="ad-overlay-card">
     <div style="display:flex;justify-content:center;margin-bottom:20px;"><div class="spinner spinner-lg"></div></div>
@@ -178,7 +180,6 @@ body {
   </div>
 </div>
 
-<!-- GENERIC MODAL -->
 <div id="modal" class="modal">
   <div class="modal-card">
     <div id="modalIcon" style="font-size:3rem;margin-bottom:14px;">🎉</div>
@@ -188,7 +189,6 @@ body {
   </div>
 </div>
 
-<!-- CONFIRM MODAL -->
 <div id="confirmModal" class="modal">
   <div class="modal-card">
     <div id="confirmIcon" style="font-size:3rem;margin-bottom:14px;">✨</div>
@@ -201,7 +201,6 @@ body {
   </div>
 </div>
 
-<!-- RESULT MODAL -->
 <div id="resultModal" class="modal">
   <div id="resultModalCard" class="result-modal-card">
     <div id="resultIcon" style="font-size:4rem;margin-bottom:12px;">🏆</div>
@@ -212,7 +211,6 @@ body {
   </div>
 </div>
 
-<!-- COUNTRY BLOCK -->
 <div id="countryBlock" class="modal">
   <div class="modal-card">
     <div style="font-size:3.5rem;margin-bottom:14px;">🌍</div>
@@ -222,7 +220,6 @@ body {
   </div>
 </div>
 
-<!-- NOTICE -->
 <div id="noticeModal" class="modal">
   <div class="modal-card">
     <div id="noticeIcon" style="font-size:3rem;margin-bottom:14px;">📢</div>
@@ -235,7 +232,6 @@ body {
   </div>
 </div>
 
-<!-- ACCESS DENIED -->
 <div id="accessDenied" class="modal">
   <div class="modal-card">
     <div style="font-size:3.5rem;margin-bottom:14px;">🔒</div>
@@ -269,7 +265,6 @@ body {
       </button>
     </div>
 
-    <!-- HOME -->
     <div id="page-home" class="sub-page active" style="padding:16px 18px;">
       <div class="card" style="padding:18px;margin-bottom:18px;position:relative;overflow:hidden;">
         <div style="position:absolute;top:-30px;right:-30px;width:100px;height:100px;background:radial-gradient(circle,rgba(0,229,160,.2),transparent 70%);border-radius:50%;"></div>
@@ -305,7 +300,6 @@ body {
       </div>
     </div>
 
-    <!-- LUDO DICE -->
     <div id="page-ludoDice" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:4px;">🎲 Ludo Dice</h2>
       <p style="text-align:center;color:var(--text-dim);font-size:.75rem;margin-bottom:14px;">Roll the dice, win points!</p>
@@ -321,10 +315,10 @@ body {
         </button>
         <div id="ludoDiceTimer" style="color:var(--brand);font-size:.8rem;margin-top:10px;font-weight:700;"></div>
         <div id="ludoDiceMultiplier" style="color:var(--text-mute);font-size:.7rem;margin-top:8px;">Dice × multiplier</div>
+        <div id="ludoDicePlayCount" style="color:var(--text-mute);font-size:.65rem;margin-top:4px;"></div>
       </div>
     </div>
 
-    <!-- COLOR -->
     <div id="page-color" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.6rem;font-weight:800;text-align:center;margin-bottom:6px;">🎨 Color Match</h2>
       <p style="text-align:center;color:var(--text-dim);font-size:.8rem;margin-bottom:20px;">Find the matching color</p>
@@ -333,11 +327,11 @@ body {
         <div id="colorTarget" style="width:120px;height:70px;margin:0 auto 12px;border-radius:14px;border:3px solid white;box-shadow:0 8px 20px rgba(0,0,0,.4);"></div>
         <div id="colorRGB" style="font-family:monospace;color:var(--brand);font-weight:700;font-size:.95rem;"></div>
         <div id="colorReward" style="color:var(--text-mute);font-size:.7rem;margin-top:10px;"></div>
+        <div id="colorPlayCount" style="color:var(--text-mute);font-size:.65rem;margin-top:4px;"></div>
       </div>
       <div id="colorGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;"></div>
     </div>
 
-    <!-- WATCH -->
     <div id="page-watch" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.6rem;font-weight:800;text-align:center;margin-bottom:6px;">📺 Watch & Earn</h2>
       <p style="text-align:center;color:var(--text-dim);font-size:.8rem;margin-bottom:20px;">Watch a short ad, get instant coins</p>
@@ -353,7 +347,6 @@ body {
       </div>
     </div>
 
-    <!-- LUCK -->
     <div id="page-luck" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.6rem;font-weight:800;text-align:center;margin-bottom:6px;">🍀 Try Your Luck</h2>
       <p style="text-align:center;color:var(--text-dim);font-size:.8rem;margin-bottom:20px;">Chain ads for a big reward</p>
@@ -367,7 +360,6 @@ body {
       </div>
     </div>
 
-    <!-- LUCK RUN -->
     <div id="page-luck-run" class="sub-page" style="padding:16px 18px;">
       <div class="card" style="padding:26px 20px;text-align:center;">
         <div class="feature-icon" style="width:70px;height:70px;font-size:1.8rem;margin:0 auto 14px;background:linear-gradient(135deg,#f59e0b,#ef4444);"><i class="fas fa-star"></i></div>
@@ -384,21 +376,18 @@ body {
       </div>
     </div>
 
-    <!-- VISIT -->
     <div id="page-visit" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.6rem;font-weight:800;text-align:center;margin-bottom:6px;">🌐 Visit & Earn</h2>
       <p style="text-align:center;color:var(--text-dim);font-size:.8rem;margin-bottom:20px;">Visit websites, get coins</p>
       <div id="visitList" style="display:flex;flex-direction:column;gap:12px;"></div>
     </div>
 
-    <!-- SOCIAL -->
     <div id="page-social" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.6rem;font-weight:800;text-align:center;margin-bottom:6px;">📱 Social Tasks</h2>
       <p style="text-align:center;color:var(--text-dim);font-size:.8rem;margin-bottom:20px;">Follow & earn coins</p>
       <div id="socialList" style="display:flex;flex-direction:column;gap:12px;"></div>
     </div>
 
-    <!-- 29 -->
     <div id="page-29" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:4px;">🃏 29 Card Game</h2>
       <p style="text-align:center;color:var(--text-dim);font-size:.75rem;margin-bottom:14px;">
@@ -407,6 +396,7 @@ body {
       <div id="g29-lobby" class="card" style="padding:22px 18px;text-align:center;">
         <div style="font-size:3rem;margin-bottom:12px;">🃏</div>
         <p style="color:var(--text-dim);font-size:.85rem;margin-bottom:16px;">Play against 3 AI opponents</p>
+        <div id="g29PlayCount" style="color:var(--text-mute);font-size:.7rem;margin-bottom:12px;"></div>
         <button id="g29StartBtn" class="btn btn-primary" style="width:100%;padding:16px;font-size:1rem;">
           <i class="fas fa-play" style="margin-right:8px;"></i> START MATCH
         </button>
@@ -430,7 +420,6 @@ body {
       </div>
     </div>
 
-    <!-- LUDO -->
     <div id="page-ludo" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:4px;">🎲 Ludo</h2>
       <p style="text-align:center;color:var(--text-dim);font-size:.75rem;margin-bottom:14px;">
@@ -439,6 +428,7 @@ body {
       <div id="ludo-lobby" class="card" style="padding:22px 18px;text-align:center;">
         <div style="font-size:3rem;margin-bottom:12px;">🎲</div>
         <p style="color:var(--text-dim);font-size:.85rem;margin-bottom:16px;">Roll the dice, race your tokens home</p>
+        <div id="ludoPlayCount" style="color:var(--text-mute);font-size:.7rem;margin-bottom:12px;"></div>
         <button id="ludoStartBtn" class="btn btn-primary" style="width:100%;padding:16px;font-size:1rem;">
           <i class="fas fa-play" style="margin-right:8px;"></i> START MATCH
         </button>
@@ -467,7 +457,6 @@ body {
       </div>
     </div>
 
-    <!-- CARROM -->
     <div id="page-carrom" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:4px;">🎯 Carrom</h2>
       <p style="text-align:center;color:var(--text-dim);font-size:.75rem;margin-bottom:14px;">
@@ -476,6 +465,7 @@ body {
       <div id="carrom-lobby" class="card" style="padding:22px 18px;text-align:center;">
         <div style="font-size:3rem;margin-bottom:12px;">🎯</div>
         <p style="color:var(--text-dim);font-size:.85rem;margin-bottom:16px;">Pot all your coins before the computer</p>
+        <div id="carromPlayCount" style="color:var(--text-mute);font-size:.7rem;margin-bottom:12px;"></div>
         <button id="carromStartBtn" class="btn btn-primary" style="width:100%;padding:16px;font-size:1rem;">
           <i class="fas fa-play" style="margin-right:8px;"></i> START MATCH
         </button>
@@ -500,7 +490,6 @@ body {
       </div>
     </div>
 
-    <!-- WALLET -->
     <div id="page-wallet" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.6rem;font-weight:800;text-align:center;margin-bottom:6px;">💼 Wallet</h2>
       <p style="text-align:center;color:var(--text-dim);font-size:.8rem;margin-bottom:20px;">Manage your earnings</p>
@@ -522,7 +511,6 @@ body {
       <div id="withdrawHistory" style="display:flex;flex-direction:column;gap:10px;"></div>
     </div>
 
-    <!-- REFER -->
     <div id="page-refer" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.6rem;font-weight:800;text-align:center;margin-bottom:6px;">🎁 Refer & Earn</h2>
       <p style="text-align:center;color:var(--text-dim);font-size:.8rem;margin-bottom:20px;">Invite friends, earn together</p>
@@ -545,7 +533,6 @@ body {
       </div>
     </div>
 
-    <!-- PROFILE -->
     <div id="page-profile" class="sub-page" style="padding:16px 18px;">
       <h2 class="brand-gradient" style="font-size:1.6rem;font-weight:800;text-align:center;margin-bottom:20px;">Profile</h2>
       <div class="card" style="padding:26px;text-align:center;">
@@ -588,7 +575,7 @@ const firebaseConfig = {
 const fbApp = initializeApp(firebaseConfig);
 const db = getFirestore(fbApp);
 
-// ========== STATE ==========
+// ========== FAST STATE ==========
 let currentUser = null;
 let userData = null;
 let appConfig = {};
@@ -602,9 +589,9 @@ let ludoDiceBusy = false, ludoDiceDisabledUntil = 0, ludoDiceTimerInterval = nul
 let sliderInterval = null, slideIdx = 0;
 
 let gameConfig = {
-  g29:    { entryFee: 100, winnerReward: 180, visible: true },
-  ludo:   { entryFee: 100, winnerReward: 180, visible: true },
-  carrom: { entryFee: 100, winnerReward: 180, visible: true }
+  g29:    { entryFee: 100, winnerReward: 180, visible: true, dailyPlayLimit: 0 },
+  ludo:   { entryFee: 100, winnerReward: 180, visible: true, dailyPlayLimit: 0 },
+  carrom: { entryFee: 100, winnerReward: 180, visible: true, dailyPlayLimit: 0 }
 };
 
 // ========== HELPERS ==========
@@ -614,8 +601,15 @@ function safeText(id, v) { safeSet(id, 'textContent', v); }
 function safeHtml(id, v) { safeSet(id, 'innerHTML', v); }
 function safeSrc(id, v) { safeSet(id, 'src', v); }
 
+function escHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function escAttr(s) { return escHtml(s); }
+
 function showAdOverlay(t, m) { safeText('adOverlayTitle', t||'Loading'); safeText('adOverlayMsg', m||'Please wait…'); $('adOverlay')?.classList.add('show'); }
 function hideAdOverlay() { $('adOverlay')?.classList.remove('show'); }
+function showFastLoader(show) { $('fastLoader')?.classList.toggle('show', show); }
 
 function showModal(icon, title, body, btn, onClose) {
   safeText('modalIcon', icon); safeText('modalTitle', title); safeText('modalBody', body); safeText('modalBtn', btn||'OK');
@@ -655,31 +649,115 @@ function navigateTo(page) {
     if (page === 'watch') refreshWatchUI();
     if (page === 'color') startColorRound();
     if (page === 'ludoDice') refreshLudoDiceUI();
+    if (page === '29') refreshG29Lobby();
+    if (page === 'ludo') refreshLudoLobby();
+    if (page === 'carrom') refreshCarromLobby();
   } catch(e) { console.warn(e); }
 }
 window.navigateTo = navigateTo;
 
-// ========== BOOTSTRAP ==========
+// ========== PLAY LIMIT CHECK ==========
+function checkPlayLimit(gameId, limitKey) {
+  const limit = gameConfig[gameId]?.dailyPlayLimit || 0;
+  if (!limit) return { allowed: true, used: 0, limit: 0 };
+  const today = new Date().toISOString().slice(0,10);
+  const key = `limit_${gameId}_${currentUser?.uid || 'anon'}_${today}`;
+  const used = parseInt(localStorage.getItem(key) || '0');
+  if (used >= limit) return { allowed: false, used, limit, reason: `Daily limit reached (${limit}/${limit}). Try again tomorrow.` };
+  return { allowed: true, used, limit };
+}
+function incrementPlayLimit(gameId) {
+  const limit = gameConfig[gameId]?.dailyPlayLimit || 0;
+  if (!limit) return;
+  const today = new Date().toISOString().slice(0,10);
+  const key = `limit_${gameId}_${currentUser?.uid || 'anon'}_${today}`;
+  const used = parseInt(localStorage.getItem(key) || '0') + 1;
+  localStorage.setItem(key, String(used));
+}
+function getPlayCountText(gameId) {
+  const limit = gameConfig[gameId]?.dailyPlayLimit || 0;
+  if (!limit) return '';
+  const today = new Date().toISOString().slice(0,10);
+  const key = `limit_${gameId}_${currentUser?.uid || 'anon'}_${today}`;
+  const used = parseInt(localStorage.getItem(key) || '0');
+  return `Today: ${used}/${limit} plays`;
+}
+function refreshG29Lobby() {
+  safeText('g29PlayCount', getPlayCountText('g29'));
+  const lc = checkPlayLimit('g29');
+  const btn = $('g29StartBtn');
+  if (btn) btn.disabled = !lc.allowed;
+}
+function refreshLudoLobby() {
+  safeText('ludoPlayCount', getPlayCountText('ludo'));
+  const lc = checkPlayLimit('ludo');
+  const btn = $('ludoStartBtn');
+  if (btn) btn.disabled = !lc.allowed;
+}
+function refreshCarromLobby() {
+  safeText('carromPlayCount', getPlayCountText('carrom'));
+  const lc = checkPlayLimit('carrom');
+  const btn = $('carromStartBtn');
+  if (btn) btn.disabled = !lc.allowed;
+}
+
+// ========== BOOTSTRAP — FAST ==========
 async function bootstrap() {
+  // **STEP 1: Telegram check (sync, instant)**
+  if (!window.Telegram?.WebApp) {
+    $('accessDenied')?.classList.add('show');
+    showFastLoader(false);
+    return;
+  }
+  const tg = window.Telegram.WebApp;
+  tg.ready(); tg.expand();
+  try { tg.setHeaderColor('#0a0e1a'); tg.setBackgroundColor('#0a0e1a'); } catch(e){}
+  tgUser = tg.initDataUnsafe?.user;
+
+  if (!tgUser) {
+    $('accessDenied')?.classList.add('show');
+    showFastLoader(false);
+    return;
+  }
+
+  // **STEP 2: Show UI IMMEDIATELY with cached/default state**
+  // Build a minimal user object so UI can render (will be replaced by real user)
+  userData = {
+    uid: `tg_${tgUser.id}`,
+    telegramId: tgUser.id,
+    telegramUsername: tgUser.username || '',
+    telegramFirstName: tgUser.first_name || '',
+    telegramLastName: tgUser.last_name || '',
+    telegramChatId: tgUser.id,
+    name: [tgUser.first_name, tgUser.last_name].filter(Boolean).join(' ') || tgUser.username || 'Player',
+    profilePicture: tgUser.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(tgUser.first_name || 'P')}&background=00e5a0&color=0a0e1a&bold=true`,
+    balance: 0,
+    totalEarned: 0,
+    tasksCompleted: 0,
+    dailyAdCount: 0,
+    referralCode: '...',
+    createdAt: null
+  };
+  currentUser = { uid: userData.uid, name: userData.name };
+
+  $('app')?.classList.add('active');
+  initUI();
+  initListeners();
+  refreshAllUI();
+  updateGameLabels();
+
+  // **STEP 3: Fetch everything in parallel (non-blocking)**
+  const startTime = Date.now();
   try {
-    if (!window.Telegram?.WebApp) { $('accessDenied')?.classList.add('show'); return; }
-    const tg = window.Telegram.WebApp;
-    tg.ready(); tg.expand();
-    try { tg.setHeaderColor('#0a0e1a'); tg.setBackgroundColor('#0a0e1a'); } catch(e){}
-    tgUser = tg.initDataUnsafe?.user;
-    if (!tgUser) { $('accessDenied')?.classList.add('show'); return; }
+    const [mainSnap, gamesSnap, adsSnap, noticeSnap, country] = await Promise.all([
+      getDoc(doc(db,'config','main')).catch(() => null),
+      getDoc(doc(db,'config','games')).catch(() => null),
+      getDoc(doc(db,'config','ads')).catch(() => null),
+      getDoc(doc(db,'config','appNotice')).catch(() => null),
+      detectCountry()
+    ]);
 
-    userCountry = await detectCountry();
-
-    let mainSnap, gamesSnap, adsSnap, noticeSnap;
-    try {
-      [mainSnap, gamesSnap, adsSnap, noticeSnap] = await Promise.all([
-        getDoc(doc(db,'config','main')),
-        getDoc(doc(db,'config','games')),
-        getDoc(doc(db,'config','ads')),
-        getDoc(doc(db,'config','appNotice'))
-      ]);
-    } catch(e) { console.warn('config err', e); }
+    userCountry = country || '';
 
     appConfig = mainSnap?.exists() ? mainSnap.data() : {};
     gamesConfig = gamesSnap?.exists() ? gamesSnap.data() : {};
@@ -692,113 +770,121 @@ async function bootstrap() {
       };
     }
 
-    // Load 3-game config from config/main
-    if (appConfig.game29) {
-      Object.assign(gameConfig.g29, {
-        entryFee: appConfig.game29.entryFee || 100,
-        winnerReward: appConfig.game29.winnerReward || 180
-      });
-      if (typeof appConfig.game29.visible === 'boolean') gameConfig.g29.visible = appConfig.game29.visible;
-    }
-    if (appConfig.ludoGame) {
-      Object.assign(gameConfig.ludo, {
-        entryFee: appConfig.ludoGame.entryFee || 100,
-        winnerReward: appConfig.ludoGame.winnerReward || 180
-      });
-      if (typeof appConfig.ludoGame.visible === 'boolean') gameConfig.ludo.visible = appConfig.ludoGame.visible;
-    }
-    if (appConfig.carromGame) {
-      Object.assign(gameConfig.carrom, {
-        entryFee: appConfig.carromGame.entryFee || 100,
-        winnerReward: appConfig.carromGame.winnerReward || 180
-      });
-      if (typeof appConfig.carromGame.visible === 'boolean') gameConfig.carrom.visible = appConfig.carromGame.visible;
-    }
-
-    // Also check config/games visibility for 3-game (fallback)
-    if (gamesConfig.game29) gameConfig.g29.visible = gamesConfig.game29.visible !== false;
-    if (gamesConfig.ludoGame) gameConfig.ludo.visible = gamesConfig.ludoGame.visible !== false;
-    if (gamesConfig.carromGame) gameConfig.carrom.visible = gamesConfig.carromGame.visible !== false;
+    applyMainConfig(appConfig);
+    applyGamesConfig(gamesConfig);
 
     // Country block
     if (appConfig.allowedCountries?.length && userCountry && !appConfig.allowedCountries.includes(userCountry)) {
       safeText('countryBlockMsg', appConfig.blockedCountryMessage || 'Not available.');
       $('countryBlock')?.classList.add('show');
+      showFastLoader(false);
       return;
     }
 
+    // **STEP 4: Load full user in parallel with UI update**
     await initUser();
-    setTimeout(() => initAdsGram(), 100);
 
-    $('app')?.classList.add('active');
-    initUI(); initListeners(); refreshAllUI();
+    // Re-render with real data
+    initUI();
+    refreshAllUI();
     updateGameLabels();
+    renderFeatures();
 
+    // **STEP 5: Init ads (background)**
+    setTimeout(() => initAdsGram(), 200);
+
+    // **STEP 6: Show notice (background)**
     if (noticeSnap?.exists()) {
       const n = noticeSnap.data();
       if (n.enabled && n.title && n.message && !localStorage.getItem(`notice_dismissed_${n.title}`)) {
-        setTimeout(() => showNotice(n), 1200);
+        setTimeout(() => showNotice(n), 800);
       }
     }
 
-    try {
-      onSnapshot(doc(db,'config','games'), s => {
-        if (s.exists()) {
-          gamesConfig = s.data();
-          if (gamesConfig.game29) gameConfig.g29.visible = gamesConfig.game29.visible !== false;
-          if (gamesConfig.ludoGame) gameConfig.ludo.visible = gamesConfig.ludoGame.visible !== false;
-          if (gamesConfig.carromGame) gameConfig.carrom.visible = gamesConfig.carromGame.visible !== false;
-          refreshAllUI(); renderFeatures();
-        }
-      });
-      onSnapshot(doc(db,'config','ads'), s => {
-        if (s.exists()) {
-          const a = s.data();
-          adConfig = {
-            gigapub:{enabled:a.gigapub?.enabled!==false,order:a.gigapub?.order||1},
-            adsgramReward:{enabled:a.adsgramReward?.enabled!==false,order:a.adsgramReward?.order||2},
-            adsgramInterstitial:{enabled:a.adsgramInterstitial?.enabled!==false,order:a.adsgramInterstitial?.order||3}
-          };
-        }
-      });
-      onSnapshot(doc(db,'config','main'), s => {
-        if (s.exists()) {
-          appConfig = { ...appConfig, ...s.data() };
-          if (appConfig.game29) {
-            Object.assign(gameConfig.g29, { entryFee: appConfig.game29.entryFee || 100, winnerReward: appConfig.game29.winnerReward || 180 });
-            if (typeof appConfig.game29.visible === 'boolean') gameConfig.g29.visible = appConfig.game29.visible;
-          }
-          if (appConfig.ludoGame) {
-            Object.assign(gameConfig.ludo, { entryFee: appConfig.ludoGame.entryFee || 100, winnerReward: appConfig.ludoGame.winnerReward || 180 });
-            if (typeof appConfig.ludoGame.visible === 'boolean') gameConfig.ludo.visible = appConfig.ludoGame.visible;
-          }
-          if (appConfig.carromGame) {
-            Object.assign(gameConfig.carrom, { entryFee: appConfig.carromGame.entryFee || 100, winnerReward: appConfig.carromGame.winnerReward || 180 });
-            if (typeof appConfig.carromGame.visible === 'boolean') gameConfig.carrom.visible = appConfig.carromGame.visible;
-          }
-          updateGameLabels();
-          renderFeatures();
-          refreshAllUI();
-        }
-      });
-    } catch(e){}
+    // **STEP 7: Attach live listeners (background)**
+    attachLiveListeners();
+
+    const elapsed = Date.now() - startTime;
+    console.log(`✅ Config loaded in ${elapsed}ms`);
+
   } catch (err) {
-    console.error('Bootstrap err', err);
-    $('app')?.classList.add('active');
-    initUI(); initListeners();
+    console.error('Config fetch err', err);
+  } finally {
+    showFastLoader(false);
   }
+}
+
+function applyMainConfig(main) {
+  if (!main) return;
+
+  // 3-game entry/reward/visible
+  if (main.game29) {
+    gameConfig.g29.entryFee = main.game29.entryFee || 100;
+    gameConfig.g29.winnerReward = main.game29.winnerReward || 180;
+    if (typeof main.game29.visible === 'boolean') gameConfig.g29.visible = main.game29.visible;
+    if (typeof main.game29.dailyPlayLimit === 'number') gameConfig.g29.dailyPlayLimit = main.game29.dailyPlayLimit;
+  }
+  if (main.ludoGame) {
+    gameConfig.ludo.entryFee = main.ludoGame.entryFee || 100;
+    gameConfig.ludo.winnerReward = main.ludoGame.winnerReward || 180;
+    if (typeof main.ludoGame.visible === 'boolean') gameConfig.ludo.visible = main.ludoGame.visible;
+    if (typeof main.ludoGame.dailyPlayLimit === 'number') gameConfig.ludo.dailyPlayLimit = main.ludoGame.dailyPlayLimit;
+  }
+  if (main.carromGame) {
+    gameConfig.carrom.entryFee = main.carromGame.entryFee || 100;
+    gameConfig.carrom.winnerReward = main.carromGame.winnerReward || 180;
+    if (typeof main.carromGame.visible === 'boolean') gameConfig.carrom.visible = main.carromGame.visible;
+    if (typeof main.carromGame.dailyPlayLimit === 'number') gameConfig.carrom.dailyPlayLimit = main.carromGame.dailyPlayLimit;
+  }
+}
+
+function applyGamesConfig(games) {
+  if (!games) return;
+  if (games.game29) gameConfig.g29.visible = games.game29.visible !== false;
+  if (games.ludoGame) gameConfig.ludo.visible = games.ludoGame.visible !== false;
+  if (games.carromGame) gameConfig.carrom.visible = games.carromGame.visible !== false;
+}
+
+function attachLiveListeners() {
+  try {
+    onSnapshot(doc(db,'config','games'), s => {
+      if (s.exists()) {
+        gamesConfig = s.data();
+        applyGamesConfig(gamesConfig);
+        refreshAllUI(); renderFeatures();
+      }
+    });
+    onSnapshot(doc(db,'config','ads'), s => {
+      if (s.exists()) {
+        const a = s.data();
+        adConfig = {
+          gigapub:{enabled:a.gigapub?.enabled!==false,order:a.gigapub?.order||1},
+          adsgramReward:{enabled:a.adsgramReward?.enabled!==false,order:a.adsgramReward?.order||2},
+          adsgramInterstitial:{enabled:a.adsgramInterstitial?.enabled!==false,order:a.adsgramInterstitial?.order||3}
+        };
+      }
+    });
+    onSnapshot(doc(db,'config','main'), s => {
+      if (s.exists()) {
+        appConfig = { ...appConfig, ...s.data() };
+        applyMainConfig(appConfig);
+        updateGameLabels();
+        renderFeatures();
+        refreshAllUI();
+      }
+    });
+  } catch(e){ console.warn('live listeners err', e); }
 }
 
 async function detectCountry() {
   try {
     const l = navigator.language || '';
     if (l.includes('-')) return l.split('-')[1].toLowerCase();
-    const r = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(3500) });
+    const r = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(3000) });
     const j = await r.json(); return (j.country_code || '').toLowerCase();
   } catch { return ''; }
 }
 
-// ========== USER ==========
 async function initUser() {
   const uid = `tg_${tgUser.id}`;
   const fn = tgUser.first_name||'', ln = tgUser.last_name||'', un = tgUser.username||'';
@@ -809,16 +895,16 @@ async function initUser() {
   const snap = await getDoc(ref);
 
   if (snap.exists()) {
-    userData = snap.data();
+    userData = { ...userData, ...snap.data() };
+    Object.assign(userData, { telegramId:tgUser.id, telegramUsername:un, telegramFirstName:fn, telegramLastName:ln, telegramChatId:tgUser.id, name:fullName, profilePicture:pic });
     try {
-      await updateDoc(ref, {
+      updateDoc(ref, {
         telegramId: tgUser.id, telegramUsername: un, telegramFirstName: fn, telegramLastName: ln,
         telegramChatId: tgUser.id, profilePicture: pic, name: fullName,
         lastLogin: serverTimestamp(), lastSeen: serverTimestamp(),
         isActive: true, country: userCountry || userData.country || 'unknown'
       });
     } catch(e){}
-    Object.assign(userData, { telegramId:tgUser.id, telegramUsername:un, telegramFirstName:fn, telegramLastName:ln, telegramChatId:tgUser.id, name:fullName, profilePicture:pic });
   } else {
     const code = Math.random().toString(36).slice(2,8).toUpperCase();
     userData = {
@@ -892,6 +978,7 @@ async function addBalance(amount, source, note) {
   const nb = parseFloat(((userData.balance||0)+amount).toFixed(2));
   userData.balance = nb;
   if (amount > 0) { userData.totalEarned = (userData.totalEarned||0)+amount; userData.tasksCompleted = (userData.tasksCompleted||0)+1; }
+  refreshAllUI();
   try {
     await updateDoc(doc(db,'users',currentUser.uid), {
       balance: nb, totalEarned: userData.totalEarned, tasksCompleted: userData.tasksCompleted, updatedAt: serverTimestamp()
@@ -902,7 +989,6 @@ async function addBalance(amount, source, note) {
       taskType:source, points:amount, details:note, timestamp:serverTimestamp(), country:userCountry||'unknown'
     });
   } catch(e){}
-  refreshAllUI();
 }
 async function incrementAdView() {
   userData.totalAdViews = (userData.totalAdViews||0)+1;
@@ -922,11 +1008,13 @@ async function optionalDoublePoints(basePoints, onFinal) {
   );
 }
 
-// ========== LUDO DICE (simple) ==========
+// ========== LUDO DICE ==========
 async function playLudoDice() {
   if (ludoDiceBusy) return;
   const cfg = gamesConfig.ludoDice || {};
   if (cfg.visible === false) return showModal('🚫','Unavailable','Game is disabled.','OK');
+  const limitCheck = checkPlayLimit('ludoDice');
+  if (!limitCheck.allowed) return showModal('⏱️','Daily Limit', limitCheck.reason, 'OK');
   const cost = cfg.gameCost || 10;
   const mult = cfg.winMultiplier || 10;
   if ((userData.balance||0) < cost) return showNoPointsModal(cost);
@@ -934,6 +1022,7 @@ async function playLudoDice() {
   ludoDiceBusy = true;
   const btn = $('ludoDiceRollBtn'); if (btn) btn.disabled = true;
   await addBalance(-cost, 'ludoDice_entry', 'Ludo dice entry');
+  incrementPlayLimit('ludoDice');
 
   const diceEl = $('ludoDiceDisplay');
   let spins = 0;
@@ -985,6 +1074,7 @@ function refreshLudoDiceUI() {
   safeText('ludoDiceCost', cost);
   safeText('ludoDiceMultiplier', `Dice × ${mult}`);
   safeText('ludoDiceRollText', `ROLL DICE (${cost})`);
+  safeText('ludoDicePlayCount', getPlayCountText('ludoDice'));
   if (ludoDiceDisabledUntil > Date.now()) startLudoDiceCooldown();
 }
 
@@ -992,11 +1082,14 @@ function refreshLudoDiceUI() {
 function startColorRound() {
   const cfg = gamesConfig.colorGame || {};
   if (cfg.visible === false) return showModal('🚫','Unavailable','Color game disabled.','OK');
+  const limitCheck = checkPlayLimit('colorGame');
+  if (!limitCheck.allowed) return showModal('⏱️','Daily Limit', limitCheck.reason, 'OK');
   const target = { r: rnd(), g: rnd(), b: rnd() };
   const targetStr = `rgb(${target.r}, ${target.g}, ${target.b})`;
   const tBox = $('colorTarget'); if (tBox) tBox.style.background = targetStr;
   safeText('colorRGB', `RGB(${target.r}, ${target.g}, ${target.b})`);
   safeText('colorReward', `Win ${cfg.rewardPerPlay || 100} coins`);
+  safeText('colorPlayCount', getPlayCountText('colorGame'));
   const options = [targetStr];
   for (let i = 0; i < 8; i++) {
     const d = 30 + Math.floor(Math.random()*40);
@@ -1018,6 +1111,7 @@ const cl = (n) => Math.max(0, Math.min(255, n));
 async function handleColorPick(picked, target, cfg) {
   if (picked !== target) return showModal('❌','Wrong!','Try again.','OK', () => startColorRound());
   const baseReward = cfg.rewardPerPlay || 100;
+  incrementPlayLimit('colorGame');
   optionalDoublePoints(baseReward, async (finalReward, doubled) => {
     await addBalance(finalReward, 'color_game', `Color game${doubled?' (doubled)':''}`);
     if (doubled) await incrementAdView();
@@ -1028,13 +1122,18 @@ async function handleColorPick(picked, target, cfg) {
 // ========== WATCH ==========
 async function playWatch() {
   if (watchBusy) return;
-  const reward = gamesConfig.watchVideo?.rewardPerPlay || 50;
+  const cfg = gamesConfig.watchVideo || {};
+  if (cfg.visible === false) return showModal('🚫','Unavailable','Watch disabled.','OK');
+  const limitCheck = checkPlayLimit('watchVideo');
+  if (!limitCheck.allowed) return showModal('⏱️','Daily Limit', limitCheck.reason, 'OK');
+  const reward = cfg.rewardPerPlay || 50;
   watchBusy = true;
   const btn = $('watchBtn'); if (btn) btn.disabled = true;
   showAdOverlay('Loading Ad','Watch to earn coins…');
   const r = await playRotatingAd();
   hideAdOverlay();
   if (!r.success) { watchBusy = false; if (btn) btn.disabled = false; return showModal('⚠️','Ad Unavailable','Try later.','OK'); }
+  incrementPlayLimit('watchVideo');
   await addBalance(reward, 'watch_earn', 'Watch & Earn');
   const cool = 10 + Math.floor(Math.random()*11);
   watchDisabledUntil = Date.now() + cool*1000;
@@ -1065,6 +1164,8 @@ async function startLuck() {
   if (luckActive) return;
   const cfg = gamesConfig.tryYourLuck || {};
   if (cfg.visible === false) return showModal('🚫','Unavailable','Disabled.','OK');
+  const limitCheck = checkPlayLimit('tryYourLuck');
+  if (!limitCheck.allowed) return showModal('⏱️','Daily Limit', limitCheck.reason, 'OK');
   luckActive = true;
   navigateTo('luck-run');
   safeText('luckStatus', 'Preparing…');
@@ -1106,6 +1207,7 @@ async function startLuck() {
         cb.classList.remove('hidden');
         cb.onclick = async () => {
           cb.disabled = true;
+          incrementPlayLimit('tryYourLuck');
           await addBalance(reward, 'try_luck', `${succ} ads watched`);
           await incrementAdView();
           luckActive = false;
@@ -1207,8 +1309,11 @@ function parseCard(s) { return { suit: s.slice(-1), rank: s.slice(0,-1) }; }
 
 async function start29Match() {
   const cfg = gameConfig.g29;
+  const limitCheck = checkPlayLimit('g29');
+  if (!limitCheck.allowed) return showModal('⏱️','Daily Limit', limitCheck.reason, 'OK');
   if ((userData.balance||0) < cfg.entryFee) return showNoPointsModal(cfg.entryFee);
   await addBalance(-cfg.entryFee, 'g29_entry', '29 entry');
+  incrementPlayLimit('g29');
 
   g29.playing = true;
   g29.deck = shuffleArr(buildDeck29());
@@ -1416,6 +1521,7 @@ function reset29UI() {
   g29.playing = false;
   $('g29-lobby')?.classList.remove('hidden');
   $('g29-game')?.classList.add('hidden');
+  refreshG29Lobby();
 }
 
 // =======================================================
@@ -1647,11 +1753,15 @@ async function endLudo(winner) {
 function resetLudoUI() {
   $('ludo-lobby')?.classList.remove('hidden');
   $('ludo-game')?.classList.add('hidden');
+  refreshLudoLobby();
 }
 async function startLudoMatch() {
   const cfg = gameConfig.ludo;
+  const limitCheck = checkPlayLimit('ludo');
+  if (!limitCheck.allowed) return showModal('⏱️','Daily Limit', limitCheck.reason, 'OK');
   if ((userData.balance||0) < cfg.entryFee) return showNoPointsModal(cfg.entryFee);
   await addBalance(-cfg.entryFee, 'ludo_entry', 'Ludo entry');
+  incrementPlayLimit('ludo');
   $('ludo-lobby')?.classList.add('hidden');
   $('ludo-game')?.classList.remove('hidden');
   safeText('ludoYouHome', '0/4');
@@ -1666,8 +1776,11 @@ let carrom = { playing:false, coins:[], striker:{x:50,y:82,vx:0,vy:0}, pocketed:
 
 async function startCarromMatch() {
   const cfg = gameConfig.carrom;
+  const limitCheck = checkPlayLimit('carrom');
+  if (!limitCheck.allowed) return showModal('⏱️','Daily Limit', limitCheck.reason, 'OK');
   if ((userData.balance||0) < cfg.entryFee) return showNoPointsModal(cfg.entryFee);
   await addBalance(-cfg.entryFee, 'carrom_entry', 'Carrom entry');
+  incrementPlayLimit('carrom');
   $('carrom-lobby')?.classList.add('hidden');
   $('carrom-game')?.classList.remove('hidden');
   safeText('carromYouScore', '0/9');
@@ -1899,6 +2012,7 @@ async function endCarrom(winner) {
 function resetCarromUI() {
   $('carrom-lobby')?.classList.remove('hidden');
   $('carrom-game')?.classList.add('hidden');
+  refreshCarromLobby();
 }
 
 // ========== NO POINTS MODAL ==========
@@ -1933,7 +2047,6 @@ async function loadWallet() {
   safeText('walletBalance', (userData.balance||0).toFixed(0));
   safeText('walletValueInfo', `${appConfig.coinValueCoins||1000} coins = ₹${appConfig.coinValueInr||10}`);
 
-  // Payment methods — handle both strings and {name, placeholder} objects
   const rawMethods = appConfig.paymentMethods || ['UPI','Paytm','PayPal'];
   const methods = rawMethods.map(m => {
     if (typeof m === 'string') return { name: m, placeholder: `Enter ${m} details` };
@@ -2097,10 +2210,13 @@ function renderFeatures() {
   items.forEach(i => {
     const gc = gamesConfig[i.visKey] || {};
     let vis = gc.visible !== false;
-    // 3-game visibility may also come from config/games.game29 etc
     if (i.id === '29' && gamesConfig.game29) vis = gamesConfig.game29.visible !== false;
     if (i.id === 'ludo' && gamesConfig.ludoGame) vis = gamesConfig.ludoGame.visible !== false;
     if (i.id === 'carrom' && gamesConfig.carromGame) vis = gamesConfig.carromGame.visible !== false;
+    // Also check gameConfig visible flag
+    if (i.id === '29' && !gameConfig.g29.visible) vis = false;
+    if (i.id === 'ludo' && !gameConfig.ludo.visible) vis = false;
+    if (i.id === 'carrom' && !gameConfig.carrom.visible) vis = false;
     visible[i.id] = vis;
   });
 
@@ -2171,6 +2287,9 @@ function refreshAllUI() {
   safeText('statLevel', Math.floor((userData.totalEarned||0)/500)+1);
   refreshWatchUI();
   refreshLudoDiceUI();
+  refreshG29Lobby();
+  refreshLudoLobby();
+  refreshCarromLobby();
 }
 
 function showNotice(n) {
@@ -2187,14 +2306,6 @@ function showNotice(n) {
     $('noticeModal').classList.remove('show');
   });
 }
-
-function escHtml(s) {
-  if (s == null) return '';
-  return String(s)
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-}
-function escAttr(s) { return escHtml(s); }
 
 bootstrap();
 </script>
